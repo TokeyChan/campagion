@@ -1,0 +1,43 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Overview{% endblock %}
+{% block head %}
+   <link rel="stylesheet" href="{% static 'tracker/css/overview.css' %}">
+{% endblock %}
+
+{% block content %}
+  <div id="main_container">
+    <div class="title" style="grid-area: task_title;">
+      Bald fällige Aufgaben
+    </div>
+    <div id="task_container">
+      {% for task in tasks %}
+        <div class="task_container">
+          
+        </div>
+      {% endfor %}
+    </div>
+    <div class="title" style="grid-area: client_title">
+      Aufgaben nach Kunde
+    </div>
+    <div id="client_container">
+      {% for client in clients %}
+        <div class="client_container">
+          <div class="client_name">{{ client.name }}</div>
+          <div class="client_task_container">
+            {% for task in client.current_tasks %}
+              <div class="client_task" style="background-color: task.milestone.color">
+                Blablabla due date und so
+              </div>
+            {% empty %}
+             {# Gibt keine Tasks #}
+            {% endfor %}
+          </div>
+        </div>
+      {% empty %}
+        Keine Clients gefunden
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}
