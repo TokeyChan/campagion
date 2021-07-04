@@ -5,11 +5,27 @@
     <meta charset="utf-8">
     <title>{% block title %}TITLE{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'main/css/base.css' %}">
+    <script type="text/javascript">
+      const OVERVIEW_URL = "{% url 'tracker:overview' %}";
+    </script>
+    <script type="text/javascript" src="{% static 'main/js/base.js' %}"></script>
     {% block head %}{% endblock%}
   </head>
   <body>
-    {% block content %}
+    <div id="base_header">
+      <img src="{% static 'main/images/house.png' %}" id="house">
+      <img src="{% static 'main/images/campagion_logo.png'%}" id="logo">
+    </div>
+    <div id="base_main_container">
 
-    {% endblock %}
+      <div id="base_content_container">
+        {% block content %}
+
+        {% endblock %}
+        {% block forms %}
+
+        {% endblock %}
+      </div>
+    </div>
   </body>
 </html>

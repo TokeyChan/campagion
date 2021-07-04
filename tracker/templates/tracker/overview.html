@@ -4,6 +4,7 @@
 {% block title %}Overview{% endblock %}
 {% block head %}
    <link rel="stylesheet" href="{% static 'tracker/css/overview.css' %}">
+   <script type="text/javascript" src="{% static 'tracker/js/overview.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -12,9 +13,38 @@
       Bald fällige Aufgaben
     </div>
     <div id="task_container">
-      {% for task in tasks %}
+      {% for task in active_tasks %}
         <div class="task_container">
-          
+          <div class="task_client">
+            {{ task.client.name }}
+          </div>
+          <div class="task_due_date">
+            {{ task.due_date_string }}
+          </div>
+          <div class="task_name">
+            {{ task.milestone.name }}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    <div class="title" style="grid-area: campaign_title">
+      Aktive Kampagnen
+    </div>
+    <div id="campaign_container">
+      {% for campaign in campaigns %}
+        <div class="campaign_container" data-campaign_id="{{ campaign.id }}">
+          <div class="campaign_client">
+            {{ campaign.client.name }}
+          </div>
+          <div class="campaign_desc">
+            {{ campaign.desc }}
+          </div>
+          <div class="campaign_runtime">
+            {{ campaign.runtime_string }}
+          </div>
+          <div class="campaign_budget">
+            € {{ campaign.daily_budget }}
+          </div>
         </div>
       {% endfor %}
     </div>
@@ -23,16 +53,24 @@
     </div>
     <div id="client_container">
       {% for client in clients %}
-        <div class="client_container">
+        <div class="client_container" data-clientid="{{ client.id }}">
           <div class="client_name">{{ client.name }}</div>
-          <div class="client_task_container">
-            {% for task in client.current_tasks %}
-              <div class="client_task" style="background-color: task.milestone.color">
-                Blablabla due date und so
+          <div class="client_campaign_container">
+            {% for campaign in client.relevant_campaigns %}
+              <div class="client_campaign" data-campaign_id="{{ campaign.id }}">
+                <div class="client_campaign_text">
+                  {{ campaign.runtime_string }}  (€{{ campaign.daily_budget }})
+                </div>
+                <div class="client_campaign_text">
+                  {{ campaign.status|safe }}
+                </div>
               </div>
             {% empty %}
              {# Gibt keine Tasks #}
             {% endfor %}
+          </div>
+          <div class="client_add_campaign" style="text-align: center;">
+            <button type="button" name="add_campaign" onclick="add_campaign({{ client.id }})">Neue Kampagne</button>
           </div>
         </div>
       {% empty %}
@@ -40,4 +78,14 @@
       {% endfor %}
     </div>
   </div>
+{% endblock content %}
+
+{% block forms %}
+  <form action="{% url 'tracker:overview' %}" method="post" hidden id="form">
+    {% csrf_token %}
+    <input type="text" name="action" id="input_action">
+    <input type="text" name="destination" id="input_destination">
+    <input type="text" name="campaign_id" id="input_campaign_id">
+    <input type="text" name="client_id" id="input_client_id">
+  </form>
 {% endblock %}

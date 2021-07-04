@@ -5,8 +5,12 @@ from . import views
 app_name = 'tracker'
 
 urlpatterns = [
-    path('', views.overview),
-    path('<int:client_pk>/', views.details),
+    path('', views.overview, name="overview"),
+    path('<int:campaign_id>/', views.workflow, name="workflow"),
     path('milestones/', views.list_milestones),
-    path('milestones/<int:milestone_pk>/', views.edit_milestone)
+    path('milestones/<int:milestone_id>/', views.edit_milestone),
+
+    #js calls
+    path('js/update_tasks/<int:workflow_id>/', views.update_tasks),
+    path('js/update_task/<int:task_id>/', views.update_task)
 ]

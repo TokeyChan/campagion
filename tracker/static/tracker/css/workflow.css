@@ -1,0 +1,176 @@
+#main_container {
+  display: grid;
+  grid-template-columns: 1fr 20px 300px;
+  grid-template-rows: 0.65fr 40px 1.5fr 40px 200px;
+  grid-template-areas:
+  "client . sidebar"
+  "workflow_title . sidebar"
+  "workflow . sidebar"
+  "task_title . sidebar"
+  "active_task . sidebar";
+}
+#workflow_container {
+  grid-area: workflow;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 50px 1fr;
+  grid-template-areas:
+  "dates"
+  "canvas";
+}
+#active_task_container {
+  display: grid;
+  max-width: 80%;
+  min-width: 70%;
+  min-height: 80px;
+  margin: auto;
+  border: 1px solid black;
+  grid-area: active_task;
+}
+.active_task_container {
+  width: inherit;
+  display: grid;
+  height: 60px;
+  grid-template-columns: 0.75fr 1fr 0.5fr;
+  grid-template-rows: 1fr;
+  grid-template-areas: "name date button";
+  margin: 20px;
+  border: 1px solid black;
+}
+.active_task_button {
+  width: 80%;
+  height: 25px;
+  text-align: center;
+  line-height: 25px;
+  margin: 0;
+  background-color: #eeeeee;
+  border-radius: 5px;
+  border: 1px solid #606060;
+  margin: auto;
+  transition: all 0.15s ease-in-out;
+}
+.active_task_button:hover {
+  background-color: #c7c6c6;
+  cursor: pointer;
+}
+.active_task_text {
+  text-align: center;
+  line-height: 60px;
+}
+.canvas_flexbox {
+  position: absolute;
+  background-color: rgba(36, 182, 214, 0.15);
+  display: flex;
+  overflow: hidden;
+  justify-content: flex-start;
+  align-items: center;
+}
+.canvas_flexbox div {
+  flex-shrink: 0;
+}
+/* client_container */
+#client_container {
+  grid-area: client;
+  border: 1px solid black;
+  border-radius: 5px;
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: 250px 200px 1fr 1fr;
+  grid-template-rows: 70px 1fr;
+  grid-template-areas:
+  "client campaign . ."
+  ". . . .";
+}
+.name {
+  text-align: center;
+  font-size: 20px;
+  line-height: 70px;
+}
+#client_name {
+  grid-area: client;
+
+}
+#campaign_name {
+  grid-area: campaign;
+}
+
+/* campaign_container */
+#sidebar {
+  grid-area: sidebar;
+}
+canvas {
+  width: 100%;
+  border: 1px solid black;
+}
+.date_canvas {
+  grid-area: dates;
+  height: 50px;
+}
+.timeline_canvas {
+  grid-area: canvas;
+  height: 150px;
+}
+
+/* sidebar */
+#sidebar {
+  border: 1px solid;
+  border-radius: 5px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 25px 1.5fr;
+  grid-template-areas:
+  "title_milestones"
+  "milestones"
+}
+#sidebar .title {
+  text-align: center;
+  margin-top: 15px;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+  height: 25px;
+  line-height: 25px;
+}
+#milestone_container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-evenly;
+  align-content: flex-start;
+  width: 90%;
+  margin: 5%;
+}
+#milestone_container {
+  width: 90%;
+  margin-right: 5%;
+  margin-left: 5%;
+  overflow: scroll;
+}
+.milestone_container {
+  height: 40px;
+  text-align: center;
+  border: 0.5px solid black;
+  display: block;
+  resize: horizontal;
+}
+#milestone_container .milestone_container {
+  margin-top: 10px;
+}
+.milestone_container:hover {
+  cursor: grab;
+}
+.workflow_title {
+  text-align: center;
+  height: 40px;
+  line-height: 40px;
+  font-size: 20px;
+}
+.button_container {
+  text-align: center;
+}
+.button_container button {
+  margin: 10px;
+  min-width: 120px;
+  min-height: 30px;
+}
