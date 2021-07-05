@@ -10,7 +10,9 @@ def overview(request):
     if request.method == 'GET':
         context = {
             'clients': Client.objects.all(), #oder filter alle, die noch nicht fertig sind? (falls das je geht),
-            'active_tasks': Task.objects.filter(due_date__lte=(datetime.now() + timedelta(days=2)), completion_date__isnull=True),
+            'active_tasks': Task.objects.filter(
+                due_date__lte=(datetime.now() + timedelta(days=2)),
+                completion_date__isnull=True).order_by("due_date"),
             'campaigns': Campaign.objects.all()
         }
         return render(request, 'tracker/overview.html', context)
@@ -21,7 +23,6 @@ def overview(request):
             if destination == 'WORKFLOW':
                 return redirect('tracker:workflow', campaign_id=int(request.POST['campaign_id']))
         elif request.POST['action'] == 'NEW_CAMPAIGN':
-            print("TEST")
             client = Client.objects.get(id=int(request.POST['client_id']))
             return redirect('main:new_campaign', client_id=client.id)
         return redirect('tracker:overview')
@@ -40,7 +41,8 @@ def workflow(request, campaign_id):
     context = {
         'client': client,
         'campaign': campaign,
-        'workflow': campaign.workflow, # TODO: HIER DANN IRGENDWIE DEN RELEVANTEN FINDEN
+        'workflow': campaign.workflow,
+        'start_date': campaign.workflow.first_date.timestamp() * 1000,
         'milestones': Milestone.objects.all(),
         'active_tasks': campaign.workflow.active_tasks()
     }

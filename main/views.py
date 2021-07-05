@@ -3,6 +3,8 @@ from django.shortcuts import render, redirect
 from .models import Campaign, Client
 from tracker.models import Workflow
 from .forms import CampaignForm
+
+from datetime import datetime, timedelta
 # Create your views here.
 
 def new_campaign(request, client_id):
@@ -14,6 +16,7 @@ def new_campaign(request, client_id):
             form.instance.client = client
             form.save()
             w = Workflow(campaign=form.instance)
+            w.first_date = datetime.now() - timedelta(days=1)
             w.save()
             w.create_tasks()
             return redirect('tracker:workflow', campaign_id=form.instance.id)

@@ -10,7 +10,7 @@ class Milestone(models.Model):
     duration = models.DurationField()
     index = models.IntegerField()
     color = models.CharField(max_length=15) # Kannst du auch zu ColorField machen, wenn du ein ColorField machst
-    is_active = models.BooleanField()
+    is_external = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
@@ -24,6 +24,7 @@ class Milestone(models.Model):
 
 class Workflow(models.Model):
     campaign = models.OneToOneField(Campaign, on_delete=models.CASCADE)
+    first_date = models.DateTimeField() #Also: Default-mäßig werden 2 Wochen angezeigt, aber kann sein, dass es länger dauert.
     started = models.BooleanField(default=False)
 
     def start(self):
@@ -91,6 +92,8 @@ class Task(models.Model):
     def due_date_string(self): # Stattdessen sollte das sowas werden wie "Morgen um 9:00"
         if self.due_date == None:
             return ""
+        if self.milestone.is_external:
+            return "(Extern)"
         delta = self.due_date - datetime.now()
         days = delta.days
         hours = delta.seconds // 3600
@@ -100,13 +103,15 @@ class Task(models.Model):
         return self.workflow.campaign.client
 
     def to_json(self):
+        milestone = self.milestone
         return {
             'id': self.id,
             'milestone': {
-                'name': self.milestone.name,
-                'id': self.milestone.id,
-                'color': self.milestone.color
+                'name': milestone.name,
+                'id': milestone.id,
+                'color': milestone.color
             },
+            'is_external': milestone.is_external,
             'planned_start_date': self.planned_start_date.timestamp() * 1000 if self.planned_start_date != None else None,
             'start_date': self.start_date.timestamp() * 1000 if self.start_date != None else None,
             'due_date': self.due_date.timestamp() * 1000 if self.due_date != None else None,
@@ -114,7 +119,9 @@ class Task(models.Model):
         }
 
     def date_string(self): # WAS, WENN ES NICHT ACTIVE IST?
-        return self.start_date.strftime("%d.%m.%Y %H:%M:%S") + " - " + self.due_date.strftime("%d.%m.%Y %H:%M:%S")
+        if self.milestone.is_external:
+            return "Extern"
+        return self.start_date.strftime("%d.%m.%Y %H:%M") + " - " + self.due_date.strftime("%d.%m.%Y %H:%M")
 
     def is_finished(self):
         return self.completion_date != None

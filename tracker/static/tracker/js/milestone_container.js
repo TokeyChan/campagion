@@ -106,7 +106,7 @@ class MilestoneContainer {
   setHours(hours) {
     this.hours = hours;
     this.container.dataset.duration = hours;
-    this.container.innerHTML = this.container.dataset.text + "<br>" + hours + "h";
+    this.container.innerHTML = this.container.dataset.text + "<br>" + (this.container.dataset.is_external == "true" ? "~" : "") +  hours + "h";
   }
 }
 function mousemove(e) {
