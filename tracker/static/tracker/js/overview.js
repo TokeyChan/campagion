@@ -24,7 +24,7 @@ function main()
   var campaign_containers = Array.from(document.getElementsByClassName('campaign_container'));
   for (let container of campaign_containers) {
     container.addEventListener('click', () => {
-      redirect_to("WORKFLOW", {'campaign_id': container.dataset.campaign_id});
+      redirect_to("CAMPAIGN", {'campaign_id': container.dataset.campaign_id});
     });
   }
 }

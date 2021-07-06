@@ -77,7 +77,7 @@ class MilestoneContainer {
     document.getElementById("milestone_container").appendChild(this.container);
   }
   drop(e) {
-    var elements = Array.from(document.elementsFromPoint(e.clientX, e.clientY)).map(t => t.id).filter(t => t);
+    var elements = Array.from(document.elementsFromPoint(e.clientX, e.clientY)).map(t => t.id);
     if (elements.includes("workflow_canvas")) {
       this.container.style.transform = "rotate(0deg)";
       this.container.style.position = "relative";
@@ -94,7 +94,7 @@ class MilestoneContainer {
       this.resize_allowed = true;
     } else {
       document.dispatchEvent(new CustomEvent('delete_task', { detail: {'container': this.container}}))
-      this.resize_allowed = true; //false
+      this.resize_allowed = false; //false
       this.link_container();
     }
   }

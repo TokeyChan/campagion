@@ -1,0 +1,42 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% block title %}Workflow Design{% endblock %}
+
+{% block head %}
+  <script type="text/javascript" src="{% static 'tracker/js/design_workflow/milestone.js' %}"></script>
+  <script type="text/javascript" src="{% static 'tracker/js/design_workflow/design_workflow.js' %}"></script>
+  <link rel="stylesheet" href="{% static 'tracker/css/design_workflow.css' %}">
+{% endblock %}
+
+{% block content %}
+  <div id="main_container">
+    <div class="title">
+      Workflow designen
+    </div>
+    <div id="content_container">
+      <div id="node_container">
+
+      </div>
+      <div id="milestone_container">
+        <div class="milestone noselect">
+          <div class="milestone_name">
+            NAME
+          </div>
+          <div class="milestone_duration">
+            48 Stunden
+          </div>
+          <div class="milestone_department">
+            Vertrieb
+          </div>
+          <span class="dot left"></span>
+          <span class="dot right"></span>
+        </div>
+      </div>
+    </div>
+    <div id="button_container">
+      <div class="button">
+        Speichern
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -34,6 +34,22 @@ class Workflow(models.Model):
         self.started = True
         self.save()
 
+    def next_task(self, task_id):
+        last_task = self.task_set.get(id=task_id)
+        last_task.completion_date = datetime.now()
+        last_task.save()
+        due = last_task.due_date.replace(tzinfo=None) - last_task.completion_date
+
+        tasks = self.task_set.order_by('planned_start_date')
+        found = False
+        for task in tasks:
+            if not task.is_finished() and not found:
+                found = True
+                task.start_date = datetime.now()
+            else:
+                task.planned_start_date = task.planned_start_date + due
+            task.save()
+
     def create_tasks(self):
         date = datetime.now()
         for milestone in Milestone.objects.order_by("index"):
@@ -57,22 +73,6 @@ class Workflow(models.Model):
 
     def active_tasks(self):
         return [task for task in self.task_set.all() if task.is_active()]
-
-    def next_task(self, task_id):
-        last_task = self.task_set.get(id=task_id)
-        last_task.completion_date = datetime.now()
-        last_task.save()
-        due = last_task.due_date.replace(tzinfo=None) - last_task.completion_date
-
-        tasks = self.task_set.order_by('planned_start_date')
-        found = False
-        for task in tasks:
-            if not task.is_finished() and not found:
-                found = True
-                task.start_date = datetime.now()
-            else:
-                task.planned_start_date = task.planned_start_date + due
-            task.save()
 
 
 

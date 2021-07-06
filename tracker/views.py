@@ -17,11 +17,12 @@ def overview(request):
         }
         return render(request, 'tracker/overview.html', context)
     else:
-        print(request.POST)
         if request.POST['action'] == 'REDIRECT':
             destination = request.POST['destination']
             if destination == 'WORKFLOW':
                 return redirect('tracker:workflow', campaign_id=int(request.POST['campaign_id']))
+            elif destination == 'CAMPAIGN':
+                return redirect('main:edit_campaign', campaign_id=int(request.POST['campaign_id']))
         elif request.POST['action'] == 'NEW_CAMPAIGN':
             client = Client.objects.get(id=int(request.POST['client_id']))
             return redirect('main:new_campaign', client_id=client.id)
@@ -47,6 +48,15 @@ def workflow(request, campaign_id):
         'active_tasks': campaign.workflow.active_tasks()
     }
     return render(request, 'tracker/workflow.html', context)
+
+def design_workflow(request, campaign_id):
+    campaign = Campaign.objects.get(id=campaign_id)
+    workflow = campaign.workflow
+
+    if request.method == 'GET':
+        context = {}
+        return render(request, 'tracker/design_workflow.html', context)
+
 
 def list_milestones(request):
     return HttpResponse("Milestones")
