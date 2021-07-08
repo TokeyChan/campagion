@@ -31,6 +31,15 @@
   background-color: rgba(26, 159, 224, 0.92);
 }
 
+/* Für die Bezier curve */
+.bezier_control_point {
+  position: absolute;
+  background-color: #ff6c3d;
+  height: 7px;
+  width: 7px;
+  border-radius: 7px;
+}
+
 /* Für base.html: */
 
 

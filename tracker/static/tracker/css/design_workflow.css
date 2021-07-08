@@ -22,6 +22,11 @@
 #node_container {
 
 }
+#svg {
+  width: 100%;
+  height: 100%;
+}
+
 #milestone_container {
   grid-area: milestones;
   border-left: 1px solid #505050;
@@ -68,16 +73,19 @@
 .dot {
   position: relative;
   background-color: #000;
-  height: 5px;
-  width: 5px;
-  border-radius: 5px;
+  height: 8px;
+  width: 8px;
+  border-radius: 8px;
   top: 7.5px;
+}
+.dot:hover {
+  cursor: pointer;
 }
 .dot.right {
   grid-area: dotright;
-  right: -3px;
+  right: -1.5px;
 }
 .dot.left {
-  left: -3px;
+  left: -5px;
   grid-area: dotleft;
 }

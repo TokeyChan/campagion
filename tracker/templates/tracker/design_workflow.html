@@ -3,6 +3,7 @@
 {% block title %}Workflow Design{% endblock %}
 
 {% block head %}
+  <script type="text/javascript" src="{% static 'main/js/bezier.js' %}"></script>
   <script type="text/javascript" src="{% static 'tracker/js/design_workflow/milestone.js' %}"></script>
   <script type="text/javascript" src="{% static 'tracker/js/design_workflow/design_workflow.js' %}"></script>
   <link rel="stylesheet" href="{% static 'tracker/css/design_workflow.css' %}">
@@ -15,10 +16,7 @@
     </div>
     <div id="content_container">
       <div id="node_container">
-
-      </div>
-      <div id="milestone_container">
-        <div class="milestone noselect">
+        <div class="milestone noselect" style="left: 200px; top: 200px; position: absolute;">
           <div class="milestone_name">
             NAME
           </div>
@@ -31,6 +29,24 @@
           <span class="dot left"></span>
           <span class="dot right"></span>
         </div>
+        <div class="milestone noselect" style="left: 700px; top: 300px; position: absolute;">
+          <div class="milestone_name">
+            NAME 2
+          </div>
+          <div class="milestone_duration">
+            48 Stunden
+          </div>
+          <div class="milestone_department">
+            Vertrieb
+          </div>
+          <span class="dot left"></span>
+          <span class="dot right"></span>
+        </div>
+        <svg id="svg" xmlns="http://www.w3.org/2000/svg">
+        </svg>
+      </div>
+      <div id="milestone_container">
+        {# Hier kommen milestones rein und können auch custom welche gemacht werden #}
       </div>
     </div>
     <div id="button_container">
