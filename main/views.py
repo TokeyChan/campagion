@@ -26,7 +26,7 @@ def new_campaign(request, client_id):
     context = {
         'form': form,
         'new': True,
-        'url': reverse('main:new_campaign', client_id=client_id)
+        'url': reverse('main:new_campaign', kwargs={'client_id': client_id})
     }
     return render(request, 'main/simple_form.html', context)
 

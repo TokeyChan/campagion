@@ -5,3 +5,5 @@ from .models import *
 admin.site.register(Milestone)
 admin.site.register(Task)
 admin.site.register(Workflow)
+admin.site.register(Node)
+admin.site.register(Line)

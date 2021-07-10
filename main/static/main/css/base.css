@@ -73,3 +73,8 @@ img#house {
 img#house:hover {
   cursor: pointer;
 }
+
+path.selected {
+  stroke: #1c2efc;
+  stroke-width: 3px;
+}

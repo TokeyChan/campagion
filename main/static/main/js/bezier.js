@@ -1,10 +1,11 @@
-
+var selected_bezier;
 class Bezier {
   constructor(args) {
     //Notwendige Args: svg
-    //Mögliche args: startx, starty, endx, endy, start_element, end_element
+    //Mögliche args: startx, starty, endx, endy, start_element, end_element, id
     // drawing
     this.path = null;
+    this.id = args.id || null;
     this.svg = args.svg;
     if (args.start_element == null) {
       this.startx = args.startx;
@@ -28,8 +29,12 @@ class Bezier {
         };
     }
 
-    this.add_event_listeners();
     this.create();
+    this.add_event_listeners();
+  }
+  //static
+  static get selected_bezier() {
+    return selected_bezier;
   }
   //private
   get creation_string() {
@@ -79,6 +84,9 @@ class Bezier {
         this.draw();
       });
     }
+    this.path.addEventListener('click', () => {
+      select_bezier(this);
+    });
   }
   create() {
     this.path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
@@ -122,6 +130,18 @@ class Bezier {
       }
     }
   }
+}
+
+function select_bezier(bezier) {
+  let paths = Array.from(document.getElementsByTagName('path'));
+  for (let path of paths) {
+    if (path.classList.contains('selected')) {
+      path.classList.remove('selected');
+    }
+  }
+  if (bezier != null)
+    bezier.path.classList.add('selected');
+  selected_bezier = bezier;
 }
 
 var active_control_point;

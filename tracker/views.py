@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 # Create your views here.
-from tracker.models import Milestone, Task, Workflow
+from tracker.models import Milestone, Task, Workflow, Node, Line
 from main.models import Client, Campaign
 from datetime import datetime, timedelta
 import json
@@ -54,8 +54,69 @@ def design_workflow(request, campaign_id):
     workflow = campaign.workflow
 
     if request.method == 'GET':
-        context = {}
+        context = {
+            'campaign': campaign,
+            'milestones': Milestone.objects.all(),
+            'workflow': workflow
+        }
         return render(request, 'tracker/design_workflow.html', context)
+
+    data = json.loads(request.POST['data'])
+    print(data)
+    lines = []
+    nodes = {}
+    present_tasks = {task.id:task for task in workflow.task_set.all()}
+    present_lines = workflow.get_lines()
+    for obj in data['nodes']:
+        print(obj)
+        node = None
+        if obj['id'] is not None:
+            try:
+                node = present_tasks[obj['id']].node
+                del present_tasks[obj['id']]
+            except KeyError:
+                pass
+            print(node)
+        if node is None:
+            node = Node()
+            milestone = None
+            try:
+                milestone = Milestone.objects.get(id=obj['milestone_id'])
+            except Milestone.DoesNotExist:
+                pass
+            t = Task(
+                workflow = workflow,
+                milestone = milestone,
+                planned_start_date=datetime.now() #FALSCH ABER EGAL
+            )
+            t.save()
+            node.task = t
+
+        node.left = obj['left']
+        node.top = obj['top']
+        nodes[obj['nr']] = node
+
+        node.save()
+
+    for obj in data['lines']:
+        if obj['id'] is not None:
+            try:
+                line = present_lines[obj['id']];
+                del present_lines[obj['id']]
+            except KeyError:
+                line = Line()
+        else:
+            line = Line()
+        line.from_node = nodes[obj['from']]
+        line.to_node = nodes[obj['to']]
+        line.save()
+
+    for task in present_tasks.items():
+        task[1].delete()
+    for line in present_lines.items():
+        line[1].delete()
+
+    return redirect('tracker:design_workflow', campaign_id=campaign_id)
 
 
 def list_milestones(request):
@@ -66,6 +127,7 @@ def edit_milestone(request, milestone_pk):
     return HttpResponse("Edit Milestone")
 
 
+#sollte man beide löschen können :(
 #JAVASCRIPT BACKGROUND REQUESTS
 def update_tasks(request, workflow_id):
     if request.method != 'POST':

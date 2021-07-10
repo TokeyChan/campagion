@@ -68,3 +68,7 @@ class Contact(models.Model):
     name = models.CharField(max_length=60)
     phone = models.CharField(max_length=30)
     email = models.CharField(max_length=100)
+
+class Department(models.Model):
+    name = models.CharField(max_length=40)
+    color = models.CharField(max_length=10)

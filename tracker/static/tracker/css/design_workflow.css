@@ -9,7 +9,7 @@
   "button";
 }
 #content_container {
-  min-height: 500px;
+  height: 500px;
   border: 1px solid #505050;
   background-color: #a6fcff;
   margin-top: 5px;
@@ -29,6 +29,8 @@
 
 #milestone_container {
   grid-area: milestones;
+  overflow: scroll;
+  max-height: 500px;
   border-left: 1px solid #505050;
   background-color: #92f0f4;
   display: flex;
@@ -54,6 +56,9 @@
   background-color: #8ac8ff;
   border-radius: 5px;
   margin: 5px;
+}
+.milestone.selected {
+  border: 3px solid #1c2efc;
 }
 .milestone:hover {
   cursor: grab;
