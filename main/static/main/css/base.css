@@ -1,33 +1,8 @@
-#base_main_container {
-  display: grid;
-  grid-template-columns: 20px 1fr 20px;
-  grid-template-rows: 1fr;
-  grid-template-areas:
-  ". content .";
-}
-#base_header {
+/* global verwendete Klassen */
+.title {
+  font-size: 30px;
+  line-height: 40px;
   text-align: center;
-  height: 120px;
-  position: sticky;
-  background-image: linear-gradient(90deg, rgba(36, 50, 101, 0.92) 0%, rgba(26, 181, 224, 0.92) 100%);
-}
-#base_content_container {
-  grid-area: content;
-}
-img#logo {
-  margin-top: 25px;
-  margin-bottom: 25px;
-  height: 70px;
-}
-img#house {
-  width: 80px;
-  height: 80px;
-  left: 20px;
-  top: 20px;
-  position: absolute;
-}
-img#house:hover {
-  cursor: pointer;
 }
 
 .noselect {
@@ -38,4 +13,68 @@ img#house:hover {
         -ms-user-select: none; /* Internet Explorer/Edge */
             user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome, Edge, Opera and Firefox */
+}
+
+.button {
+  width: 140px;
+  height: 50px;
+  border-radius: 5px;
+  background-color: rgba(70, 119, 214, 0.85);
+  color: #f9f9f9;
+  text-align: center;
+  line-height: 50px;
+  transition: all 0.15s ease-in-out;
+  margin: auto;
+}
+.button:hover {
+  cursor: pointer;
+  background-color: rgba(26, 159, 224, 0.92);
+}
+
+/* Für die Bezier curve */
+.bezier_control_point {
+  position: absolute;
+  background-color: #ff6c3d;
+  height: 7px;
+  width: 7px;
+  border-radius: 7px;
+}
+
+/* Für base.html: */
+
+
+#base_main_container {
+  display: grid;
+  grid-template-columns: 20px 1fr 20px;
+  grid-template-rows: 1fr;
+  grid-template-areas:
+  ". content .";
+}
+#base_header {
+  text-align: center;
+  height: 75px;
+  position: sticky;
+  background-image: linear-gradient(90deg, rgba(36, 50, 101, 0.92) 0%, rgba(26, 181, 224, 0.92) 100%);
+}
+#base_content_container {
+  grid-area: content;
+}
+img#logo {
+  margin-top: 5px;
+  height: 65px;
+  margin-bottom: 5px;
+}
+img#house {
+  width: 80px;
+  height: 80px;
+  left: 20px;
+  position: absolute;
+}
+img#house:hover {
+  cursor: pointer;
+}
+
+path.selected {
+  stroke: #1c2efc;
+  stroke-width: 3px;
 }

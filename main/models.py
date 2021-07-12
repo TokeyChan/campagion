@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 # Create your models here.
 
 
@@ -28,12 +28,15 @@ class Client(models.Model):
 def get_upload_to(campaign, filename):
     return f"contracts/{campaign.client.id}/{filename}"
 
+def default_end_date():
+    return datetime.now() + timedelta(days=21)
+
 class Campaign(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     desc = models.CharField(max_length=100)
     contract = models.FileField(upload_to=get_upload_to, null=True, blank=True)
     start_date = models.DateField(null=True, blank=True, default=datetime.now)
-    end_date = models.DateField(null=True, blank=True, default=datetime.now)
+    end_date = models.DateField(null=True, blank=True, default=default_end_date)
     daily_budget = models.IntegerField()
 
     def runtime_string(self):
@@ -65,3 +68,7 @@ class Contact(models.Model):
     name = models.CharField(max_length=60)
     phone = models.CharField(max_length=30)
     email = models.CharField(max_length=100)
+
+class Department(models.Model):
+    name = models.CharField(max_length=40)
+    color = models.CharField(max_length=10)

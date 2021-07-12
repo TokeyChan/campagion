@@ -12,3 +12,11 @@ class CampaignForm(ModelForm):
             'end_date': 'Enddatum',
             'daily_budget': 'Tagesbudget'
         }
+
+class ClientForm(ModelForm):
+    class Meta:
+        model = Client
+        fields = ['name']
+        labels = {
+            'name': 'Name'
+        }

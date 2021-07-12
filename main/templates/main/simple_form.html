@@ -1,6 +1,6 @@
 {% extends 'main/base.html' %}
 
-{% block title %}Kampagne erstellen {% endblock %}
+{% block title %}{{ class_name }} {% if new %}erstellen{% else %}bearbeiten{% endif %}{% endblock %}
 
 {% block head %}
 <style media="screen">
@@ -26,9 +26,9 @@
 
 {% block content %}
 <div class="title">
-  Neue Kampagne
+  {{ class_name }}
 </div>
-<form action="{% if new %}{% url 'main:new_campaign' client.id %}{% else %}{% url 'main:edit_campaign'%}{% endif %}" method="post">
+<form action="{{ url }}" method="post">
   {% csrf_token %}
   <table>
     {{ form.as_table }}

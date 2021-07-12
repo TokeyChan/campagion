@@ -76,10 +76,10 @@ class Canvas { //start_date und end_date müssen Date Objekte mit Jahr, Monat un
     //let rect = container.getBoundingClientRect();
     nodes.push(container);
     on_tasks_changed()
-  }
+  } //brauch ich nimmer
   initialize() {
     this.create_date_canvas();
-    this.create_timeline_canvas();
+    this.create_timeline_canvas(3);
   }
   create_date_canvas() {
     var ctx = this.date_canvas.getContext("2d");
@@ -119,7 +119,7 @@ class Canvas { //start_date und end_date müssen Date Objekte mit Jahr, Monat un
     }
     ctx.stroke();
   }
-  create_timeline_canvas() {
+  create_timeline_canvas(rows) {
     var ctx = this.timeline_canvas.getContext("2d");
     var height = this.timeline_canvas.height;
     var width = this.width;
@@ -129,17 +129,28 @@ class Canvas { //start_date und end_date müssen Date Objekte mit Jahr, Monat un
 
     ctx.beginPath();
     ctx.strokeStyle = "#000000";
+    //RAHMEN AUSSEN:
     ctx.moveTo(9.5, 0);
     ctx.lineTo(9.5, height - 10);
     ctx.moveTo(9, height - 9.5);
     ctx.lineTo(width - 9, height - 9.5);
     ctx.moveTo(width - 9.5, height - 10);
     ctx.lineTo(width - 9.5, 0);
-    ctx.moveTo(10, (height / 2) - 5);
-    ctx.lineTo(width - 10, (height / 2) - 5);
     ctx.stroke();
     ctx.closePath();
+    //EINZELNE REIHEN
+    let h = height / rows;
+    for (let i = 1; i < rows; i++) {
+      console.log(h);
+      ctx.beginPath();
+      ctx.moveTo(10, ((h * i)) - 5);
+      ctx.lineTo(width - 10, ((h * i)) - 5);
+      ctx.stroke();
+      ctx.closePath();
+    }
 
+
+    //DIE TAGE
     var x = 10;
     while (millis <= this.end_millis) {
       date = new Date(millis);

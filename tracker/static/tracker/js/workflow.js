@@ -3,7 +3,7 @@ var workflow_canvas;
 function main() {
   workflow_canvas = initialize_canvas();
   initialize_flexboxes(workflow_canvas);
-  populate_tasks();
+  populate_tasks(workflow_canvas);
   adjust_milestone_containers(workflow_canvas.millis_to_pixel_ratio());
   var milestone_containers = initialize_milestone_containers(workflow_canvas);
   enable_active_task_buttons(milestone_containers, workflow_canvas.millis_to_pixel_ratio());
@@ -12,7 +12,7 @@ function main() {
 function initialize_canvas() {
   var workflow_container = document.getElementById('workflow_container');
 
-  var workflow_canvas = new Canvas(workflow_container, new Date(2021, 6, 1), new Date(2021, 6, 21));
+  var workflow_canvas = new Canvas(workflow_container, VALUES.start_date, new Date(2021, 6, 21));
   workflow_canvas.initialize();
 
   return workflow_canvas;
@@ -57,7 +57,7 @@ function initialize_flexboxes(workflow_canvas) {
   lower_workflow.style.width = (rect.width - 22) + "px";
   lower_workflow.style.height = ((rect.height / 2) - 7) + "px";
 }
-function populate_tasks() {
+function populate_tasks(canvas) {
   for (let task of VALUES.tasks) {
     let container = document.createElement("div");
     container.classList.add("milestone_container");
@@ -66,6 +66,8 @@ function populate_tasks() {
     if (task['start_date'] != null) { //wenn es grad aktiv ist, oder schon fertig ist
       if (task['completion_date'] != null) { //wenn es schon fertig ist
         millis = task['completion_date'] - task['start_date'];
+      } else if (task['is_external'] == true) {
+        millis = new Date().getTime() - task['start_date'];
       } else {
         millis = task['due_date'] - task['start_date'];
       }
@@ -77,11 +79,13 @@ function populate_tasks() {
     container.dataset.milestone_id = task.milestone.id;
     container.dataset.task_id = task.id;
     container.dataset.moveable = task['start_date'] == null;
+    container.dataset.is_external = task['is_external'] == true;
     //
     container.style.backgroundColor = task.milestone.color;
-    container.innerHTML = container.dataset.text + "<br>" + container.dataset.duration + "h";
+    container.innerHTML = container.dataset.text + "<br>" + (container.dataset.is_external == "true" ? "~" : "") + container.dataset.duration + "h";
     //Jetzt je nachdem richten, auf welcher Planunsschiene es ist:
     document.getElementById("workflow_flexbox_upper").appendChild(container);
+    canvas.nodes_upper.push(container);
   }
 }
 function enable_active_task_buttons(containers, millis) {

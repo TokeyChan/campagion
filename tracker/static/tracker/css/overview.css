@@ -37,7 +37,7 @@
 /* .client_container */
 .client_container {
   width: 250px;
-  height: 250px;
+  min-height: 250px;
   background-color: #78e5ff;
   margin: 15px;
   padding: 5px;

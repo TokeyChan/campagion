@@ -9,7 +9,8 @@
   <script type="text/javascript">
     const VALUES = {
       'workflow': {{ workflow.to_json|safe }},
-      'tasks': {{ workflow.tasks_to_json|safe }}
+      'tasks': {{ workflow.tasks_to_json|safe }},
+      'start_date': new Date({{ workflow.start_date }})
     };
   </script>
   <script type="text/javascript" src="{% static 'tracker/js/workflow.js' %}"></script>
@@ -38,7 +39,7 @@
       <div id="workflow_flexbox_upper" class="upper_flexbox canvas_flexbox"></div>
       <div id="workflow_flexbox_lower" class="lower_flexbox canvas_flexbox"></div>
     </div>
-    
+
     {% if workflow.started %}
       <div class="workflow_title" style="grid-area: task_title">
       Aktive Aufgabe
@@ -61,7 +62,6 @@
         <button type="button" name="button" onclick="btn_start_workflow_click()">Workflow starten</button>
       </div>
     {% endif %}
-
 
     <div id="sidebar">
       <div class="title" style="grid-area: title_milestones">
