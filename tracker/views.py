@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 # Create your views here.
-from tracker.models import Milestone, Task, Workflow, Node, Line
-from main.models import Client, Campaign
+from tracker.models import Milestone, Task, Workflow, Node, Line, Template
+from tracker.contrib.utils import handle_node_data
+from tracker.forms import TemplateForm
+from main.models import Client, Campaign, Department
 from datetime import datetime, timedelta
 import json
 
@@ -37,15 +39,21 @@ def workflow(request, campaign_id):
         elif request.POST['action'] == 'FINISH_TASK':
             campaign.workflow.next_task(int(request.POST['task_id']))
             return redirect('tracker:workflow', campaign_id=campaign_id)
+        elif request.POST['action'] == 'OPEN_DESIGN':
+            return redirect('tracker:design_workflow', campaign_id=campaign_id)
+        elif request.POST['action'] == 'CHOOSE_TEMPLATE':
+            return redirect('tracker:choose_template', campaign_id=campaign_id)
     client = campaign.client
-
+    workflow = campaign.workflow
+    workflow.calculate_tasks();
     context = {
         'client': client,
         'campaign': campaign,
         'workflow': campaign.workflow,
-        'start_date': campaign.workflow.first_date.timestamp() * 1000,
-        'milestones': Milestone.objects.all(),
-        'active_tasks': campaign.workflow.active_tasks()
+        'start_date': (datetime.now() if not workflow.is_started() else workflow.start_date).timestamp() * 1000,
+        'end_date': workflow.last_relevant_date().timestamp() * 1000,
+        'active_tasks': campaign.workflow.active_tasks(),
+        'departments': json.dumps([{'id': d.id, 'name': d.name} for d in Department.objects.all()])
     }
     return render(request, 'tracker/workflow.html', context)
 
@@ -61,63 +69,57 @@ def design_workflow(request, campaign_id):
         }
         return render(request, 'tracker/design_workflow.html', context)
 
-    data = json.loads(request.POST['data'])
-    print(data)
-    lines = []
-    nodes = {}
-    present_tasks = {task.id:task for task in workflow.task_set.all()}
-    present_lines = workflow.get_lines()
-    for obj in data['nodes']:
-        print(obj)
-        node = None
-        if obj['id'] is not None:
-            try:
-                node = present_tasks[obj['id']].node
-                del present_tasks[obj['id']]
-            except KeyError:
-                pass
-            print(node)
-        if node is None:
-            node = Node()
-            milestone = None
-            try:
-                milestone = Milestone.objects.get(id=obj['milestone_id'])
-            except Milestone.DoesNotExist:
-                pass
-            t = Task(
-                workflow = workflow,
-                milestone = milestone,
-                planned_start_date=datetime.now() #FALSCH ABER EGAL
-            )
-            t.save()
-            node.task = t
-
-        node.left = obj['left']
-        node.top = obj['top']
-        nodes[obj['nr']] = node
-
-        node.save()
-
-    for obj in data['lines']:
-        if obj['id'] is not None:
-            try:
-                line = present_lines[obj['id']];
-                del present_lines[obj['id']]
-            except KeyError:
-                line = Line()
-        else:
-            line = Line()
-        line.from_node = nodes[obj['from']]
-        line.to_node = nodes[obj['to']]
-        line.save()
-
-    for task in present_tasks.items():
-        task[1].delete()
-    for line in present_lines.items():
-        line[1].delete()
+    handle_node_data(request.POST)
 
     return redirect('tracker:design_workflow', campaign_id=campaign_id)
 
+# TEMPLATES
+def choose_template(request, campaign_id):
+    if request.method == 'GET':
+        return render(request, 'tracker/choose_template.html', {
+            'campaign_id': campaign_id,
+            'templates': Template.objects.all()
+        })
+
+    if request.POST['action'] == 'CHOSEN':
+        campaign = Campaign.objects.get(id=campaign_id)
+        #hier die Template in den Workflow kopieren
+        return redirect('tracker:workflow', campaign_id=campaign_id)
+    elif request.POST['action'] == 'EDIT':
+        return redirect('tracker:edit_template', template_id=int(request.POST['template_id']))
+
+def edit_template(request, template_id):
+    template = Template.objects.get(id=template_id)
+    if request.method == 'GET':
+        context = {
+            'template': template,
+            'milestones': Milestone.objects.all()
+        }
+        return render(request, 'tracker/design_workflow.html', context)
+
+    handle_node_data(request.POST) # irgendwie so ändern, dass es eben zur template speichert
+
+    return redirect('tracker:edit_template', template_id=template_id)
+
+def new_template(request):
+    template = Template(name=request.POST['name'])
+    template.save()
+
+    if request.method == 'POST':
+        form = TemplateForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            return redirect('edit_template', template_id=template.id)
+    else:
+        form = TemplateForm()
+    context = {
+        'form': form,
+        'new': True,
+        'url': reverse('tracker:edit_template')
+    }
+    return render(request, 'main/simple_form.html', context)
+# END TEMPLATES
 
 def list_milestones(request):
     return HttpResponse("Milestones")
@@ -125,46 +127,3 @@ def list_milestones(request):
 def edit_milestone(request, milestone_pk):
     milestone = Milestone.objects.get(pk=milestone_pk)
     return HttpResponse("Edit Milestone")
-
-
-#sollte man beide löschen können :(
-#JAVASCRIPT BACKGROUND REQUESTS
-def update_tasks(request, workflow_id):
-    if request.method != 'POST':
-        return HTTPResponse("Nope")
-
-    workflow = Workflow.objects.get(id=workflow_id)
-
-    data = json.loads(request.POST['tasks'])
-
-    new_tasks = []
-    for raw_task in data:
-        try:
-            task = Task.objects.get(id=raw_task['task_id'])
-        except Task.DoesNotExist:
-            task = Task(
-                workflow = workflow,
-                milestone = Milestone.objects.get(id=raw_task['milestone_id'])
-            )
-            new_tasks.append({'refnr': raw_task['refnr'], 'task': task})
-        task.planned_start_date = datetime.fromtimestamp(raw_task['millis']['start'] / 1000)
-        task.due_date = datetime.fromtimestamp(raw_task['millis']['end'] / 1000)
-        task.save()
-
-    new_tasks = [{'refnr': t['refnr'], 'task_id': t['task'].id} for t in new_tasks]
-    return JsonResponse({'new_tasks': new_tasks});
-
-def update_task(request, task_id):
-    try:
-        task = Task.objects.get(id=task_id)
-    except:
-        return HttpResponse(status=404)
-
-    if request.method == 'GET':
-        pass
-    elif request.method == 'POST':
-        pass
-    if request.method == 'DELETE':
-        task.delete()
-        return HttpResponse(status=200)
-    #return HttpResponse("NO")

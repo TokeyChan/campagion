@@ -142,7 +142,7 @@ class Milestone
 
     name.textContent = this.task.milestone.name;
     duration.textContent = this.task.milestone.is_external ? "Extern" : (this.task.milestone.duration + " Std.");
-    department.textContent = this.task.milestone.department;
+    department.textContent = this.task.milestone.department.name;
   }
 }
 

@@ -52,7 +52,7 @@ class Campaign(models.Model):
 
     def status(self, html=True):
         wf = self.workflow
-        if not wf.started: #wartet auf workflow
+        if not wf.is_started(): #wartet auf workflow
             return "Workflow noch nicht gestartet"
         elif wf.is_finished(): #alles abgeschlossen
             if self.is_active():
@@ -71,4 +71,7 @@ class Contact(models.Model):
 
 class Department(models.Model):
     name = models.CharField(max_length=40)
-    color = models.CharField(max_length=10)
+    color = models.CharField(max_length=10, default="#717171")
+
+    def __str__(self):
+        return self.name

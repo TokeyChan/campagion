@@ -1,8 +1,8 @@
 const ONE_DAY_IN_MILLIS = 86400000;
 const TODAY_IN_MILLIS = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
 
-class Canvas { //start_date und end_date müssen Date Objekte mit Jahr, Monat und Tag sei
-  constructor(container, start_date, end_date) {
+class Canvas { //start_date und end_date müssen Date Objekte mit Jahr, Monat und Tag sein
+  constructor(container, start_date, end_date, departments) { //Departments: Eine Liste an dicts: [{'id': int, 'name': string}]
     // allgemeines Init
     let date_canvas = container.getElementsByClassName('date_canvas')[0];
     let timeline_canvas = container.getElementsByClassName('timeline_canvas')[0];
@@ -13,15 +13,13 @@ class Canvas { //start_date und end_date müssen Date Objekte mit Jahr, Monat un
     date_canvas.height = date_canvas.offsetHeight;
     timeline_canvas.height = timeline_canvas.offsetHeight;
     timeline_canvas.width = timeline_canvas.offsetWidth;
-
+    this.container = container;
+    this.departments = departments;
+    this.department_containers = null;
     //Klassenattribute
     this.width = date_canvas.width;
     this.date_canvas = date_canvas;
     this.timeline_canvas = timeline_canvas;
-    this.upper = upper;
-    this.lower = lower;
-    this.nodes_upper = [];
-    this.nodes_lower = [];
     //Millis
     var difference_in_millis = Math.abs(end_date - start_date);
     this.difference_in_days = Math.round(difference_in_millis / ONE_DAY_IN_MILLIS);
@@ -34,52 +32,10 @@ class Canvas { //start_date und end_date müssen Date Objekte mit Jahr, Monat un
       this.on_drop(detail.container, detail.pageX, detail.position == "UPPER");
     });
   }
-  on_drop(container, x, is_upper) {
-    let flexbox = (is_upper ? this.upper : this.lower);
-    let nodes = (is_upper ? this.nodes_upper : this.nodes_lower);
-    let inserted = false;
-    let is_included = nodes.includes(container);
-
-    for (let i = 0; i < nodes.length; i++) {
-      let node = nodes[i];
-      let rect = node.getBoundingClientRect();
-      let start = rect.x;
-      let end = rect.x + rect.width;
-
-      if (start < x && end > x) {
-        if ((start + ((end - start) / 2)) > x) {//wenn es in der ersten Hälfte ist
-          flexbox.insertBefore(container, node);
-          inserted = true;
-        } else if (i != nodes.length - 1) { //nicht die letzte node
-          node = nodes[i + 1]
-          if (container == node) {
-            if (i != nodes.length - 2) {
-              node = nodes[i + 2]
-            } else {
-              continue;
-            }
-          }
-          flexbox.insertBefore(container, node);
-          inserted = true;
-        }
-      }
-      if (inserted)
-        break;
-    }
-    if (!inserted)
-      flexbox.appendChild(container);
-
-    if (is_included) {
-      let index = nodes.indexOf(container);
-      nodes.splice(index, 1);
-    }
-    //let rect = container.getBoundingClientRect();
-    nodes.push(container);
-    on_tasks_changed()
-  } //brauch ich nimmer
   initialize() {
     this.create_date_canvas();
-    this.create_timeline_canvas(3);
+    let dimensions = this.create_timeline_canvas(this.departments.length);
+    this.department_containers = this.create_containers(dimensions);
   }
   create_date_canvas() {
     var ctx = this.date_canvas.getContext("2d");
@@ -139,16 +95,27 @@ class Canvas { //start_date und end_date müssen Date Objekte mit Jahr, Monat un
     ctx.stroke();
     ctx.closePath();
     //EINZELNE REIHEN
-    let h = height / rows;
-    for (let i = 1; i < rows; i++) {
-      console.log(h);
-      ctx.beginPath();
-      ctx.moveTo(10, ((h * i)) - 5);
-      ctx.lineTo(width - 10, ((h * i)) - 5);
-      ctx.stroke();
-      ctx.closePath();
+    let dimensions = [];
+    let h = (height - 10) / rows;
+    for (let i = 0; i < rows + 1; i++) {
+      if (i != rows) {
+        dimensions.push({
+          'x': 10,
+          'y': (h * i),
+          'width': width - 20,
+          'height': ((h * (i+1)) - (h * i))
+        });
+      }
+      if (i != 0) {
+        ctx.beginPath();
+        ctx.moveTo(10, ((h * i)));
+        ctx.lineTo(width - 10, ((h * i)));
+        ctx.font = "30px Arial";
+        ctx.strokeText(this.departments[i - 1].name, 15, (h * i) - 5);
+        ctx.stroke();
+        ctx.closePath();
+      }
     }
-
 
     //DIE TAGE
     var x = 10;
@@ -169,7 +136,34 @@ class Canvas { //start_date und end_date müssen Date Objekte mit Jahr, Monat un
       ctx.stroke();
       ctx.closePath();
     }
+    return dimensions;
+
+
+
   }
+  create_containers(dimensions) {
+    let containers = {};
+    let rect = this.timeline_canvas.getBoundingClientRect();
+    for (let i = 0; i < dimensions.length; i++) {
+      let d = dimensions[i];
+      let div = document.createElement('div');
+      div.style.position = "absolute";
+      div.style.left = this.timeline_canvas.offsetLeft + d.x + "px";
+      div.style.top = this.timeline_canvas.offsetTop + d.y + "px";
+      div.style.width = d.width + "px";
+      div.style.height = d.height + "px";
+      this.container.appendChild(div);
+      containers[this.departments[i].id] = div;
+    }
+    return containers;
+  }
+
+  //
+  add_task(task) {
+    let container = this.department_containers[task.dataset.department];
+    container.appendChild(task);
+  }
+  //
   get_millis_from_container(container) {
     let rect = container.getBoundingClientRect();
     let start_millis = Math.floor(this.get_millis_at_x(rect.x));

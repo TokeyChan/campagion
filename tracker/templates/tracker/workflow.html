@@ -4,16 +4,18 @@
 {% block title %}Workflow bearbeiten{% endblock %}
 {% block head %}
   <link rel="stylesheet" href="{% static 'tracker/css/workflow.css' %}">
-  <script type="text/javascript" src="{% static 'tracker/js/canvas.js' %}"></script>
-  <script type="text/javascript" src="{% static 'tracker/js/milestone_container.js' %}"></script>
+  <script type="text/javascript" src="{% static 'tracker/js/workflow/canvas.js' %}"></script>
+  <script type="text/javascript" src="{% static 'tracker/js/workflow/milestone_container.js' %}"></script>
   <script type="text/javascript">
     const VALUES = {
       'workflow': {{ workflow.to_json|safe }},
       'tasks': {{ workflow.tasks_to_json|safe }},
-      'start_date': new Date({{ workflow.start_date }})
+      'start_date': new Date({{ start_date }}),
+      'end_date': new Date({{ end_date }}),
+      'departments': {{ departments|safe }}
     };
   </script>
-  <script type="text/javascript" src="{% static 'tracker/js/workflow.js' %}"></script>
+  <script type="text/javascript" src="{% static 'tracker/js/workflow/workflow.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -33,14 +35,14 @@
     <div class="workflow_title" style="grid-area: workflow_title">
       Aktiver Workflow
     </div>
+    <img src="{% static 'tracker/images/settings_icon.png' %}" id="settings" onclick="open_design()">
+    <img src="{% static 'tracker/images/open_folder.png' %}" id="open_folder" onclick="open_template()">
     <div id="workflow_container">
       <canvas id="workflow_date_canvas" class="date_canvas" width="800px" height="50px"></canvas>
       <canvas id="workflow_canvas" class="timeline_canvas"></canvas>
-      <div id="workflow_flexbox_upper" class="upper_flexbox canvas_flexbox"></div>
-      <div id="workflow_flexbox_lower" class="lower_flexbox canvas_flexbox"></div>
     </div>
 
-    {% if workflow.started %}
+    {% if workflow.is_started %}
       <div class="workflow_title" style="grid-area: task_title">
       Aktive Aufgabe
     </div>
@@ -62,25 +64,11 @@
         <button type="button" name="button" onclick="btn_start_workflow_click()">Workflow starten</button>
       </div>
     {% endif %}
-
-    <div id="sidebar">
-      <div class="title" style="grid-area: title_milestones">
-        Meilensteine
-      </div>
-      <div id="milestone_container">
-        {% for milestone in milestones %}
-          <div class="milestone_container noselect" data-duration="{{ milestone.hours }}" data-text="{{ milestone.name }}" data-milestone_id="{{ milestone.id }}" style="background-color: {{ milestone.color }}">
-            {{ milestone.name }} <br> {{ milestone.hours }}h
-          </div>
-        {% endfor %}
-      </div>
-    </div>
   </div>
 {% endblock%}
 {% block forms %}
-  {% csrf_token %}
   <form action="{% url 'tracker:workflow' campaign.id %}" method="post" hidden id="post_form">
-    <input type="text" name="action" id="post_form_action"> {# START_WORKFLOW, FINISH_TASK #}
+    <input type="text" name="action" id="post_form_action"> {# START_WORKFLOW, FINISH_TASK, OPEN_DESIGN #}
     <input type="text" name="task_id" id="post_form_task_id">
     {% csrf_token %}
   </form>

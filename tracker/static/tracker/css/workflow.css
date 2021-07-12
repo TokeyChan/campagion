@@ -1,19 +1,19 @@
 #main_container {
   display: grid;
-  grid-template-columns: 1fr 20px 300px;
-  grid-template-rows: 70px 40px 200px 40px 200px;
+  grid-template-columns: 80px 1fr 40px 40px;
+  grid-template-rows: 70px 40px 400px 40px 200px;
   grid-template-areas:
-  "client . sidebar"
-  "workflow_title . sidebar"
-  "workflow . sidebar"
-  "task_title . ."
-  "active_task . .";
+  "client client client client"
+  ". workflow_title template design"
+  "workflow workflow workflow workflow"
+  "task_title task_title task_title task_title"
+  "active_task active_task active_task active_task";
 }
 #workflow_container {
   grid-area: workflow;
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: 50px 150;
+  grid-template-rows: 50px 1fr;
   grid-template-areas:
   "dates"
   "canvas";
@@ -57,14 +57,6 @@
   text-align: center;
   line-height: 60px;
 }
-.canvas_flexbox {
-  position: absolute;
-  background-color: rgba(36, 182, 214, 0.15);
-  display: flex;
-  overflow: hidden;
-  justify-content: flex-start;
-  align-items: center;
-}
 .canvas_flexbox div {
   flex-shrink: 0;
 }
@@ -87,7 +79,6 @@
 }
 #client_name {
   grid-area: client;
-
 }
 #campaign_name {
   grid-area: campaign;
@@ -107,9 +98,22 @@ canvas {
 }
 .timeline_canvas {
   grid-area: canvas;
-  height: 150px;
+  height: 350px;
 }
 
+#settings {
+  grid-area: design;
+  height: 40px;
+  width: 40px;
+}
+#open_folder {
+  grid-area: template;
+  height: 40px;
+  width: 40px;
+}
+#settings:hover, #open_folder:hover {
+  cursor: pointer;
+}
 /* sidebar */
 #sidebar {
   border: 1px solid;
@@ -130,33 +134,12 @@ canvas {
   height: 25px;
   line-height: 25px;
 }
-#milestone_container {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-evenly;
-  align-content: flex-start;
-  width: 90%;
-  margin: 5%;
-}
-#milestone_container {
-  width: 90%;
-  margin-right: 5%;
-  margin-left: 5%;
-  overflow: scroll;
-}
-.milestone_container {
-  height: 40px;
+
+.task_container {
+  position: absolute;
   text-align: center;
   border: 0.5px solid black;
-  display: block;
-  resize: horizontal;
-}
-#milestone_container .milestone_container {
-  margin-top: 10px;
-}
-.milestone_container:hover {
-  cursor: grab;
+  margin-top: 5px;
 }
 .workflow_title {
   text-align: center;

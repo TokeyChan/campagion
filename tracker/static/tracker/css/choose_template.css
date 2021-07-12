@@ -1,0 +1,48 @@
+#main_container {
+  display: grid;
+  grid-template-columns: 1fr 400px 1fr;
+  grid-template-rows: 100px 1fr;
+  grid-template-areas:
+  ". . ."
+  ". templates .";
+}
+#template_container {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  width: 400px;
+  min-height: 300px;
+  border-radius: 5px;
+  background-color: #74cde6;
+  grid-area: templates;
+  border: 1px solid black;
+}
+.template {
+  height: 40px;
+  width: calc(100% - 10px);
+  margin: 5px;
+  background-color: #fff;
+  display: grid;
+  grid-template-rows: 1fr;
+  grid-template-columns: 1fr 40px;
+  transition: all 0.15s ease-in-out;
+}
+.template:hover {
+  cursor:pointer;
+  filter: brightness(0.9);
+}
+.template .text {
+  grid-column: 0;
+  font-size: 18px;
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.template .edit_icon {
+  width: 40px;
+  height: 40px;
+  grid-column: 2;
+}
+.template .edit_icon:hover {
+  cursor: pointer;
+}

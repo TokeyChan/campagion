@@ -1,0 +1,32 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% block title %}Vorlage auswählen{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'tracker/css/choose_template.css' %}">
+<script type="text/javascript" src="{% static 'tracker/js/choose_template.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<div id="main_container">
+  <div id="template_container">
+    {% for template in templates %}
+      <div class="template" data-template_id="{{ template.id }}">
+        <div class="text">
+          {{ template.name }}
+        </div>
+        <img src="{% static 'tracker/images/settings_icon.png' %}" class="edit_icon">
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
+
+
+{% block forms %}
+  <form action="{{ url }}" method="post" id="post_form" hidden>
+    {% csrf_token %}
+    <input type="text" name="action" id="input_action">
+    <input type="text" name="template_id" id="input_template_id">
+  </form>
+{% endblock %}
