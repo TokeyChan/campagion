@@ -33,7 +33,7 @@
             {{ milestone.name }}
           </div>
           <div class="milestone_duration">
-            {{ milestone.hours }} Stunden
+            {% if milestone.is_external %}Extern{% else %}{{ milestone.hours }} Stunden{% endif %}
           </div>
           <div class="milestone_department">
             {{ milestone.department.name }}

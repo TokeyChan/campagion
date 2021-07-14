@@ -272,12 +272,12 @@ class Task(models.Model):
                 'id': milestone.id,
                 #'color': milestone.color,
                 'duration': milestone.hours(),
+                'is_external': milestone.is_external,
                 'department': {
                     'id': department.id,
                     'name': department.name
                 }
             },
-            'is_external': milestone.is_external,
             'planned_start_date': self.planned_start_date.timestamp() * 1000 if self.planned_start_date != None else None,
             'start_date': self.start_date.timestamp() * 1000 if self.start_date != None else None,
             'due_date': self.due_date.timestamp() * 1000 if self.due_date != None else None,

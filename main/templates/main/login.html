@@ -1,0 +1,40 @@
+{% extends 'main/base.html' %}
+
+{% block title %}CAMPAGION - LOGIN{% endblock %}
+
+{% block head %}
+<style media="screen">
+  table {
+    margin: 0px auto;
+    margin-top: 40px;
+  }
+  table label {
+    font-weight: normal;
+  }
+  table th {
+    text-align: right;
+  }
+  .title {
+    text-align: center;
+    height: 40px;
+    font-size: 30px;
+    line-height: 30px;
+    margin: 20px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="title">
+  Login
+</div>
+<form action="{{ url }}" method="post">
+  {% csrf_token %}
+  <table>
+    {{ form.as_table }}
+  </table>
+  <div style="text-align: center; margin: 10px;">
+    <input type="submit" value="Login">
+  </div>
+</form>
+{% endblock %}

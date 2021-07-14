@@ -141,6 +141,7 @@ class Milestone
     let department = this.element.getElementsByClassName("milestone_department")[0];
 
     name.textContent = this.task.milestone.name;
+    console.log(this.task.milestone);
     duration.textContent = this.task.milestone.is_external ? "Extern" : (this.task.milestone.duration + " Std.");
     department.textContent = this.task.milestone.department.name;
   }

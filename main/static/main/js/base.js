@@ -26,9 +26,17 @@ function send_request(url, method, data, callback, csrfmiddlewaretoken)
 }
 
 window.addEventListener('load', () => {
+  let form = document.getElementById('base_form');
+  let action = document.getElementById('input_action');
   let house = document.getElementById('house');
+  let exit = document.getElementById('exit');
   house.addEventListener('click', () => {
-    window.location = OVERVIEW_URL;
+    action.value = "TO_OVERVIEW";
+    form.submit();
+  });
+  exit.addEventListener('click', () => {
+    action.value = "LOGOUT";
+    form.submit();
   });
 });
 //document.querySelector('[name=csrfmiddlewaretoken]').value

@@ -8,5 +8,7 @@ urlpatterns = [
     path('campaign/new/<int:client_id>/', views.new_campaign, name="new_campaign"),
     path('campaign/<int:campaign_id>/', views.edit_campaign, name="edit_campaign"),
     path('client/new/', views.new_client, name="new_client"),
-    path('client/<int:client_id>/', views.edit_client, name="edit_client")
+    path('client/<int:client_id>/', views.edit_client, name="edit_client"),
+    path('login/', views.login, name="login"),
+    path('post/', views.post_handler, name="post_handler")
 ]

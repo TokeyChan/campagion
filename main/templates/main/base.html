@@ -15,6 +15,7 @@
     <div id="base_header">
       <img src="{% static 'main/images/house.png' %}" id="house">
       <img src="{% static 'main/images/campagion_logo.png'%}" id="logo">
+      <img src="{% static 'main/images/exit_icon.png' %}" id="exit">
     </div>
     <div id="base_main_container">
 
@@ -26,6 +27,10 @@
       {% block forms %}
 
       {% endblock %}
+      <form action="{% url 'main:post_handler' %}" method="POST" id="base_form" hidden>
+        {% csrf_token %}
+        <input type="text" name="action" id="input_action">
+      </form>
     </div>
   </body>
 </html>

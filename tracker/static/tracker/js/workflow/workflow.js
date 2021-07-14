@@ -39,7 +39,11 @@ function populate_tasks(canvas) {
       if (task['completion_date'] != null) { //wenn es schon fertig ist
         millis = task['completion_date'] - task['start_date'];
       } else if (task['is_external'] == true) {
-        millis = new Date().getTime() - task['start_date'];
+        if (task['due_date'] < new Date().getTime()) {
+          millis = new Date().getTime() - task['start_date'];
+        } else {
+          millis = task['due_date'] - task['start_date']
+        }
       } else {
         millis = task['due_date'] - task['start_date'];
       }
@@ -54,7 +58,7 @@ function populate_tasks(canvas) {
     let start_millis = task['start_date'] != null ? task['start_date'] : task['planned_start_date']
     container.style.left = canvas.get_x_at_millis(start_millis) + "px";
     //
-    container.innerHTML = task.milestone.name + "<br>" + (container.dataset.is_external == "true" ? "~" : "") + container.dataset.duration + "h";
+    container.innerHTML = task.milestone.name + "<br>" + (task['is_external'] == true ? "Extern" : container.dataset.duration + "h");
     //Jetzt je nachdem richten, auf welcher Planunsschiene es ist:
     canvas.add_task(container);
   }

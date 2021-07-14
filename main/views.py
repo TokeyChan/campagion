@@ -1,9 +1,11 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
+from django.contrib.auth import login as login_user
+from django.contrib.auth import logout
 
 from .models import Campaign, Client
 from tracker.models import Workflow
-from .forms import CampaignForm
+from .forms import CampaignForm, LoginForm
 
 from datetime import datetime, timedelta
 # Create your views here.
@@ -53,3 +55,29 @@ def new_client(request):
 
 def edit_client(request):
     pass
+
+def login(request):
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            user = form.authenticate(request)
+            if user is not None:
+                login_user(request, user)
+                return redirect('tracker:overview')
+    else:
+        form = LoginForm()
+    context = {
+        'form': form
+    }
+    return render(request, 'main/login.html', context)
+
+def post_handler(request):
+    if request.method == 'GET':
+        raise TypeError("This View should never be accessed by a GET request")
+    
+    action = request.POST['action']
+    if action == 'LOGOUT':
+        logout(request)
+        return redirect('main:login')
+    if action == 'TO_OVERVIEW':
+        return redirect('tracker:overview')

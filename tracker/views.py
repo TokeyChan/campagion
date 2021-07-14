@@ -29,6 +29,11 @@ def overview(request):
         elif request.POST['action'] == 'NEW_CAMPAIGN':
             client = Client.objects.get(id=int(request.POST['client_id']))
             return redirect('main:new_campaign', client_id=client.id)
+        elif request.POST['action'] == 'FINISH_TASK':
+            task = Task.objects.get(id=int(request.POST['task_id']))
+            class_ = task.milestone.completer.handler_class()
+            completer = class_(task, reverse('tracker:workflow', kwargs={'campaign_id': task.workflow.campaign.id}))
+            return completer.handle()
         return redirect('tracker:overview')
 
 def workflow(request, campaign_id):

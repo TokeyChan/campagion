@@ -14,7 +14,7 @@
     </div>
     <div id="task_container">
       {% for task in active_tasks %}
-        <div class="task_container">
+        <div class="task_container" data-task_id="{{ task.id }}">
           <div class="task_client">
             {{ task.client.name }}
           </div>
@@ -92,5 +92,6 @@
     <input type="text" name="destination" id="input_destination">
     <input type="text" name="campaign_id" id="input_campaign_id">
     <input type="text" name="client_id" id="input_client_id">
+    <input type="text" name="task_id" id="input_task_id">
   </form>
 {% endblock %}

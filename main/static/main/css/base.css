@@ -70,7 +70,15 @@ img#house {
   left: 20px;
   position: absolute;
 }
-img#house:hover {
+img#exit {
+  width: 80px;
+  height: 80px;
+  right: 20px;
+  position: absolute;
+  filter: opacity(0.8);
+}
+
+img#exit:hover, img#house:hover {
   cursor: pointer;
 }
 
