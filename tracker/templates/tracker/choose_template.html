@@ -9,6 +9,7 @@
 
 {% block content %}
 <div id="main_container">
+  <div class="title">Vorlage auswählen</div>
   <div id="template_container">
     {% for template in templates %}
       <div class="template" data-template_id="{{ template.id }}">
@@ -16,8 +17,13 @@
           {{ template.name }}
         </div>
         <img src="{% static 'tracker/images/settings_icon.png' %}" class="edit_icon">
+        <img src="{% static 'tracker/images/delete_icon.png' %}" class="delete_icon">
       </div>
     {% endfor %}
+  </div>
+  <div id="button_container">
+    <div class="button" id="btn_new_template">Neue Vorlage</div>
+    <div class="button" id="btn_abort">Abbrechen</div>
   </div>
 </div>
 {% endblock %}

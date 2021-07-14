@@ -19,8 +19,7 @@ def new_campaign(request, client_id):
             w = Workflow(campaign=form.instance)
             w.first_date = datetime.now() - timedelta(days=1)
             w.save()
-            w.create_tasks()
-            return redirect('tracker:workflow', campaign_id=form.instance.id)
+            return redirect('tracker:choose_template', campaign_id=form.instance.id)
     else:
         form = CampaignForm()
     context = {
@@ -33,7 +32,7 @@ def new_campaign(request, client_id):
 def edit_campaign(request, campaign_id):
     campaign = Campaign.objects.get(id=campaign_id)
     if request.method == 'POST':
-        form = CampaignForm(request.POST)
+        form = CampaignForm(request.POST, instance=campaign)
 
         if form.is_valid():
             form.save()
@@ -42,9 +41,10 @@ def edit_campaign(request, campaign_id):
         form = CampaignForm(instance=campaign)
 
     context = {
+        'class_name': "Vorlage",
         'form': form,
         'new': False,
-        'url': reverse('main:edit_campaign', campaign_id=campaign_id)
+        'url': reverse('main:edit_campaign', kwargs={'campaign_id': campaign_id})
     }
     return render(request, 'main/simple_form.html', context)
 

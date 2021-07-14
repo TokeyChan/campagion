@@ -61,7 +61,7 @@
 .client_campaign {
   margin: 5%;
   transition: all 0.15s ease-in-out;
-  height: 80px;
+  min-height: 80px;
   text-align: center;
   font-size: 17px;
   border-radius: 5px;
@@ -139,4 +139,18 @@
   line-height: 45px;
   height: 40px;
   color: black;
+}
+
+#client_title {
+  grid-area: client_title;
+  display: grid;
+  grid-template-columns: 40px 1fr 40px;
+}
+#new_icon {
+  grid-column: 3;
+  width: 40px;
+  height: 40px;
+}
+#new_icon:hover {
+  cursor: pointer;
 }

@@ -9,7 +9,7 @@ function main() {
   });
   milestone_nr = 0;
   milestones = initialize_milestones();
-  populate_nodes(NODES); //hier muss die Data aus dem Django-Json rein
+  populate_nodes(NODES);
 
   document.getElementById('btn_save').addEventListener('click', () => {
     save_nodes();
@@ -119,12 +119,19 @@ function save_nodes() {
     }
     data.nodes.push(node);
   }
-
-  for (let line of beziers) {
+  var m_from_dot = (dot) => {
+    let element = dot.parentNode;
+    let nr = element.dataset.nr;
+    return milestones.filter(t => t.nr == nr)[0];
+  }
+  for (let i = 0; i < beziers.length; i++) {
+    let line = beziers[i];
+    let from = m_from_dot(line.start_element).nr
+    let to = m_from_dot(line.end_element).nr
     data.lines.push({
       'id': line.id,
-      'from': milestone_from_dot(line.start_element).nr,
-      'to': milestone_from_dot(line.end_element).nr,
+      'from': from,
+      'to': to,
       //Hier Control Points hinzufügen
     });
   }

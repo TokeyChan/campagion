@@ -48,9 +48,14 @@
         </div>
       {% endfor %}
     </div>
-    <div class="title" style="grid-area: client_title">
-      Aufgaben nach Kunde
+    <div id="client_title">
+      <div class="title" style="grid-column: 2">
+        Aufgaben nach Kunde
+      </div>
+      <img src="{% static 'tracker/images/new_icon.png' %}" id="new_icon">
     </div>
+    
+    
     <div id="client_container">
       {% for client in clients %}
         <div class="client_container" data-clientid="{{ client.id }}">

@@ -1,14 +1,20 @@
+from datetime import datetime
+from django.shortcuts import redirect, reverse
+from django.http import HttpResponseRedirect
 
-class ClickCompleter:
-    def handle(self):
-        pass
-
-    def complete(self):
-        pass
-
-class UploadCompleter:
-    def handle(self):
-        pass
+class Completer:
+    def __init__(self, task, url):
+        self.task = task
+        self.url = url
 
     def complete(self):
-        pass
+        self.task.workflow.complete_task(self.task)
+    
+class ClickCompleter(Completer):
+    def handle(self):
+        self.complete()
+        return redirect(self.url)
+
+class UploadCompleter(Completer):
+    def handle(self):
+        return redirect('tracker:upload_file', task_id=self.task.id)

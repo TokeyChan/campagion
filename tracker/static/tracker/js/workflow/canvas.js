@@ -1,13 +1,11 @@
 const ONE_DAY_IN_MILLIS = 86400000;
-const TODAY_IN_MILLIS = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+const TODAY_IN_MILLIS = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()).getTime();
 
 class Canvas { //start_date und end_date müssen Date Objekte mit Jahr, Monat und Tag sein
   constructor(container, start_date, end_date, departments) { //Departments: Eine Liste an dicts: [{'id': int, 'name': string}]
     // allgemeines Init
     let date_canvas = container.getElementsByClassName('date_canvas')[0];
     let timeline_canvas = container.getElementsByClassName('timeline_canvas')[0];
-    let upper = container.getElementsByClassName('upper_flexbox')[0];
-    let lower = container.getElementsByClassName('lower_flexbox')[0];
 
     date_canvas.width = date_canvas.offsetWidth;
     date_canvas.height = date_canvas.offsetHeight;
@@ -26,6 +24,7 @@ class Canvas { //start_date und end_date müssen Date Objekte mit Jahr, Monat un
     this.distance = (this.width - 20) / this.difference_in_days;
     this.start_millis = start_date.getTime();
     this.end_millis = end_date.getTime();
+    console.log(start_date);
 
     this.timeline_canvas.addEventListener('drop', (e) => {
       let detail = e.detail;
@@ -42,22 +41,21 @@ class Canvas { //start_date und end_date müssen Date Objekte mit Jahr, Monat un
     var height = this.date_canvas.height;
     //Dates
     var millis = this.start_millis;
-    var date;
 
     //Für den Loop
     var x = 10
-    var y = height / 2
-    var i = 0;
+    var y = height / 2;
 
     ctx.lineWidth = 1;
     let fontsize = this.distance / 4;
     ctx.font = (fontsize > 18 ? "18" : fontsize) + "px Arial";
     ctx.textAlign = "center";
+
+    ctx.fillStyle = "#63ff78"; //green
+    ctx.fillRect(x, 20, this.get_x_at_millis(new Date().getTime()), height - 20);
+    ctx.stroke();
+
     while (millis <= this.end_millis) {
-      ctx.fillStyle = "#63ff78";
-      if (TODAY_IN_MILLIS > millis) {
-        ctx.fillRect(x, 20, this.distance, height - 20);
-      }
       ctx.fillStyle = "#000000";
       let date = new Date(millis);
       y = 40;

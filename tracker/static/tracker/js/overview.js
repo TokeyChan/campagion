@@ -6,6 +6,7 @@ var input_action;
 var input_campaign_id;
 var input_client_id;
 var input_destination;
+var new_client;
 
 function main()
 {
@@ -13,6 +14,7 @@ function main()
   input_campaign_id = document.getElementById('input_campaign_id');
   input_client_id = document.getElementById('input_client_id');
   input_destination = document.getElementById('input_destination');
+  new_client = document.getElementById("new_icon");
   form = document.getElementById('form');
 
   var client_campaign_containers = Array.from(document.getElementsByClassName('client_campaign'));
@@ -27,6 +29,9 @@ function main()
       redirect_to("CAMPAIGN", {'campaign_id': container.dataset.campaign_id});
     });
   }
+  new_client.addEventListener('click', () => {
+    redirect_to("NEW_CLIENT", {});
+  });
 }
 
 function redirect_to(destination, args) { //args == dict

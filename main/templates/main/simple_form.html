@@ -28,7 +28,7 @@
 <div class="title">
   {{ class_name }}
 </div>
-<form action="{{ url }}" method="post">
+<form action="{{ url }}" method="post" {% if with_uploads %}enctype="multipart/form-data"{% endif %}>
   {% csrf_token %}
   <table>
     {{ form.as_table }}

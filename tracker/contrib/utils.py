@@ -1,12 +1,15 @@
-def handle_node_data(data):
-    if isinstance(data, str):
-        data = json.loads(request.POST['data'])
+import json
+from datetime import datetime
+from tracker.models import Node, Task, Milestone, Line, Workflow
+
+def handle_node_data(data, owner):
+    #if isinstance(data, str):
+    data = json.loads(data)
     lines = []
     nodes = {}
-    present_tasks = {task.id:task for task in workflow.task_set.all()}
-    present_lines = workflow.get_lines()
+    present_tasks = {task.id:task for task in owner.task_set.all()}
+    present_lines = owner.get_lines()
     for obj in data['nodes']:
-        print(obj)
         node = None
         if obj['id'] is not None:
             try:
@@ -23,10 +26,13 @@ def handle_node_data(data):
             except Milestone.DoesNotExist:
                 pass
             t = Task(
-                workflow = workflow,
                 milestone = milestone,
                 planned_start_date=datetime.now() #FALSCH ABER EGAL
             )
+            if isinstance(owner, Workflow):
+                t.workflow = owner
+            else:
+                t.template = owner
             t.save()
             node.task = t
 

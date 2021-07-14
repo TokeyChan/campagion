@@ -50,7 +50,9 @@ function populate_tasks(canvas) {
     container.dataset.duration = Math.floor(millis / (60 * 60000));
     //style
     container.style.backgroundColor = task.milestone.color;
-    container.style.left = canvas.get_x_at_millis(task['planned_start_date']) + "px";
+
+    let start_millis = task['start_date'] != null ? task['start_date'] : task['planned_start_date']
+    container.style.left = canvas.get_x_at_millis(start_millis) + "px";
     //
     container.innerHTML = task.milestone.name + "<br>" + (container.dataset.is_external == "true" ? "~" : "") + container.dataset.duration + "h";
     //Jetzt je nachdem richten, auf welcher Planunsschiene es ist:
