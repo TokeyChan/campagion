@@ -17,9 +17,12 @@ class CampaignForm(forms.ModelForm):
 class ClientForm(forms.ModelForm):
     class Meta:
         model = Client
-        fields = ['name']
+        fields = ['name', 'contact_name', 'phone', 'email']
         labels = {
-            'name': 'Name'
+            'name': 'Name',
+            'contact_name': 'Name der Kontaktperson',
+            'phone': 'Telefonnummer',
+            'email': 'E-Mail Adresse'
         }
 
 class LoginForm(forms.Form):

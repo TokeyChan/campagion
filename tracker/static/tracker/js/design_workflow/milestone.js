@@ -79,7 +79,6 @@ class Milestone
     });
   }
   link_element() {
-    this.delete();
     this.element.style.position = "relative";
     this.element.style.left = "0px";
     this.element.style.top = "0px";
@@ -134,6 +133,7 @@ class Milestone
       beziers.splice(index, 1);
       line.delete();
     }
+    this.link_element();
   }
   populate_from_task() {
     let name = this.element.getElementsByClassName("milestone_name")[0];
@@ -141,7 +141,6 @@ class Milestone
     let department = this.element.getElementsByClassName("milestone_department")[0];
 
     name.textContent = this.task.milestone.name;
-    console.log(this.task.milestone);
     duration.textContent = this.task.milestone.is_external ? "Extern" : (this.task.milestone.duration + " Std.");
     department.textContent = this.task.milestone.department.name;
   }

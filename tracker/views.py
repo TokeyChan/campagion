@@ -78,10 +78,9 @@ def design_workflow(request, campaign_id):
         }
         return render(request, 'tracker/design_workflow.html', context)
 
-    print(request.POST)
     handle_node_data(request.POST['data'], workflow)
 
-    return redirect('tracker:design_workflow', campaign_id=campaign_id)
+    return redirect('tracker:workflow', campaign_id=campaign_id)
 
 # TEMPLATES
 def choose_template(request, campaign_id):
@@ -117,9 +116,9 @@ def edit_template(request, template_id):
         }
         return render(request, 'tracker/design_workflow.html', context)
 
-    handle_node_data(request.POST['data'], template) # irgendwie so ändern, dass es eben zur template speichert
+    handle_node_data(request.POST['data'], template)
 
-    return redirect('tracker:edit_template', template_id=template_id)
+    return redirect('tracker:edit_template', template_id=template_id) # Hier irgendwie zum Choose Template zurück
 
 def new_template(request):
     if request.method == 'POST':

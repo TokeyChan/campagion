@@ -5,7 +5,7 @@ from django.contrib.auth import logout
 
 from .models import Campaign, Client
 from tracker.models import Workflow
-from .forms import CampaignForm, LoginForm
+from .forms import CampaignForm, LoginForm, ClientForm
 
 from datetime import datetime, timedelta
 # Create your views here.
@@ -25,6 +25,7 @@ def new_campaign(request, client_id):
     else:
         form = CampaignForm()
     context = {
+        'class_name': 'Kampagne',
         'form': form,
         'new': True,
         'url': reverse('main:new_campaign', kwargs={'client_id': client_id})
@@ -43,7 +44,7 @@ def edit_campaign(request, campaign_id):
         form = CampaignForm(instance=campaign)
 
     context = {
-        'class_name': "Vorlage",
+        'class_name': "Kampagne",
         'form': form,
         'new': False,
         'url': reverse('main:edit_campaign', kwargs={'campaign_id': campaign_id})
@@ -51,10 +52,38 @@ def edit_campaign(request, campaign_id):
     return render(request, 'main/simple_form.html', context)
 
 def new_client(request):
-    pass
+    if request.method == 'POST':
+        form = ClientForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('tracker:overview')
+    else:
+        form = ClientForm()
 
-def edit_client(request):
-    pass
+    context = {
+        'class_name': "Kunde",
+        'form': form,
+        'new': True,
+        'url': reverse('main:new_client')
+    }
+    return render(request, 'main/simple_form.html', context)
+
+def edit_client(request, client_id):
+    client = Client.objects.get(id=client_id)
+    if request.method == 'POST':
+        form = ClientForm(request.POST, instance=client)
+        if form.is_valid():
+            form.save()
+            return redirect('tracker:overview')
+    else:
+        form = ClientForm()
+    
+    context = {
+        'class_name': 'Kunde',
+        'form': form,
+        'new': False,
+        'url': reverse('main:edit_client', kwargs={'client_id': client_id})
+    }
 
 def login(request):
     if request.method == 'POST':

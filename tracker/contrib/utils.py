@@ -17,7 +17,6 @@ def handle_node_data(data, owner):
                 del present_tasks[obj['id']]
             except KeyError:
                 pass
-            print(node)
         if node is None:
             node = Node()
             milestone = None

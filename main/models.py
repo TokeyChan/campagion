@@ -8,7 +8,10 @@ class User(AbstractUser):
     pass
 
 class Client(models.Model):
-    name = models.CharField(max_length=140)
+    name = models.CharField(max_length=90)
+    contact_name = models.CharField(max_length=90, null=True, blank=True)
+    phone = models.CharField(max_length=40, null=True, blank=True)
+    email = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -62,12 +65,6 @@ class Campaign(models.Model):
         else: #workflow ist aktiv
             newline = "<br>" if html else "\n"
             return (newline + newline).join([task.milestone.name + newline + task.due_date_string() for task in self.workflow.active_tasks()])
-
-class Contact(models.Model):
-    client = models.ForeignKey(Client, on_delete=models.CASCADE)
-    name = models.CharField(max_length=60)
-    phone = models.CharField(max_length=30)
-    email = models.CharField(max_length=100)
 
 class Department(models.Model):
     name = models.CharField(max_length=40)
