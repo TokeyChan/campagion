@@ -1,4 +1,9 @@
 /* global verwendete Klassen */
+*{
+  margin: 0;
+  box-sizing: border-box;
+}
+
 .title {
   font-size: 30px;
   line-height: 40px;

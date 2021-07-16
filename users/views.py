@@ -1,5 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth import login as login_user
+from users.forms import LoginForm
 
 # Create your views here.
 def login(request):
@@ -15,7 +16,7 @@ def login(request):
     context = {
         'form': form
     }
-    return render(request, 'main/login.html', context)
+    return render(request, 'users/login.html', context)
 
 
 def overview(request):

@@ -25,3 +25,9 @@
     cursor: pointer;
     filter: brightness(120%);
 }
+
+.module img {
+    width: 80%;
+    height: 80%;
+    object-fit: cover;
+}

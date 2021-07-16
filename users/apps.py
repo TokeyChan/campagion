@@ -6,6 +6,6 @@ class UsersConfig(AppConfig):
     name = 'users'
 
 def img_path():
-    return "users/images/"
+    return "users/images/user.png"
 
 title = "User-Management"
