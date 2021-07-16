@@ -1,4 +1,5 @@
 from django.urls import path
+from django.shortcuts import reverse
 
 from . import views
 
@@ -15,3 +16,6 @@ urlpatterns = [
     path('templates/new/', views.new_template, name="new_template"),
     path('uploads/new/<int:task_id>/', views.upload_file, name="upload_file")
 ]
+
+def start_url():
+    return reverse('tracker:overview')

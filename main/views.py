@@ -4,11 +4,28 @@ from django.contrib.auth import login as login_user
 from django.contrib.auth import logout
 
 from .models import Campaign, Client
+from main.contrib.utils import Module
 from tracker.models import Workflow
 from .forms import CampaignForm, LoginForm, ClientForm
 
 from datetime import datetime, timedelta
 # Create your views here.
+
+def main(request):
+    if request.method == 'GET':
+        context = {
+            'modules': [
+                Module('tracker'),
+                Module('users')
+            ]
+        }
+        return render(request, 'main/main.html', context)
+    else:
+        if request.POST['action'] == 'REDIRECT':
+            return redirect(request.POST['destination'])
+
+def users(request):
+    pass
 
 def new_campaign(request, client_id):
     client = Client.objects.get(id=client_id)
@@ -85,21 +102,6 @@ def edit_client(request, client_id):
         'url': reverse('main:edit_client', kwargs={'client_id': client_id})
     }
 
-def login(request):
-    if request.method == 'POST':
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            user = form.authenticate(request)
-            if user is not None:
-                login_user(request, user)
-                return redirect('tracker:overview')
-    else:
-        form = LoginForm()
-    context = {
-        'form': form
-    }
-    return render(request, 'main/login.html', context)
-
 def post_handler(request):
     if request.method == 'GET':
         raise TypeError("This View should never be accessed by a GET request")
@@ -107,6 +109,6 @@ def post_handler(request):
     action = request.POST['action']
     if action == 'LOGOUT':
         logout(request)
-        return redirect('main:login')
+        return redirect('users:login')
     if action == 'TO_OVERVIEW':
         return redirect('tracker:overview')

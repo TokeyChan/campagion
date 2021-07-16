@@ -5,7 +5,7 @@ class AuthenticationMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        login_path = reverse('main:login')
+        login_path = reverse('users:login')
         if not request.user.is_authenticated:
             if request.path != login_path:
                 return redirect(login_path)

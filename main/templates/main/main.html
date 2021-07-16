@@ -1,0 +1,33 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}CAMPAGION - Hauptansicht{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'main/css/main.css' %}">
+    <script src="{% static 'main/js/main.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    <div id="main_container">
+        <div class="title" style="grid-area: title;">Modulübersicht</div>
+        <div id="module_container">
+            {% for module in modules %}
+                <div class="module" data-url="{{ module.url }}">
+                    <div class="title" stlye="grid-area: title;">{{ module.title }}</div>
+                    <div class="module_img_container">
+                        <img src="{% static module.img_path %}">
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block forms %}
+    <form action="{% url 'main:index' %}" method="POST" id="main_form">
+        {% csrf_token %}
+        <input type="text" name="action" id="input_action">
+        <input type="text" name="destination" id="input_destination">
+    </form>
+{% endblock %}

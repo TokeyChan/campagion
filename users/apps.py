@@ -1,11 +1,11 @@
 from django.apps import AppConfig
 
 
-class TrackerConfig(AppConfig):
+class UsersConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'tracker'
+    name = 'users'
 
 def img_path():
-    return 'tracker/images/'
+    return "users/images/"
 
-title = "Dashboard"
+title = "User-Management"
