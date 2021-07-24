@@ -9,3 +9,4 @@ def img_path():
     return 'tracker/images/'
 
 title = "Dashboard"
+home_view = "tracker:overview"

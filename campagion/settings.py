@@ -57,7 +57,7 @@ ROOT_URLCONF = 'campagion.urls'
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'BACKEND': 'campagion.contrib.templates.backends.CustomBackend',#'django.template.backends.django.DjangoTemplates',
         'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -66,6 +66,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'main.contrib.context_processors.active_module'
             ],
         },
     },
@@ -130,3 +131,10 @@ MEDIA_ROOT = 'media/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+#E-Mail
+EMAIL_USE_SSL = True
+EMAIL_HOST = 'host35.ssl-net.net'
+EMAIL_HOST_USER = 'office@campagin.com'
+EMAIL_HOST_PASSWORD = '6YmCh&aSNfmDd4RE'
+EMAIL_PORT = 465

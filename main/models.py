@@ -1,11 +1,21 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
 from datetime import datetime, date, timedelta
+from django.contrib.auth.models import AbstractUser
+from users.models import PermissionGroup
 # Create your models here.
 
-
 class User(AbstractUser):
-    pass
+    profile_picture = models.ImageField(upload_to="profile_pictures/%y/%m/%d/")
+    email = models.EmailField(unique=True)
+    groups = None
+    group = models.ForeignKey(PermissionGroup, on_delete=models.SET_NULL, null=True)
+    
+    USERNAME_FIELD = 'email'
+
+    REQUIRED_FIELDS = ['name']
+
+    def name(self):
+        return self.first_name + " " + self.last_name
 
 class Client(models.Model):
     name = models.CharField(max_length=90)
@@ -65,10 +75,3 @@ class Campaign(models.Model):
         else: #workflow ist aktiv
             newline = "<br>" if html else "\n"
             return (newline + newline).join([task.milestone.name + newline + task.due_date_string() for task in self.workflow.active_tasks()])
-
-class Department(models.Model):
-    name = models.CharField(max_length=40)
-    color = models.CharField(max_length=10, default="#717171")
-
-    def __str__(self):
-        return self.name

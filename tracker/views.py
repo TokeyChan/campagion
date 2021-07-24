@@ -5,7 +5,8 @@ from django.urls import reverse
 from tracker.models import Milestone, Task, Workflow, Node, Line, Template
 from tracker.contrib.utils import handle_node_data
 from tracker.forms import TemplateForm, UploadForm
-from main.models import Client, Campaign, Department
+from main.models import Client, Campaign
+from users.models import Department
 from datetime import datetime, timedelta
 import json
 

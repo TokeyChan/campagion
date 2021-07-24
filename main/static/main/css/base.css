@@ -49,11 +49,8 @@
 
 
 #base_main_container {
-  display: grid;
-  grid-template-columns: 20px 1fr 20px;
-  grid-template-rows: 1fr;
-  grid-template-areas:
-  ". content .";
+  padding-left: 20px;
+  padding-right: 20px;
 }
 #base_header {
   text-align: center;
@@ -61,13 +58,13 @@
   position: sticky;
   background-image: linear-gradient(90deg, rgba(36, 50, 101, 0.92) 0%, rgba(26, 181, 224, 0.92) 100%);
 }
-#base_content_container {
-  grid-area: content;
-}
 img#logo {
   margin-top: 5px;
   height: 65px;
   margin-bottom: 5px;
+}
+img#logo:hover {
+  cursor: pointer;
 }
 img#house {
   width: 80px;
@@ -90,4 +87,47 @@ img#exit:hover, img#house:hover {
 path.selected {
   stroke: #1c2efc;
   stroke-width: 3px;
+}
+
+#popup_background {
+  background-color: rgba(48, 48, 48, 0.8);
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#popup_window {
+  width: 500px;
+  min-height: 200px;
+  background-color: rgb(215, 240, 244);
+  opacity: 1;
+  border: 10px solid #0b99bd;
+  border-radius: 10px;
+  padding: 10px;
+  position: relative;
+}
+#popup_title {
+  height: 30px;
+  font-size: 24px;
+  text-align: center;
+  border-bottom: 1px solid black;
+  margin-bottom: 10px;
+}
+#popup_closer {
+  width: 30px;
+  height: 30px;
+  background-color: #fa7676;
+  text-align: center;
+  line-height: 30px;
+  position: absolute;
+  right: 5px;
+  top: 5px;
+}
+#popup_closer:hover {
+  cursor: pointer;
+  filter: brightness(130%);
 }

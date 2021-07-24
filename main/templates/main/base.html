@@ -13,17 +13,16 @@
   </head>
   <body>
     <div id="base_header">
-      <img src="{% static 'main/images/house.png' %}" id="house">
+      {% if ACTIVE_MODULE is not None %}
+        <img src="{% static 'main/images/house.png' %}" id="house">
+      {% endif %}
       <img src="{% static 'main/images/campagion_logo.png'%}" id="logo">
       <img src="{% static 'main/images/exit_icon.png' %}" id="exit">
     </div>
     <div id="base_main_container">
-
-      <div id="base_content_container">
         {% block content %}
 
         {% endblock %}
-      </div>
     </div>
     <div hidden>
       {% block forms %}
@@ -31,8 +30,19 @@
       {% endblock %}
       <form action="{% url 'main:post_handler' %}" method="POST" id="base_form" hidden>
         {% csrf_token %}
-        <input type="text" name="action" id="input_action">
+        <input type="text" name="action" id="base_input_action">
       </form>
     </div>
+
+    {% if 'popup_title' in FILLED_BLOCKS or 'popup_content' in FILLED_BLOCKS %}
+    <div id="popup_background" style="display: none;">
+      <div id="popup_window">
+        <div id="popup_title">{% block popup_title %}Test-Title{% endblock %}</div>
+        <div id="popup_closer" class="noselect">X</div>
+        <div id="popup_content">{% block popup_content %}Test-Content{% endblock %}</div>
+      </div>
+    </div>
+    {% endif %}
+
   </body>
 </html>

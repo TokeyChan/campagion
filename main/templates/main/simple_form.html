@@ -1,9 +1,10 @@
 {% extends 'main/base.html' %}
+{% load static %}
 
 {% block title %}{{ class_name }} {% if new %}erstellen{% else %}bearbeiten{% endif %}{% endblock %}
 
 {% block head %}
-<!-- meta css reference -->
+  <link rel="stylesheet" href="{% static 'main/css/simple_form.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -16,7 +17,7 @@
     {{ form.as_table }}
   </table>
   <div style="text-align: center; margin: 10px;">
-    <input type="submit">
+    <input type="submit" value="Speichern">
   </div>
 </form>
 {% endblock %}

@@ -25,18 +25,39 @@ function send_request(url, method, data, callback, csrfmiddlewaretoken)
   }
 }
 
+function show_popup() {
+  var popup_background = document.getElementById('popup_background');
+  popup_background.style.display = "flex";
+}
+function hide_popup() {
+  var popup_background = document.getElementById('popup_background');
+  popup_background.style.display = "none";
+}
+
 window.addEventListener('load', () => {
   let form = document.getElementById('base_form');
-  let action = document.getElementById('input_action');
+  let action = document.getElementById('base_input_action');
   let house = document.getElementById('house');
   let exit = document.getElementById('exit');
-  house.addEventListener('click', () => {
-    action.value = "TO_OVERVIEW";
-    form.submit();
-  });
+  let logo = document.getElementById('logo');
+
+  if (house != null) {// house can be null if no Module is active i.e. in the index view
+    house.addEventListener('click', () => {
+      action.value = "HOME";
+      form.submit();
+    });
+  }
   exit.addEventListener('click', () => {
     action.value = "LOGOUT";
     form.submit();
   });
+  logo.addEventListener('click', () => {
+    action.value = "TO_INDEX";
+    form.submit();
+  });
+
+
+  let popup_closer = document.getElementById('popup_closer');
+  popup_closer.addEventListener('click', hide_popup);
 });
 //document.querySelector('[name=csrfmiddlewaretoken]').value

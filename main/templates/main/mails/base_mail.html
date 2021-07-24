@@ -1,0 +1,38 @@
+<html lang="en" style="max-width: 800px;height: 800px;margin: 0 auto;font-size: 1.5rem;">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin: 0; padding: 0;">
+  <div class="header" style="padding: 2rem;text-align: center;background-image: linear-gradient(90deg, rgb(35, 55, 105), rgb(25, 175, 218));">
+    <img src="https://www.campagion.com/wp-content/uploads/logo_CAMPAGION_hell_web_2x.png" alt="Campagion Logo">
+  </div>
+  <div class="main" style="min-height: 20rem;background-color: #DBEFF3;padding: 2rem 0;">
+    <h1 style="text-align: center;padding: 1.5rem 0;font-size: 2rem;font-family: 'Tenor Sans';">
+        {% block title %}Titel{% endblock %}
+    </h1>
+    <div class="content" style="padding: 0 3rem;">
+        {% block content %}
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur possimus aliquid nesciunt dignissimos veritatis ipsum molestias debitis explicabo, non soluta ipsam esse quas corporis beatae dolorem et nam consectetur odit.</p>
+            <br>
+            <h2>Unsere Erfolge:</h2>
+            <ul style="padding-left: 2rem;">
+                <li>Neue Updates</li>
+                <li>Dies das</li>
+                <li>Tralala</li>
+            </ul>
+        {% endblock %}
+    </div>
+</div>
+  <div class="footer" style="background-image: linear-gradient(90deg, rgb(35, 55, 105), rgb(25, 175, 218));position: relative;font-size: 0.7rem;">
+    <table style="padding: 1rem;list-style-type: none;text-decoration: none;width: 100%;text-align: center;color: white;">
+        <tr>
+            <td>CAMPAGION ADS e.U. <br> Prinz-Eugen-Straße 14/21 <br> A-1040 Wien</td>
+            <td><a href="mailto:info@campagion.com" style="color: white;">info@campagion.com</a></td>
+            <td>Advertise on the World's <br> Top Adult Sites</td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

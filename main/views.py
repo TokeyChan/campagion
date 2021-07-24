@@ -11,21 +11,21 @@ from .forms import CampaignForm, LoginForm, ClientForm
 from datetime import datetime, timedelta
 # Create your views here.
 
-def main(request):
+def index(request):
     if request.method == 'GET':
+        request.session['active_module'] = None
         context = {
             'modules': [
                 Module('tracker'),
                 Module('users')
             ]
         }
-        return render(request, 'main/main.html', context)
+        return render(request, 'main/index.html', context)
     else:
         if request.POST['action'] == 'REDIRECT':
-            return redirect(request.POST['destination'])
-
-def users(request):
-    pass
+            m = Module(request.POST['module'])
+            request.session['active_module'] = request.POST['module']
+            return redirect(m.home_view)
 
 def new_campaign(request, client_id):
     client = Client.objects.get(id=client_id)
@@ -105,10 +105,16 @@ def edit_client(request, client_id):
 def post_handler(request):
     if request.method == 'GET':
         raise TypeError("This View should never be accessed by a GET request")
-    
+
     action = request.POST['action']
     if action == 'LOGOUT':
         logout(request)
         return redirect('users:login')
-    if action == 'TO_OVERVIEW':
-        return redirect('tracker:overview')
+    if action == 'HOME':
+        m = Module(request.session['active_module'])
+        return redirect(m.home_view)
+    if action == 'TO_INDEX':
+        return redirect('main:index')
+
+
+# JAVASCRIPT VIEWS

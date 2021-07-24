@@ -1,20 +1,18 @@
 window.addEventListener('load', () => { main(); });
 
 var input_action;
-var input_destination;
+var input_module;
 var form;
 function main() {
-    console.log("test");
     form = document.getElementById('main_form');
-    input_destination = document.getElementById('input_destination');
+    input_module = document.getElementById('input_module');
     input_action = document.getElementById('input_action');
 
     var modules = document.getElementsByClassName('module');
-    console.log(modules);
     for (let module of modules) {
         module.addEventListener('click', () => {
             input_action.value = "REDIRECT";
-            input_destination.value = module.dataset.url;
+            input_module.value = module.dataset.name;
             form.submit();
         });
     }

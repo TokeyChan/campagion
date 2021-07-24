@@ -1,0 +1,72 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}User-Management{% endblock %}
+
+{% block head %}
+    <script>
+        const VALUES = {
+            'EDIT_INVITATION_FORM': {% if edit_invitation_form %}true{% else %}false{% endif %}
+        };
+    </script>
+    <link rel="stylesheet" href="{% static 'users/css/overview.css' %}">
+    <script src="{% static 'users/js/overview.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    <div id="main_container">
+        <div class="title" style="grid-area: title">User-Management</div>
+        <div id="content_container">
+            <div id="department_container">
+                {% for department in departments %}
+                    <div class="department" data-department_id="{{ department.id }}">
+                        {{ department.name }}
+                    </div>
+                {% endfor %}
+            </div>
+            <div id="user_container">
+                {% for user in users %}
+                    <div class="user" data-user_id="{{ user.id }}">
+                        <div class="user_profile_picture">
+                            <img src="{% if user.profile_picture is not None %}{% static 'users/images/user.png' %}{% else %}{{ user.profile_picture.url }}{% endif %}">
+                        </div>
+                        <div class="user_name">{{ user.name }}</div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div id="button_container">
+            <div class="button" id="btn_new_department">Neues Department</div>
+            <div class="button" id="btn_new_user">Neuer User</div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block forms %}
+    <form action="{% url 'users:overview' %}" method="POST" id="action_form">
+        {% csrf_token %}
+        <input type="text" name="action" id="input_action">
+        <input type="text" name="department_id" id="input_department_id">
+        <input type="text" name="user_id" id="input_user_id">
+    </form>
+{% endblock %}
+
+{% block popup_title %}Neuen User einladen{% endblock %}
+
+{% block popup_content %}
+    <form action="{% url 'users:overview' %}" method="POST" id="invitation_form">
+        <div class="field_wrapper">
+            {{ invitation_form.email.errors }}
+            <label for="id_email">{{ invitation_form.email.label }}:</label><br>
+            {{ invitation_form.email }}
+        </div>
+        <div class="field_wrapper">
+            {{ invitation_form.group.errors }}
+            <label for="id_group">{{ invitation_form.group.label }}:</label><br>
+            {{ invitation_form.group }}
+        </div>
+        {% csrf_token %}
+        <input type="text" name="action" value="NEW_USER" readonly hidden>
+    </form>
+    <div class="button" onclick="invite_user()">Absenden</div>
+{% endblock %}

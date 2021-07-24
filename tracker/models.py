@@ -1,5 +1,6 @@
 from django.db import models
-from main.models import Client, Campaign, Department
+from main.models import Client, Campaign
+from users.models import Department
 import json
 from datetime import datetime, timedelta
 from importlib import import_module
@@ -174,15 +175,12 @@ class Workflow(models.Model):
             n.top = node.top
             n.save()
             nodes[node.id] = n
-        print(nodes)
         lines_to_create = []
         for line in lines:
             l = Line()
             l.from_node = nodes[line.from_node.id]
             l.to_node = nodes[line.to_node.id]
             l.save()
-        #print(lines_to_create)
-        #Line.objects.bulk_create(lines_to_create)
 
 
 
@@ -212,13 +210,14 @@ class TaskManager(models.Manager):
             due_date__lte=(datetime.now() + timedelta(days=2)),
             completion_date__isnull=True,
             workflow__start_date__isnull=False,
-            start_date__isnull=False
+            start_date__isnull=False,
+            milestone__is_external=False
         ).order_by("due_date")
 
 def get_upload_to(instance, filename):
     now = datetime.now()
     return "/".join([
-        instance.milestone.upload_dir + "s", #zb Invoice(s)
+        instance.milestone.upload_dir,
         str(now.year),
         str(now.month),
         str(now.date),

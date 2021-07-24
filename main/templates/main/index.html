@@ -13,7 +13,7 @@
         <div class="title" style="grid-area: title;">Modulübersicht</div>
         <div id="module_container">
             {% for module in modules %}
-                <div class="module" data-url="{{ module.url }}">
+                <div class="module" data-name="{{ module.app_name }}">
                     <div class="title" stlye="grid-area: title;">{{ module.title }}</div>
                     <div class="module_img_container">
                         <img src="{% static module.img_path %}">
@@ -28,6 +28,6 @@
     <form action="{% url 'main:index' %}" method="POST" id="main_form">
         {% csrf_token %}
         <input type="text" name="action" id="input_action">
-        <input type="text" name="destination" id="input_destination">
+        <input type="text" name="module" id="input_module">
     </form>
 {% endblock %}
