@@ -1,18 +1,28 @@
 from django import forms
 from django.contrib.auth import authenticate as dj_authenticate
 from .models import Client, Campaign
+from users.models import Department
 
 class CampaignForm(forms.ModelForm):
     class Meta:
         model = Campaign
-        fields = ['desc', 'contract', 'start_date', 'end_date', 'daily_budget']
+        fields = ['desc', 'start_date', 'end_date', 'daily_budget']
         labels = {
             'desc': 'Beschreibung',
-            'contract': 'Vertrag',
             'start_date': 'Beginndatum',
             'end_date': 'Enddatum',
             'daily_budget': 'Tagesbudget'
         }
+    #Diese Render method wäre nice auf allen Forms zu haben :(
+    def render(self):
+        html = ""
+        for field in self.fields.keys():
+            html += f"""<div class="field_wrapper">
+                        {self[field].errors}
+                        <label for="{self[field].id_for_label}">{self[field].label}:</label><br>
+                        {self[field]}
+                    </div>"""
+        return html
 
 class ClientForm(forms.ModelForm):
     class Meta:

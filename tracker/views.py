@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from django.urls import reverse
+from django.db.models import Q
 # Create your views here.
-from tracker.models import Milestone, Task, Workflow, Node, Line, Template
+from tracker.models import Milestone, Task, Workflow, Node, Line, Template, Completer
 from tracker.contrib.utils import handle_node_data
-from tracker.forms import TemplateForm, UploadForm
+from tracker.forms import TemplateForm, UploadForm, MilestoneForm
 from main.models import Client, Campaign
 from users.models import Department
 from datetime import datetime, timedelta
@@ -74,8 +75,10 @@ def design_workflow(request, campaign_id):
     if request.method == 'GET':
         context = {
             'campaign': campaign,
-            'milestones': Milestone.objects.all(),
-            'workflow': workflow
+            'milestones': Milestone.objects.filter(Q(campaign__isnull=True) | Q(campaign=campaign)),
+            'workflow': workflow,
+            'form': MilestoneForm(),
+            'completers': Completer.objects.all()
         }
         return render(request, 'tracker/design_workflow.html', context)
 
@@ -168,3 +171,16 @@ def upload_file(request, task_id):
         'with_uploads': True
     })
 
+
+#BACKGROUND
+def bg_new_milestone(request, campaign_id):
+    if request.method == "GET":
+        raise ValueError("This view should never be accessed via GET")
+    form = MilestoneForm(request.POST)
+    if form.is_valid():
+        form.save()
+        return JsonResponse({"html": "", 'milestone': form.instance.to_html()})
+    return JsonResponse({
+        'html': form.as_table(),
+        'milestone': {}
+    })

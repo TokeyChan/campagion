@@ -4,16 +4,25 @@ from django.contrib.auth.models import AbstractUser
 from users.models import PermissionGroup
 # Create your models here.
 
+class UserManager(models.Manager):
+    def selection_source(self):
+        options = []
+        users = User.objects.all()
+        options = [f"<option value='{user.id}'>{user.name()}</option>" for user in users]
+        return "\n".join(options)
+
 class User(AbstractUser):
     profile_picture = models.ImageField(upload_to="profile_pictures/%y/%m/%d/")
     email = models.EmailField(unique=True)
     groups = None
     group = models.ForeignKey(PermissionGroup, on_delete=models.SET_NULL, null=True)
     
+    objects = UserManager()
     USERNAME_FIELD = 'email'
-
     REQUIRED_FIELDS = ['name']
 
+    def __str__(self):
+        return self.name()
     def name(self):
         return self.first_name + " " + self.last_name
 
@@ -75,3 +84,11 @@ class Campaign(models.Model):
         else: #workflow ist aktiv
             newline = "<br>" if html else "\n"
             return (newline + newline).join([task.milestone.name + newline + task.due_date_string() for task in self.workflow.active_tasks()])
+
+class Assignee(models.Model):
+    campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    department = models.ForeignKey("users.Department", on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.user.name() + " - " + self.department.name

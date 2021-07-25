@@ -1,17 +1,40 @@
+#main_container {
+  display: grid;
+  grid-template-columns: 1fr 500px 1fr;
+  grid-template-rows: 40px 1fr 40px;
+  grid-template-areas:
+  ". title ."
+  "left form right"
+  ". buttons .";
+}
 table {
     margin: 0px auto;
     margin-top: 40px;
   }
-  table label {
-    font-weight: normal;
-  }
-  table th {
-    text-align: right;
-  }
-  .title {
-    text-align: center;
-    height: 40px;
-    font-size: 30px;
-    line-height: 30px;
-    margin: 20px;
-  }
+table label {
+  font-weight: normal;
+}
+table th {
+  text-align: right;
+}
+.title {
+  grid-area: title;
+}
+#form_container {
+  grid-area: form;
+}
+#left {
+  grid-area: left;
+}
+#right {
+  grid-area: right;
+}
+#bottom {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  grid-area: bottom;
+}
+#button_container {
+  margin-top: 50px;
+  grid-area: buttons;
+}

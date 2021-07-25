@@ -133,7 +133,7 @@ MEDIA_ROOT = 'media/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #E-Mail
-EMAIL_USE_SSL = True
+EMAIL_USE_TLS = True
 EMAIL_HOST = 'host35.ssl-net.net'
 EMAIL_HOST_USER = 'office@campagin.com'
 EMAIL_HOST_PASSWORD = '6YmCh&aSNfmDd4RE'

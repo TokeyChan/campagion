@@ -3,8 +3,9 @@ from django.urls import reverse
 from django.contrib.auth import login as login_user
 from django.contrib.auth import logout
 
-from .models import Campaign, Client
-from main.contrib.utils import Module
+from .models import Campaign, Client, User
+from users.models import Department
+from main.contrib.utils import Module, create_assignees
 from tracker.models import Workflow
 from .forms import CampaignForm, LoginForm, ClientForm
 
@@ -31,13 +32,13 @@ def new_campaign(request, client_id):
     client = Client.objects.get(id=client_id)
     if request.method == 'POST':
         form = CampaignForm(request.POST)
-
         if form.is_valid():
             form.instance.client = client
             form.save()
             w = Workflow(campaign=form.instance)
             w.first_date = datetime.now() - timedelta(days=1)
             w.save()
+            create_assignees(form.instance.id, request.POST)
             return redirect('tracker:choose_template', campaign_id=form.instance.id)
     else:
         form = CampaignForm()
@@ -45,9 +46,11 @@ def new_campaign(request, client_id):
         'class_name': 'Kampagne',
         'form': form,
         'new': True,
-        'url': reverse('main:new_campaign', kwargs={'client_id': client_id})
+        'url': reverse('main:new_campaign', kwargs={'client_id': client_id}),
+        'departments': Department.objects.all(),
+        'selection_source': User.objects.selection_source()
     }
-    return render(request, 'main/simple_form.html', context)
+    return render(request, 'main/edit_campaign.html', context)
 
 def edit_campaign(request, campaign_id):
     campaign = Campaign.objects.get(id=campaign_id)
@@ -66,7 +69,7 @@ def edit_campaign(request, campaign_id):
         'new': False,
         'url': reverse('main:edit_campaign', kwargs={'campaign_id': campaign_id})
     }
-    return render(request, 'main/simple_form.html', context)
+    return render(request, 'main/edit_campaign.html', context)
 
 def new_client(request):
     if request.method == 'POST':

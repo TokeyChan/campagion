@@ -14,7 +14,11 @@ urlpatterns = [
     path('templates/<int:template_id>/', views.edit_template, name="edit_template"),
     path('templates/choose/<int:campaign_id>/', views.choose_template, name="choose_template"),
     path('templates/new/', views.new_template, name="new_template"),
-    path('uploads/new/<int:task_id>/', views.upload_file, name="upload_file")
+    path('uploads/new/<int:task_id>/', views.upload_file, name="upload_file"),
+
+
+    #background-requests
+    path('js/new_milestone/<int:campaign_id>', views.bg_new_milestone, name="bg_new_milestone")
 ]
 
 def start_url():

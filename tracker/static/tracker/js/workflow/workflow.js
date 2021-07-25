@@ -19,6 +19,14 @@ function initialize_canvas() {
 function adjust_task_containers(millis) {
   var containers = Array.from(document.getElementsByClassName('task_container'));
   adjust_containers(containers, millis);
+  for (let container of containers) {
+    let pos = get_position(container);
+    let elements = document.elementsFromPoint(pos.left, pos.top).filter(t => t != container && t.classList.contains("task_container"));
+    if (elements.length != 0) {
+      let evil_element = elements[0];
+      container.style.top = (evil_element.offsetTop + evil_element.offsetHeight) + "px";
+    }
+  }
 }
 function adjust_containers(containers, millis) {
   for (container of containers) {
@@ -57,10 +65,10 @@ function populate_tasks(canvas) {
 
     let start_millis = task['start_date'] != null ? task['start_date'] : task['planned_start_date']
     container.style.left = canvas.get_x_at_millis(start_millis) + "px";
+
     //
-    console.log(task.milestone['is_external']);
     container.innerHTML = task.milestone.name + "<br>" + (task.milestone['is_external'] == true ? "Extern" : container.dataset.duration + "h");
-    //Jetzt je nachdem richten, auf welcher Planunsschiene es ist:
+    //Jetzt je nachdem richten, auf welcher Planungsschiene es ist:
     canvas.add_task(container);
   }
 }

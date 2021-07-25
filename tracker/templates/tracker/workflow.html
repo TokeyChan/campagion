@@ -39,7 +39,7 @@
     <img src="{% static 'tracker/images/open_folder.png' %}" id="open_folder" onclick="open_template()">
     <div id="workflow_container">
       <canvas id="workflow_date_canvas" class="date_canvas" width="800px" height="50px"></canvas>
-      <canvas id="workflow_canvas" class="timeline_canvas"></canvas>
+      <canvas id="workflow_canvas" class="timeline_canvas" height="360px"></canvas>
     </div>
 
     {% if workflow.is_started %}

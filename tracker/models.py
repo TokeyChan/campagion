@@ -30,12 +30,14 @@ def get_click_completer():
 
 class Milestone(models.Model):
     name = models.CharField(max_length=150)
-    duration = models.DurationField()
+    duration = models.DurationField(default=timedelta(days=1))
     is_external = models.BooleanField(default=False)
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
     completer = models.ForeignKey("Completer", on_delete=models.SET_DEFAULT, default=get_click_completer) # 1 ist der ClickCompleter
     upload_dir = models.CharField(max_length=25, null=True, blank=True, unique=True) # nur notwendig, wenn der UploadCompleter gewählt wurde
     upload_name = models.CharField(max_length=50, null=True, blank=True)
+    campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE, null=True)
+
     def __str__(self):
         return self.name
 
@@ -45,7 +47,23 @@ class Milestone(models.Model):
         hours = (seconds // 3600) + (days * 24)
 
         return hours
-
+    
+    def to_html(self):
+        return f"""
+            <div class='milestone noselect' data-milestone_id='{self.id}'>
+                <div class='milestone_name'>
+                    {self.name}
+                </div>
+                <div class='milestone_duration'>
+                    {"Extern" if self.is_external else str(self.hours()) + "Stunden"}
+                </div>
+                <div class='milestone_department'>
+                    {self.department.name}
+                </div>
+                <span class='dot left'></span>
+                <span class='dot right'></span>
+            </div>
+            """
 
 def calc_planned_dates(task): #recursive!!!
     if len(task.parent_tasks()) == 0:
@@ -78,7 +96,6 @@ def calc_dates(task): #auch recursive, geht nur, wenn der Workflow aktiv ist
     task.due_date = task.planned_start_date + task.milestone.duration
     task.save()
     return task.due_date
-
 
 class Workflow(models.Model):
     campaign = models.OneToOneField(Campaign, on_delete=models.CASCADE)
@@ -181,9 +198,6 @@ class Workflow(models.Model):
             l.from_node = nodes[line.from_node.id]
             l.to_node = nodes[line.to_node.id]
             l.save()
-
-
-
 
 class Template(models.Model):
     name = models.CharField(max_length=100)

@@ -9,8 +9,9 @@ class Canvas { //start_date und end_date müssen Date Objekte mit Jahr, Monat un
 
     date_canvas.width = date_canvas.offsetWidth;
     date_canvas.height = date_canvas.offsetHeight;
-    timeline_canvas.height = timeline_canvas.offsetHeight;
+    timeline_canvas.height = departments.length * 150;
     timeline_canvas.width = timeline_canvas.offsetWidth;
+
     this.container = container;
     this.departments = departments;
     this.department_containers = null;
@@ -24,7 +25,6 @@ class Canvas { //start_date und end_date müssen Date Objekte mit Jahr, Monat un
     this.distance = (this.width - 20) / this.difference_in_days;
     this.start_millis = start_date.getTime();
     this.end_millis = end_date.getTime();
-    console.log(start_date);
 
     this.timeline_canvas.addEventListener('drop', (e) => {
       let detail = e.detail;
@@ -141,7 +141,6 @@ class Canvas { //start_date und end_date müssen Date Objekte mit Jahr, Monat un
   }
   create_containers(dimensions) {
     let containers = {};
-    let rect = this.timeline_canvas.getBoundingClientRect();
     for (let i = 0; i < dimensions.length; i++) {
       let d = dimensions[i];
       let div = document.createElement('div');

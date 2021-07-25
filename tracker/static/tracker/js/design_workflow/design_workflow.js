@@ -14,6 +14,9 @@ function main() {
   document.getElementById('btn_save').addEventListener('click', () => {
     save_nodes();
   });
+  document.getElementById('btn_add_task').addEventListener('click', () => {
+    add_new_task();
+  });
   document.getElementById('node_container').addEventListener('mousedown', (e) => {
     let elements = Array.from(document.elementsFromPoint(e.clientX, e.clientY));
     if (elements.filter(t => t.classList.contains('milestone')).length == 0) {
@@ -56,7 +59,8 @@ function initialize_milestones() {
 function milestone_from_dot(dot) {
   let element = dot.parentNode;
   let nr = element.dataset.nr;
-  return milestones.filter(t => t.nr == nr)[0];
+  let milestone = milestones.filter(t => t.nr == nr)[0];
+  return milestone;
 }
 function milestone_from_id(id) {
   return milestones.filter(t => t.id != null && t.id == id)[0];
@@ -119,15 +123,11 @@ function save_nodes() {
     }
     data.nodes.push(node);
   }
-  var m_from_dot = (dot) => {
-    let element = dot.parentNode;
-    let nr = element.dataset.nr;
-    return milestones.filter(t => t.nr == nr)[0];
-  }
+
   for (let i = 0; i < beziers.length; i++) {
     let line = beziers[i];
-    let from = m_from_dot(line.start_element).nr
-    let to = m_from_dot(line.end_element).nr
+    let from = milestone_from_dot(line.start_element).nr;
+    let to = milestone_from_dot(line.end_element).nr;
     data.lines.push({
       'id': line.id,
       'from': from,
@@ -138,5 +138,41 @@ function save_nodes() {
   document.getElementById('form_data_input').value = JSON.stringify(data);
   document.getElementById('data_form').submit();
 }
+
+function add_new_task() {
+  show_popup();
+}
+function submit_milestone_form() {
+  var form = document.getElementById('new_milestone_form');
+  let form_data = new FormData(form);
+  send_request(form.action, form.method, form_data, on_post_response, form_data.get("csrfmiddlewaretoken"));
+}
+function on_post_response(response_text) {
+  let table = document.getElementById('new_milestone_table');
+  let response = JSON.parse(response_text);
+  if (response.html) {
+    table.innerHTML = response.html;
+  } else {
+    let hidden_div = document.getElementById('hidden_div');
+    let container = document.getElementById('milestone_container');
+    hidden_div.innerHTML += response.milestone;
+    let ms = Array.from(hidden_div.childNodes).filter(t => t.classList != null && t.classList.contains('milestone'));
+    let element = ms[ms.length - 1];
+
+    let m = new Milestone({
+      'element': element,
+      'nr': milestone_nr
+    });
+    element.dataset.nr = milestone_nr;
+    milestone_nr += 1;
+    milestones.push(m);
+
+    hidden_div.removeChild(element);
+    container.appendChild(element);
+
+    hide_popup();
+  }
+}
+
 
 window.addEventListener('load', () => { main() });

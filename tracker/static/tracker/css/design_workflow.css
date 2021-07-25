@@ -39,8 +39,19 @@
 #button_container {
   margin-top: 10px;
   text-align: center;
+  position: relative;
 }
-
+#btn_add_task {
+  position: absolute;
+  top: 0px;
+  right: 30px;
+}
+#new_milestone_table {
+  margin: auto;
+}
+#new_milestone_table th {
+  text-align: right;
+}
 
 .milestone {
   display: grid;

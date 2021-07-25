@@ -21,8 +21,9 @@ class CustomTemplate(Template):
             return []
         blocks = []
         for node in nodes:
-            for block in node.blocks:
-                blocks.append(str(block))
+            for block in node.blocks.values():
+                if len(block.nodelist) != 0:
+                    blocks.append(block.name)
         return blocks
     
     def render(self, context=None, request=None):

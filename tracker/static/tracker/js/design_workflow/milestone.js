@@ -6,7 +6,7 @@ class Milestone
     //Benötigt: element, nr
     //optional: task
     this.element = args.element;
-    this.nr = args.nr || null;
+    this.nr = args.nr;
     this.id = args.task != null ? args.task.id : null;
     this.task = args.task || null;
     this.milestone_id = args.task != null ? args.task.milestone.id : args.element.dataset.milestone_id;
@@ -95,6 +95,7 @@ class Milestone
     document.body.appendChild(this.element);
   }
   drop(e) {
+    console.log("DROPPED");
     var elements = Array.from(document.elementsFromPoint(e.clientX, e.clientY)).map(t => t.id);
     if (elements.includes("node_container")) {
       this.element.style.transform = "rotate(0deg)";

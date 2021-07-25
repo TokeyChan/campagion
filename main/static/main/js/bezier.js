@@ -52,6 +52,8 @@ class Bezier {
     this.startx = rect.left + (rect.width / 2) - svg_rect.left;
     this.starty = rect.top + (rect.height/ 2) - svg_rect.top;
     this.add_start_element_listeners();
+    if (this.path != null)
+      this.draw();
   }
   setEndElement(element) {
     this.end_element = element;
@@ -60,6 +62,8 @@ class Bezier {
     this.endx = rect.left + (rect.width / 2) - svg_rect.left;
     this.endy = rect.top + (rect.height/ 2) - svg_rect.top;
     this.add_end_element_listeners();
+    if (this.path != null)
+      this.draw();
   }
   add_end_element_listeners() {
     if (this.end_element != null) {

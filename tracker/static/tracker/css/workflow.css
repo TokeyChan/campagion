@@ -1,7 +1,7 @@
 #main_container {
   display: grid;
   grid-template-columns: 80px 1fr 40px 40px;
-  grid-template-rows: 70px 40px 400px 40px 200px;
+  grid-template-rows: 70px 40px 1fr 40px 200px;
   grid-template-areas:
   "client client client client"
   ". workflow_title template design"
@@ -98,7 +98,6 @@ canvas {
 }
 .timeline_canvas {
   grid-area: canvas;
-  height: 350px;
 }
 
 #settings {

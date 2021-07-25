@@ -13,15 +13,36 @@ function send_request(url, method, data, callback, csrfmiddlewaretoken)
   });
   if (csrfmiddlewaretoken != null)
     request.setRequestHeader('X-CSRFToken', csrfmiddlewaretoken);
-  if (method == 'POST') {
-    let fd = new FormData();
+  if (method.toUpperCase() == 'POST') {
+    if (data instanceof FormData){
+      request.send(data)
+    } else {
+      let fd = new FormData();
 
-    for (let key in data) {
-      fd.append(key, data[key]);
+      for (let key in data) {
+        fd.append(key, data[key]);
+      }
+      request.send(fd);
     }
-    request.send(fd);
   } else {
     request.send();
+  }
+}
+
+function get_absolute_position(element) {
+  let rect = element.getBoundingClientRect();
+  let left = rect.left + window.scrollX;
+  let top = rect.top + window.scrollY;
+  return {
+    'left': left,
+    'top': top
+  }
+}
+function get_position(element) {
+  let rect = element.getBoundingClientRect();
+  return {
+    'left': rect.left,
+    'top': rect.top
   }
 }
 
@@ -29,6 +50,7 @@ function show_popup() {
   var popup_background = document.getElementById('popup_background');
   popup_background.style.display = "flex";
 }
+
 function hide_popup() {
   var popup_background = document.getElementById('popup_background');
   popup_background.style.display = "none";
@@ -58,6 +80,7 @@ window.addEventListener('load', () => {
 
 
   let popup_closer = document.getElementById('popup_closer');
-  popup_closer.addEventListener('click', hide_popup);
+  if (popup_closer != null)
+    popup_closer.addEventListener('click', hide_popup);
 });
 //document.querySelector('[name=csrfmiddlewaretoken]').value

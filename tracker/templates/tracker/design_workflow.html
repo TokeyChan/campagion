@@ -28,19 +28,7 @@
       </div>
       <div id="milestone_container">
         {% for milestone in milestones %}
-        <div class="milestone noselect" data-milestone_id="{{ milestone.id }}">
-          <div class="milestone_name">
-            {{ milestone.name }}
-          </div>
-          <div class="milestone_duration">
-            {% if milestone.is_external %}Extern{% else %}{{ milestone.hours }} Stunden{% endif %}
-          </div>
-          <div class="milestone_department">
-            {{ milestone.department.name }}
-          </div>
-          <span class="dot left"></span>
-          <span class="dot right"></span>
-        </div>
+          {{ milestone.to_html|safe }}
         {% endfor %}
         {# Hier kommen milestones rein und können auch custom welche gemacht werden #}
       </div>
@@ -48,6 +36,9 @@
     <div id="button_container">
       <div class="button" id="btn_save">
         Speichern
+      </div>
+      <div class="button" id="btn_add_task">
+        Task hinzufügen
       </div>
     </div>
   </div>
@@ -60,6 +51,7 @@
       <span class="dot right"></span>
     </div>
   </div>
+  <div id="hidden_div" hidden></div>{# wird im javascript abused#}
 {% endblock %}
 
 {% block forms %}
@@ -67,4 +59,21 @@
   {% csrf_token %}
   <input type="text" name="data" id="form_data_input">
 </form>
+{% endblock %}
+
+{% block popup_title %}
+  Neuen Task erstellen
+{% endblock %}
+
+{% block popup_content %}
+  <form action="{% url 'tracker:bg_new_milestone' campaign.id %}" id="new_milestone_form" method="POST">
+    <table id="new_milestone_table">
+        {{ form.as_table }}
+    </table>
+    {% csrf_token %}
+  </form>
+  
+  <div class="button" onclick="submit_milestone_form();">
+    Erstellen
+  </div>
 {% endblock %}

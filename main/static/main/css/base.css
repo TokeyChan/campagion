@@ -131,3 +131,14 @@ path.selected {
   cursor: pointer;
   filter: brightness(130%);
 }
+
+
+.field_wrapper {
+  height: 60px;
+}
+.field_wrapper label {
+  font-size: 17px;
+}
+.field_wrapper input {
+  min-width: 200px;
+}

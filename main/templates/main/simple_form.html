@@ -5,19 +5,42 @@
 
 {% block head %}
   <link rel="stylesheet" href="{% static 'main/css/simple_form.css' %}">
+  <script>
+    function submit_form() {
+      document.getElementById('simple_form').submit();
+    }
+  </script>
 {% endblock %}
 
 {% block content %}
-<div class="title">
-  {{ class_name }}
-</div>
-<form action="{{ url }}" method="post" {% if with_uploads %}enctype="multipart/form-data"{% endif %}>
-  {% csrf_token %}
-  <table>
-    {{ form.as_table }}
-  </table>
-  <div style="text-align: center; margin: 10px;">
-    <input type="submit" value="Speichern">
+<div id="main_container">
+  <div class="title">
+    {{ class_name }}
   </div>
-</form>
+  <div id="form_container">
+    <form action="{{ url }}" method="post" {% if with_uploads %}enctype="multipart/form-data"{% endif %} id="simple_form">
+      {% csrf_token %}
+      <table>
+        {{ form.as_table }}
+      </table>
+      {% block additional_form %}
+
+      {% endblock %}
+    </form>
+  </div>
+
+  <div id="button_container">
+    <div class="button noselect" onclick="submit_form()">Absenden</div>
+  </div>
+  {% if 'left' in FILLED_BLOCKS %}
+    <div id="left">
+      {% block left %}{% endblock %}
+    </div>
+  {% endif %}
+  {% if 'right' in FILLED_BLOCKS %}
+    <div id="right">
+      {% block right %}{% endblock %}
+    </div>
+  {% endif %}
+</div>
 {% endblock %}
