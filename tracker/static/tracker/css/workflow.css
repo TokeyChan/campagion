@@ -37,22 +37,7 @@
   margin: 20px;
   border: 1px solid black;
 }
-.active_task_button {
-  width: 80%;
-  height: 25px;
-  text-align: center;
-  line-height: 25px;
-  margin: 0;
-  background-color: #eeeeee;
-  border-radius: 5px;
-  border: 1px solid #606060;
-  margin: auto;
-  transition: all 0.15s ease-in-out;
-}
-.active_task_button:hover {
-  background-color: #c7c6c6;
-  cursor: pointer;
-}
+
 .active_task_text {
   text-align: center;
   line-height: 60px;

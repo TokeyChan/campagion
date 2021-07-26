@@ -142,7 +142,7 @@ class Milestone
     let department = this.element.getElementsByClassName("milestone_department")[0];
 
     name.textContent = this.task.milestone.name;
-    duration.textContent = this.task.milestone.is_external ? "Extern" : (this.task.milestone.duration + " Std.");
+    duration.textContent = this.task.milestone.is_external ? "Extern" : (this.task.milestone.duration + "h");
     department.textContent = this.task.milestone.department.name;
   }
 }

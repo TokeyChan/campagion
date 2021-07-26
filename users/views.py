@@ -2,8 +2,8 @@ from django.shortcuts import render, redirect, reverse
 from django.contrib.auth import login as login_user
 from users.forms import LoginForm
 from main.models import User
-from users.models import Department
-from users.forms import DepartmentForm, InvitationForm
+from users.models import Department, Invitation
+from users.forms import DepartmentForm, InvitationForm, RegistrationForm
 
 # Create your views here.
 def login(request):
@@ -13,7 +13,7 @@ def login(request):
             user = form.authenticate(request)
             if user is not None:
                 login_user(request, user)
-                return redirect('tracker:overview')
+                return redirect('main:index')
     else:
         form = LoginForm()
     context = {
@@ -21,6 +21,23 @@ def login(request):
     }
     return render(request, 'users/login.html', context)
 
+def register(request, key):
+    invitation = Invitation.objects.get(key=key)
+    if request.method == 'POST':
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+            form.create_user(request, invitation)
+            return redirect('main:index')
+    else:
+        form = RegistrationForm(initial={'email': invitation.email})
+
+    context = {
+        'class_name': 'Registrierung',
+        'form': form,
+        'new': True,
+        'url': reverse('users:register', kwargs={'key': key})
+    }
+    return render(request, 'main/simple_form.html', context)
 
 def overview(request):
     if request.method == 'POST':
@@ -34,7 +51,7 @@ def overview(request):
         if action == 'NEW_USER':
             form = InvitationForm(request.POST)
             if form.is_valid():
-                form.invite()
+                form.invite(request.user)
                 return redirect('users:overview')
             context = {
                 'users': User.objects.filter(is_active=True),

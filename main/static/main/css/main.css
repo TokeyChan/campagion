@@ -27,7 +27,12 @@
 }
 
 .module img {
-    width: 80%;
-    height: 80%;
-    object-fit: cover;
+    max-width: 100%;
+    height: auto;
+}
+.module_img_container {
+    height: 250px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

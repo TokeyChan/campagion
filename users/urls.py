@@ -10,5 +10,6 @@ urlpatterns = [
     path('login/', views.login, name="login"),
     path('edit/<int:user_id>/', views.edit_user, name="edit_user"),
     path('department/<int:department_id>/', views.edit_department, name="edit_department"),
-    path('department/new/', views.new_department, name="new_department")
+    path('department/new/', views.new_department, name="new_department"),
+    path('register/<str:key>/', views.register, name="register"),
 ]

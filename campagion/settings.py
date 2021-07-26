@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+try:
+    from decouple import config
+except:
+    raise ImportError("Please install python-decouple in order to use this Project")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,13 +24,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-$_z9ynqhbxa(wjdn6$%a(d1ez+9aent*l=+#br!%z&7!kv0t-='
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = ["localhost", "185.164.7.182"]
-
+HOST_NAME = "http://localhost:8000" if DEBUG else "https://dashboard.campagion.com"
 
 # Application definition
 
@@ -133,8 +137,8 @@ MEDIA_ROOT = 'media/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #E-Mail
-EMAIL_USE_TLS = True
-EMAIL_HOST = 'host35.ssl-net.net'
-EMAIL_HOST_USER = 'office@campagin.com'
-EMAIL_HOST_PASSWORD = '6YmCh&aSNfmDd4RE'
-EMAIL_PORT = 465
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
+EMAIL_HOST = config('EMAIL_HOST')#'host35.ssl-net.net'
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = config('EMAIL_PORT', cast=int)

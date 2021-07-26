@@ -178,7 +178,7 @@ def bg_new_milestone(request, campaign_id):
         raise ValueError("This view should never be accessed via GET")
     form = MilestoneForm(request.POST)
     if form.is_valid():
-        form.save()
+        form.save(campaign_id)
         return JsonResponse({"html": "", 'milestone': form.instance.to_html()})
     return JsonResponse({
         'html': form.as_table(),

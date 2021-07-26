@@ -31,9 +31,12 @@
   transition: all 0.15s ease-in-out;
   margin: auto;
 }
-.button:hover {
+.button:not(.disabled):hover {
   cursor: pointer;
   background-color: rgba(26, 159, 224, 0.92);
+}
+.button.disabled {
+  background-color: darkgray;
 }
 
 /* Für die Bezier curve */

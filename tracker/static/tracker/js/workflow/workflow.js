@@ -76,6 +76,8 @@ function enable_active_task_buttons() {
   var buttons = document.getElementsByClassName("active_task_button");
   for (let button of buttons) {
     button.addEventListener("click", () => {
+      if (button.classList.contains('disabled'))
+        return;
       document.getElementById("post_form_action").value = "FINISH_TASK";
       document.getElementById("post_form_task_id").value = button.dataset.task_id;
       document.getElementById("post_form").submit();

@@ -1,10 +1,10 @@
 from django.db import models
 from datetime import datetime, date, timedelta
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, UserManager
 from users.models import PermissionGroup
 # Create your models here.
 
-class UserManager(models.Manager):
+class CustomUserManager(UserManager):
     def selection_source(self):
         options = []
         users = User.objects.all()
@@ -12,12 +12,15 @@ class UserManager(models.Manager):
         return "\n".join(options)
 
 class User(AbstractUser):
-    profile_picture = models.ImageField(upload_to="profile_pictures/%y/%m/%d/")
+    profile_picture = models.ImageField(upload_to="profile_pictures/%y/%m/%d/", null=True, blank=True)
     email = models.EmailField(unique=True)
     groups = None
     group = models.ForeignKey(PermissionGroup, on_delete=models.SET_NULL, null=True)
-    
-    objects = UserManager()
+    first_name = models.CharField(max_length=80)
+    last_name = models.CharField(max_length=80)
+
+
+    objects = CustomUserManager()
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['name']
 

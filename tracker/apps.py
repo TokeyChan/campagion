@@ -6,7 +6,7 @@ class TrackerConfig(AppConfig):
     name = 'tracker'
 
 def img_path():
-    return 'tracker/images/'
+    return 'tracker/images/tracker.png'
 
 title = "Dashboard"
 home_view = "tracker:overview"

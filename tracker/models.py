@@ -9,6 +9,7 @@ from importlib import import_module
 class Completer(models.Model):
     name = models.CharField(max_length=50) #bezeichnung des Completers
     handler = models.CharField(max_length=100) #Klasse, die die completion handelt
+    explanation = models.CharField(max_length=50, blank=True)
 
     def handler_class(self):
         return getattr(self.module(), self.class_name())
@@ -23,7 +24,7 @@ class Completer(models.Model):
         return path[-1]
 
     def __str__(self):
-        return self.name
+        return self.explanation
 
 def get_click_completer():
     return Completer.objects.get(name="ClickCompleter")
@@ -55,7 +56,7 @@ class Milestone(models.Model):
                     {self.name}
                 </div>
                 <div class='milestone_duration'>
-                    {"Extern" if self.is_external else str(self.hours()) + "Stunden"}
+                    {"Extern" if self.is_external else str(self.hours()) + "h"}
                 </div>
                 <div class='milestone_department'>
                     {self.department.name}
@@ -308,7 +309,10 @@ class Task(models.Model):
     def date_string(self): # WAS, WENN ES NICHT ACTIVE IST?
         if self.milestone.is_external:
             return "Extern"
-        return self.start_date.strftime("%d.%m.%Y %H:%M") + " - " + self.due_date.strftime("%d.%m.%Y %H:%M")
+        delta = self.due_date - datetime.now()
+        days = delta.days
+        hours = delta.seconds // 3600 + (days * 24)
+        return f"Fällig in {hours} Stunden"
 
     def is_finished(self):
         return self.completion_date != None
@@ -321,6 +325,9 @@ class Task(models.Model):
 
     def parent_tasks(self):
         return [line.from_node.task for line in self.node.incoming_lines.all()]
+
+    def assigned_user(self):
+        return self.workflow.campaign.assignee_set.get(department=self.milestone.department).user
 
 class Node(models.Model):
     task = models.OneToOneField(Task, on_delete=models.CASCADE)

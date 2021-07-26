@@ -19,6 +19,7 @@ class UploadForm(ModelForm):
         }
 
 class MilestoneForm(ModelForm):
+    for_campaign = forms.BooleanField(label="Nur für diese Kampagne", initial=True, required=False)
     class Meta:
         model = Milestone
         fields = ['name', 'duration', 'is_external', 'department', 'completer', 'upload_name']
@@ -26,6 +27,13 @@ class MilestoneForm(ModelForm):
             'duration': 'Dauer (d HH:MM:SS)',
             'is_external': 'Extern',
             'completer': 'Abschlussart',
-            'upload_name': 'Dateibezeichnung'
+            'upload_name': 'Dateibezeichnung (nur bei Upload)'
         }
+
+    def save(self, campaign_id):
+        if self.cleaned_data['for_campaign']:
+            self.instance.campaign_id = campaign_id
+        self.instance.upload_dir = self.cleaned_data['upload_name'].lower() + "s"
+
+        super().save()
         

@@ -55,7 +55,7 @@
         <div class="active_task_text" style="grid-area: date">
           {{ task.date_string }}
         </div>
-        <div class="active_task_button" style="grid-area: button" data-task_id="{{ task.id }}">Abschließen</div>
+        <div class="button active_task_button noselect{% if task.assigned_user != user %} disabled{% endif %}" style="grid-area: button" data-task_id="{{ task.id }}">Abschließen</div>
       </div>
       {% endfor %}
     </div>
@@ -65,7 +65,9 @@
       </div>
     {% endif %}
   </div>
-{% endblock%}
+{% endblock %}
+
+
 {% block forms %}
   <form action="{% url 'tracker:workflow' campaign.id %}" method="post" hidden id="post_form">
     <input type="text" name="action" id="post_form_action"> {# START_WORKFLOW, FINISH_TASK, OPEN_DESIGN #}

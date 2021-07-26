@@ -4,3 +4,14 @@
     Einladung zum Campagion-Dashboard
 {% endblock %}
 
+{% block content %}
+    <h4>Hallo!</h4>
+    <p>
+        Du wurdest von {{ invitor.name }} eingeladen, dem <h4>CAMPAGION-Dashboard</h4> beizutreten!
+    </p>
+    <p>
+        Bitte erstelle Dir dafür über den folgenden Link ein Profil! <br>
+        <h4><a href="{{ link }}">{{ link }}</a></h4><br>
+    </p>
+{% endblock %}
+
