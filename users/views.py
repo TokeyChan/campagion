@@ -4,6 +4,7 @@ from users.forms import LoginForm
 from main.models import User
 from users.models import Department, Invitation
 from users.forms import DepartmentForm, InvitationForm, RegistrationForm
+from django.contrib import messages
 
 # Create your views here.
 def login(request):
@@ -52,6 +53,7 @@ def overview(request):
             form = InvitationForm(request.POST)
             if form.is_valid():
                 form.invite(request.user)
+                messages.success(request, "Der User wurde erfolgreich eingeladen!")
                 return redirect('users:overview')
             context = {
                 'users': User.objects.filter(is_active=True),

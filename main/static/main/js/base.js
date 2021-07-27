@@ -82,5 +82,34 @@ window.addEventListener('load', () => {
   let popup_closer = document.getElementById('popup_closer');
   if (popup_closer != null)
     popup_closer.addEventListener('click', hide_popup);
+
+  let message_container = document.getElementById('message_container');
+  if (message_container != null) {
+    message_container.style.right = -message_container.offsetWidth + "px";
+    let right = -message_container.offsetWidth;
+    let animation = null;
+    clearInterval(animation);
+    animation = setInterval(move_in, 5);
+    function move_in() {
+      right += 5;
+      message_container.style.right = right + "px";
+      if (right >= 0) {
+        clearInterval(animation);
+        setTimeout(hide, 5000);
+      }
+    }
+    function hide() {
+      animation = setInterval(move_out, 5);
+    }
+    function move_out() {
+      right -= 5;
+      message_container.style.right = right + "px";
+      if (right == -message_container.offsetWidth) {
+        clearInterval(animation);
+        message_container.style.display = "none";
+      }
+    }
+
+  }
 });
-//document.querySelector('[name=csrfmiddlewaretoken]').value
+

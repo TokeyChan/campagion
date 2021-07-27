@@ -61,6 +61,12 @@ class InvitationForm(forms.Form):
         widget=forms.Select(choices=[(group.id, group.name) for group in PermissionGroup.objects.all()]),
     )
 
+    def clean(self):
+        email = self.cleaned_data['email']
+
+        if User.objects.filter(email=email).count() != 0:
+            self.add_error("email", "Es existiert bereits ein User mit dieser E-Mail Adresse!")
+
     def invite(self, invitor):
         invitation = Invitation(invitor=invitor, email=self.cleaned_data['email'], group=PermissionGroup.objects.get(id=self.cleaned_data['group']))
         invitation.save()

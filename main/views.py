@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.contrib.auth import login as login_user
 from django.contrib.auth import logout
+from django.contrib import messages
 
 from .models import Campaign, Client, User
 from users.models import Department

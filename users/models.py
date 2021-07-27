@@ -29,6 +29,6 @@ class Invitation(models.Model):
     key = models.UUIDField(default=uuid.uuid4, editable=False)
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
     group = models.ForeignKey(PermissionGroup, on_delete=models.SET_NULL, null=True)
-
+    
     def link(self):
         return settings.HOST_NAME + reverse('users:register', kwargs={'key': self.key})

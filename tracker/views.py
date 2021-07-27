@@ -104,7 +104,7 @@ def choose_template(request, campaign_id):
         workflow.copy_nodes(Template.objects.get(id=request.POST['template_id']))
         return redirect('tracker:workflow', campaign_id=campaign_id)
     elif request.POST['action'] == 'EDIT':
-        return redirect('tracker:edit_template', template_id=int(request.POST['template_id']))
+        return redirect('tracker:edit_template', template_id=int(request.POST['template_id']), campaign_id=campaign_id)
     elif request.POST['action'] == 'DELETE':
         t = Template.objects.get(id=int(request.POST['template_id']))
         t.delete()
@@ -114,7 +114,7 @@ def choose_template(request, campaign_id):
     elif request.POST['action'] == 'ABORT':
         return redirect('tracker:workflow', campaign_id=campaign_id)
 
-def edit_template(request, template_id):
+def edit_template(request, template_id, campaign_id):
     template = Template.objects.get(id=template_id)
     if request.method == 'GET':
         context = {
@@ -127,7 +127,7 @@ def edit_template(request, template_id):
 
     handle_node_data(request.POST['data'], template)
 
-    return redirect('tracker:edit_template', template_id=template_id) # Hier irgendwie zum Choose Template zurück
+    return redirect('tracker:choose_template', template_id=template_id, campaign_id=campaign_id) # Hier irgendwie zum Choose Template zurück
 
 def new_template(request):
     if request.method == 'POST':
