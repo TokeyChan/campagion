@@ -30,6 +30,11 @@
       <div class="name">
         {{ campaign.runtime_string }}
       </div>
+      <div>
+        <div class="button noselect" id="btn_edit_campaign" onclick="edit_campaign()">
+          Kampagne bearbeiten
+        </div>
+      </div>
       {# Hier gibt es dann noch allgemeine Infos zum Kunden und zur Kampagne #}
     </div>
     <div class="workflow_title" style="grid-area: workflow_title">
@@ -70,7 +75,7 @@
 
 {% block forms %}
   <form action="{% url 'tracker:workflow' campaign.id %}" method="post" hidden id="post_form">
-    <input type="text" name="action" id="post_form_action"> {# START_WORKFLOW, FINISH_TASK, OPEN_DESIGN #}
+    <input type="text" name="action" id="post_form_action"> {# START_WORKFLOW, FINISH_TASK, OPEN_DESIGN, EDIT_CAMPAIGN #}
     <input type="text" name="task_id" id="post_form_task_id">
     {% csrf_token %}
   </form>

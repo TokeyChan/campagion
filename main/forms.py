@@ -10,10 +10,11 @@ class CampaignForm(forms.ModelForm):
         super(CampaignForm, self).__init__(*args, **kwargs)
 
         for department in Department.objects.all():
+
             try:
                 assignee = Assignee.objects.get(campaign=self.instance, department=department)
             except Assignee.DoesNotExist:
-                pass
+                assignee = None
 
             self.fields[f'assignee_{department.id}'] = forms.IntegerField(
                 label=f"Verantwortlich für {department.name}",
@@ -27,7 +28,6 @@ class CampaignForm(forms.ModelForm):
         self.assignee_datas = [(int(data[0].split('_')[-1]), data[1]) for data in self.cleaned_data.items() if 'assignee' in data[0]]
         
         for data in self.assignee_datas:
-            print(data)
             if data[1] == -1:
                 raise ValidationError("Zu jedem Department muss ein User ausgewählt sein!")
 
@@ -35,7 +35,6 @@ class CampaignForm(forms.ModelForm):
         super(CampaignForm, self).save()
 
         for data in self.assignee_datas:
-            print(data)
             department = Department.objects.get(id=data[0])
             user = User.objects.get(id=data[1])
 

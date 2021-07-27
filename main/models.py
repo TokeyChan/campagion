@@ -1,7 +1,6 @@
 from django.db import models
 from datetime import datetime, date, timedelta
 from django.contrib.auth.models import AbstractUser, UserManager
-from users.models import PermissionGroup
 # Create your models here.
 
 class CustomUserManager(UserManager):
@@ -15,7 +14,7 @@ class User(AbstractUser):
     profile_picture = models.ImageField(upload_to="profile_pictures/%y/%m/%d/", null=True, blank=True)
     email = models.EmailField(unique=True)
     groups = None
-    group = models.ForeignKey(PermissionGroup, on_delete=models.SET_NULL, null=True)
+    group = models.ForeignKey("users.PermissionGroup", on_delete=models.SET_NULL, null=True)
     first_name = models.CharField(max_length=80)
     last_name = models.CharField(max_length=80)
 

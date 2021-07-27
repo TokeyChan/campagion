@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseForbidden
 from django.urls import reverse
 from django.db.models import Q
 # Create your views here.
@@ -42,17 +42,21 @@ def workflow(request, campaign_id):
     campaign = Campaign.objects.get(id=campaign_id)
     if request.method == 'POST':
         if request.POST['action'] == 'START_WORKFLOW':
-            campaign.workflow.start()
+            campaign.workflow.start(request)
             return redirect('tracker:workflow', campaign_id=campaign_id)
         elif request.POST['action'] == 'FINISH_TASK':
             task = Task.objects.get(id = int(request.POST['task_id']))
+            if request.user != task.assigned_user():
+                return HttpResponseForbidden()
             class_ = task.milestone.completer.handler_class()
-            completer = class_(task, reverse('tracker:workflow', kwargs={'campaign_id': campaign_id}))
+            completer = class_(request, task, reverse('tracker:workflow', kwargs={'campaign_id': campaign_id}))
             return completer.handle()
         elif request.POST['action'] == 'OPEN_DESIGN':
             return redirect('tracker:design_workflow', campaign_id=campaign_id)
         elif request.POST['action'] == 'CHOOSE_TEMPLATE':
             return redirect('tracker:choose_template', campaign_id=campaign_id)
+        elif request.POST['action'] == 'EDIT_CAMPAIGN':
+            return redirect('main:edit_campaign', campaign_id=campaign_id)
     client = campaign.client
     workflow = campaign.workflow
     workflow.calculate_tasks()
@@ -64,7 +68,7 @@ def workflow(request, campaign_id):
         'start_date': start_date.timestamp() * 1000,
         'end_date': workflow.last_relevant_date().timestamp() * 1000,
         'active_tasks': campaign.workflow.active_tasks(),
-        'departments': json.dumps([{'id': d.id, 'name': d.name} for d in Department.objects.all()])
+        'departments': json.dumps([{'id': d.id, 'name': d.name + " (" + d.get_assignee_name(campaign) + ")"} for d in Department.objects.all()])
     }
     return render(request, 'tracker/workflow.html', context)
 
@@ -116,7 +120,8 @@ def edit_template(request, template_id):
         context = {
             'template': template,
             'milestones': Milestone.objects.all(),
-            'use_template': True
+            'use_template': True,
+            'form': MilestoneForm(global_=True)
         }
         return render(request, 'tracker/design_workflow.html', context)
 
@@ -158,7 +163,7 @@ def upload_file(request, task_id):
         if form.is_valid():
             form.save()
             class_ = task.milestone.completer.handler_class()
-            completer = class_(task, None)
+            completer = class_(request, task, None)
             completer.complete()
             return redirect('tracker:workflow', campaign_id=task.workflow.campaign.id)
     else:
@@ -176,7 +181,7 @@ def upload_file(request, task_id):
 def bg_new_milestone(request, campaign_id):
     if request.method == "GET":
         raise ValueError("This view should never be accessed via GET")
-    form = MilestoneForm(request.POST)
+    form = MilestoneForm(campaign_id == 0, request.POST)
     if form.is_valid():
         form.save(campaign_id)
         return JsonResponse({"html": "", 'milestone': form.instance.to_html()})

@@ -4,6 +4,7 @@ from users.models import Department
 import json
 from datetime import datetime, timedelta
 from importlib import import_module
+from tracker.mails import send_task_mail
 # Create your models here.
 
 class Completer(models.Model):
@@ -102,15 +103,17 @@ class Workflow(models.Model):
     campaign = models.OneToOneField(Campaign, on_delete=models.CASCADE)
     start_date = models.DateTimeField(null=True, blank=True)
 
-    def start(self):
+    def start(self, request):
         self.calculate_tasks()
+        first_tasks = [task for task in self.task_set.all() if task.node.outgoing_lines.all().count() == 0]
         first_task = self.task_set.order_by('planned_start_date')[0]
         first_task.start_date = first_task.planned_start_date
         first_task.save()
         self.start_date = datetime.now()
         self.save()
+        send_task_mail(first_task)
 
-    def complete_task(self, task):
+    def complete_task(self, request, task):
         task.completion_date = datetime.now()
         task.save()
 
@@ -125,6 +128,9 @@ class Workflow(models.Model):
                     break
             if start_possible:
                 child.start()
+                if request.user != child.assigned_user:
+                    send_task_mail(child)
+        
 
     def calculate_tasks(self):
         started = self.is_started()
@@ -235,7 +241,7 @@ def get_upload_to(instance, filename):
         instance.milestone.upload_dir,
         str(now.year),
         str(now.month),
-        str(now.date),
+        str(now.day),
         filename
      ])
 

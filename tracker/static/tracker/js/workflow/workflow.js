@@ -85,7 +85,6 @@ function enable_active_task_buttons() {
   }
 }
 
-
 function btn_start_workflow_click() {
   document.getElementById("post_form_action").value = "START_WORKFLOW";
   document.getElementById("post_form").submit();
@@ -100,6 +99,11 @@ window.addEventListener('load', () => {
 window.addEventListener('resize', () => {
   //TODO: RESIZE
 });
+
+function edit_campaign() {
+  document.getElementById("post_form_action").value = "EDIT_CAMPAIGN";
+  document.getElementById("post_form").submit();
+}
 
 function open_design() {
   document.getElementById("post_form_action").value = "OPEN_DESIGN";

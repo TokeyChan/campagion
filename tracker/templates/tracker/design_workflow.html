@@ -66,7 +66,7 @@
 {% endblock %}
 
 {% block popup_content %}
-  <form action="{% url 'tracker:bg_new_milestone' campaign.id %}" id="new_milestone_form" method="POST">
+  <form action="{% url 'tracker:bg_new_milestone' campaign.id|default:0 %}" id="new_milestone_form" method="POST">
     <table id="new_milestone_table">
         {{ form.as_table }}
     </table>

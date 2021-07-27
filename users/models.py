@@ -1,6 +1,7 @@
 from django.db import models
 from django.urls import reverse
 from django.conf import settings
+from main.models import Assignee
 import uuid
 
 # Create your models here.
@@ -11,6 +12,12 @@ class Department(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_assignee_name(self, campaign):
+        try:
+            return Assignee.objects.get(department=self, campaign=campaign).user.name()
+        except Assignee.DoesNotExist:
+            return None
 
 class PermissionGroup(models.Model):
     name = models.CharField(max_length=80)

@@ -1,0 +1,14 @@
+{% extends 'main/mails/base_mail.html' %}
+
+{% block title %}
+    Neue Aufgabe: {{ task.milestone.name }}
+{% endblock %}
+
+
+{% block content %}
+    <h4>Hallo {{ user_.first_name }}!</h4>
+    <p>
+        In der Kampagne {{ task.campaign.name }} des Kunden {{ task.campaign.client.name }} ist nun dein nächster Task aktiv geworden: 
+    </p>
+    <h4>{{ task.milestone.name }}, {{ task.date_string }}</h4>
+{% endblock %}
