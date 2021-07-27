@@ -3,7 +3,7 @@ from django.contrib.auth import login as login_user
 from users.forms import LoginForm
 from main.models import User
 from users.models import Department, Invitation
-from users.forms import DepartmentForm, InvitationForm, RegistrationForm
+from users.forms import DepartmentForm, InvitationForm, RegistrationForm, EditUserForm
 from django.contrib import messages
 
 # Create your views here.
@@ -74,7 +74,22 @@ def overview(request):
 
 # Edit User und Department
 def edit_user(request, user_id):
-    pass
+    user = User.objects.get(id=user_id)
+    if request.method == 'GET':
+        form = EditUserForm(instance=user)
+    else:
+        print(request.POST)
+        print(request.FILES)
+        form = EditUserForm(request.POST, request.FILES, instance=user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'User wurde erfolgreich gespeichert!')
+            return redirect('users:overview')
+    context = {
+        'edit_user': user,
+        'form': form
+    }
+    return render(request, 'users/edit_user.html', context)
 
 def edit_department(request, department_id):
     department = Department.objects.get(id=department_id)

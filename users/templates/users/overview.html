@@ -28,7 +28,7 @@
                 {% for user in users %}
                     <div class="user" data-user_id="{{ user.id }}">
                         <div class="user_profile_picture">
-                            <img src="{% if user.profile_picture is not None %}{% static 'users/images/user.png' %}{% else %}{{ user.profile_picture.url }}{% endif %}">
+                            <img src="{% if not user.profile_picture %}{% static 'users/images/user.png' %}{% else %}{{ user.profile_picture.url }}{% endif %}">
                         </div>
                         <div class="user_name">{{ user.name }}</div>
                     </div>

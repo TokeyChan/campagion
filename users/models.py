@@ -22,6 +22,9 @@ class Department(models.Model):
 class PermissionGroup(models.Model):
     name = models.CharField(max_length=80)
     codename = models.CharField(max_length=40)
+
+    def __str__(self):
+        return self.name
     
 class Invitation(models.Model):
     invitor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="invitations")

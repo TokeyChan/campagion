@@ -12,8 +12,6 @@ class LoginForm(forms.Form):
     password = forms.CharField(max_length=100, widget=forms.PasswordInput)
 
     def authenticate(self, request):
-        print(self.cleaned_data['email'])
-        print(self.cleaned_data['password'])
         return dj_authenticate(request, username=self.cleaned_data['email'], password=self.cleaned_data['password'])
 
 class RegistrationForm(forms.Form):
@@ -71,3 +69,19 @@ class InvitationForm(forms.Form):
         invitation = Invitation(invitor=invitor, email=self.cleaned_data['email'], group=PermissionGroup.objects.get(id=self.cleaned_data['group']))
         invitation.save()
         send_invitation_mail(invitation)
+
+class EditUserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email', 'group', 'profile_picture']
+        
+    def render(self):
+        html = ""
+        for field in self.fields.keys():
+            hidden = field == 'profile_picture' 
+            html += f"""<tr {"hidden" if hidden else ""}>
+                        {self[field].errors}
+                        <td><label for="{self[field].id_for_label}">{self[field].label}:</label></td>
+                        <td>{self[field]}</td>
+                    </tr>"""
+        return html

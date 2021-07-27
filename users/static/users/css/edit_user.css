@@ -1,0 +1,41 @@
+#main_container {
+    display: grid;
+    height: 400px;
+    margin-left: 20%;
+    margin-right: 20%;
+    margin-top: 40px;
+    grid-template-rows: 40px 1fr 100px;
+    grid-template-columns: 300px 1fr;
+    grid-template-areas:
+    "img title"
+    "img form"
+    "upload form";
+    background-color: #d7f0f4;
+    border-radius: 15px;
+    margin-bottom: 40px;
+}
+#img_container {
+    grid-area: img;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#img_container img {
+    width: 250px;
+    height: 250px;
+    margin: 0 auto;
+    border: 1px solid black;
+    padding: 5px;
+}
+#form_container table {
+    margin: 0 auto;
+}
+#form_container table tr {
+    height: 50px;
+}
+#form_container table tr label {
+    text-align: right;
+}
+select, input {
+    width: 200px;
+}

@@ -95,7 +95,7 @@ window.addEventListener('load', () => {
       message_container.style.right = right + "px";
       if (right >= 0) {
         clearInterval(animation);
-        setTimeout(hide, 5000);
+        setTimeout(hide, 3500);
       }
     }
     function hide() {

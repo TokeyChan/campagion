@@ -1,0 +1,38 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}User bearbeiten{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'users/css/edit_user.css' %}">
+    <script src="{% static 'users/js/edit_user.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    <div id="main_container">
+        <div id="img_container">
+            <img id="profile_picture_img" src="{% if not user.profile_picture %}{% static 'users/images/user.png' %}{% else %}{{ user.profile_picture.url }}{% endif %}">
+        </div>
+        <div class="title">
+            {{ edit_user.name }}
+        </div>
+        <div style="grid-area: upload;">
+            <div class="button noselect" id="upload_button">
+                Bild hochladen
+            </div>
+        </div>
+        <div id="form_container">
+            <form action="{% url 'users:edit_user' edit_user.id %}" method="POST" enctype="multipart/form-data" id="user_form">
+                {% csrf_token %}
+                <table>
+                    {{ form.render|safe }}
+                </table>
+            </form>
+        </div>
+    </div>
+    <div id="button_container">
+        <div class="button noselect" id="save_button">
+            Speichern
+        </div>
+    </div>
+{% endblock %}
