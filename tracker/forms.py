@@ -40,7 +40,8 @@ class MilestoneForm(ModelForm):
                 self.instance.campaign_id = campaign_id
         except:
             pass
-        self.instance.upload_dir = self.cleaned_data['upload_name'].lower() + "s"
+        if self.cleaned_data['upload_name'] != None:
+            self.instance.upload_dir = self.cleaned_data['upload_name'].lower() + "s"
 
         super().save()
         

@@ -121,13 +121,14 @@ def edit_template(request, template_id, campaign_id):
             'template': template,
             'milestones': Milestone.objects.all(),
             'use_template': True,
-            'form': MilestoneForm(global_=True)
+            'form': MilestoneForm(global_=True),
+            'campaign_id': campaign_id
         }
         return render(request, 'tracker/design_workflow.html', context)
 
     handle_node_data(request.POST['data'], template)
 
-    return redirect('tracker:choose_template', template_id=template_id, campaign_id=campaign_id) # Hier irgendwie zum Choose Template zurück
+    return redirect('tracker:choose_template', campaign_id=campaign_id) # Hier irgendwie zum Choose Template zurück
 
 def new_template(request):
     if request.method == 'POST':

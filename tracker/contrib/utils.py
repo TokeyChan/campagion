@@ -35,8 +35,8 @@ def handle_node_data(data, owner):
             t.save()
             node.task = t
 
-        node.left = obj['left']
-        node.top = obj['top']
+        node.left = float(obj['left'])
+        node.top = float(obj['top'])
         nodes[obj['nr']] = node
 
         node.save()
