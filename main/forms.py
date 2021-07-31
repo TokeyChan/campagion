@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth import authenticate as dj_authenticate
 from django.core.exceptions import ValidationError
+from django.contrib.staticfiles.storage import staticfiles_storage
+
 from .models import Client, Campaign
 from .api_models import CampaignStats
 from users.models import Department
@@ -9,6 +11,7 @@ from main.models import User, Assignee
 class CampaignForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(CampaignForm, self).__init__(*args, **kwargs)
+        self.addons = {'client': f"<div class='form_addon'><img src='{staticfiles_storage.url('main/images/plus.png')}' id='add_client'></img></div>"}
 
         for department in Department.objects.all():
 
@@ -67,10 +70,18 @@ class CampaignForm(forms.ModelForm):
     def render(self):
         html = ""
         for field in self.fields.keys():
+            try:
+                addon = self.addons[field]
+            except:
+                addon = ""
+
             html += f"""<div class="field_wrapper">
                         {self[field].errors}
                         <label for="{self[field].id_for_label}">{self[field].label}:</label>
-                        {self[field]}
+                        <div class="widget_wrapper">
+                            {self[field]}
+                            {addon}
+                        </div>
                     </div>"""
         return html
 

@@ -3,7 +3,9 @@ window.addEventListener('load', () => {
 });
 
 function main() {
-
+    document.getElementById('add_client').addEventListener('click', () => {
+        show_popup();
+    });
 }
 
 function submit_grunddaten() {
@@ -70,4 +72,29 @@ function show_file(sender) {
     let url = sender.dataset.url;
     let iframe = document.getElementById('file_iframe');
     iframe.src = url;
+}
+
+function submit_client_form()
+{
+    var form = document.getElementById('new_client_form');
+    let form_data = new FormData(form);
+    send_request(form.action, form.method, form_data, on_post_response, form_data.get("csrfmiddlewaretoken"));
+}
+function on_post_response(response_text) {
+    console.log(response_text);
+    let table = document.getElementById('new_client_table');
+    let response = JSON.parse(response_text);
+    if (response.html) {
+        table.innerHTML = response.html;
+    } else {
+        let select = document.getElementById('id_client');
+        let hidden_div = document.getElementById('hidden_div');
+        hidden_div.innerHTML += response.option;
+        let option = hidden_div.getElementsByTagName('option')[0];
+        hidden_div.removeChild(option);
+        select.appendChild(option);
+        let option_count = select.getElementsByTagName('option').length;
+        select.selectedIndex = option_count - 1;
+        hide_popup();
+    }
 }

@@ -12,21 +12,23 @@
 {% block content %}
     <div id="main_container">
         <div id="sidebar">
-            <div class="sidebar_menu noselect" onclick="change_view(this);" data-tag="grunddaten">
+            <div class="sidebar_menu noselect selected" onclick="change_view(this);" data-tag="grunddaten">
                 Grunddaten
             </div>
-            <div class="sidebar_menu noselect" onclick="change_view(this);" data-tag="api">
-                API-Daten
-            </div>
-            <div class="sidebar_menu noselect selected" onclick="change_view(this);" data-tag="files">
-                Dateien und Dokumente
-            </div>
+            {% if not new %}
+                <div class="sidebar_menu noselect" onclick="change_view(this);" data-tag="api">
+                    API-Daten
+                </div>
+                <div class="sidebar_menu noselect" onclick="change_view(this);" data-tag="files">
+                    Dateien und Dokumente
+                </div>
+            {% endif %}
         </div>
         <div id="content_container">
-            <div id="grunddaten_container" class="view_container" style="display: none;">
+            <div id="grunddaten_container" class="view_container" style="display: block;">
                 <div class="title">Grunddaten</div>
                 <div class="form_container">
-                    <form action="{% url 'main:edit_campaign' campaign.id %}" method="POST" id="grunddaten_form">
+                    <form action="{% if not new %}{% url 'main:edit_campaign' campaign.id %}{% else %}{% url 'main:new_campaign' %}{% endif %}" method="POST" id="grunddaten_form">
                         {{ form.render|safe }}
                         {% csrf_token %}
                     </form>
@@ -45,7 +47,7 @@
                     {% endif %}
                 </div>
             </div>
-            <div id="files_container" class="view_container" style="display: grid;">
+            <div id="files_container" class="view_container" style="display: none;">
                 <div id="folder_sidemenu">
                     {% for folder in folders.keys %}
                         <div class="folder noselect" onclick="open_folder(this)" data-folder="{{ folder }}">
@@ -72,5 +74,18 @@
                 {% endfor %}
             {% endfor %}
         </div>
+    </div>
+{% endblock %}
+
+{% block popup_title %}Kunde erstellen{% endblock %}
+{% block popup_content %}
+    <form action="{% url 'main:bg_new_client' %}" id="new_client_form" method="POST">
+        <table id="new_client_table">
+            {{ client_form.as_table }}
+        </table>
+        {% csrf_token %}
+    </form>
+    <div class="button" onclick="submit_client_form()">
+        Speichern
     </div>
 {% endblock %}

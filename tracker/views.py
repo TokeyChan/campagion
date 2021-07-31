@@ -20,17 +20,15 @@ def overview(request):
         }
         return render(request, 'tracker/overview.html', context)
     else:
+        print(request.POST)
         if request.POST['action'] == 'REDIRECT':
             destination = request.POST['destination']
             if destination == 'WORKFLOW':
                 return redirect('tracker:workflow', campaign_id=int(request.POST['campaign_id']))
             elif destination == 'EDIT_CAMPAIGN':
                 return redirect('main:edit_campaign', campaign_id=int(request.POST['campaign_id']))
-            elif destination == 'NEW_CLIENT':
-                return redirect('main:new_client')
-        elif request.POST['action'] == 'NEW_CAMPAIGN':
-            client = Client.objects.get(id=int(request.POST['client_id']))
-            return redirect('main:new_campaign', client_id=client.id)
+            elif destination == 'NEW_CAMPAIGN':
+                return redirect('main:new_campaign')
         elif request.POST['action'] == 'FINISH_TASK':
             task = Task.objects.get(id=int(request.POST['task_id']))
             class_ = task.milestone.completer.handler_class()

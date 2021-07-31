@@ -7,7 +7,7 @@ var input_campaign_id;
 var input_client_id;
 var input_task_id;
 var input_destination;
-var new_client;
+var new_campaign;
 
 function main()
 {
@@ -16,7 +16,7 @@ function main()
   input_client_id = document.getElementById('input_client_id');
   input_task_id = document.getElementById('input_task_id');
   input_destination = document.getElementById('input_destination');
-  new_client = document.getElementById("new_icon");
+  new_campaign = document.getElementById("new_icon");
   form = document.getElementById('form');
 
   var workflow_openers = Array.from(document.getElementsByClassName('workflow'));
@@ -45,8 +45,8 @@ function main()
       }
     });
   }
-  new_client.addEventListener('click', () => {
-    redirect_to("NEW_CLIENT", {});
+  new_campaign.addEventListener('click', () => {
+    redirect_to("NEW_CAMPAIGN", {});
   });
 }
 

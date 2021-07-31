@@ -150,7 +150,6 @@ function submit_milestone_form() {
 function on_post_response(response_text) {
   let table = document.getElementById('new_milestone_table');
   let response = JSON.parse(response_text);
-  console.log(response);
   if (response.html) {
     table.innerHTML = response.html;
   } else {
