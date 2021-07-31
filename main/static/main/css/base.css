@@ -136,16 +136,6 @@ path.selected {
 }
 
 
-.field_wrapper {
-  height: 60px;
-}
-.field_wrapper label {
-  font-size: 17px;
-}
-.field_wrapper input {
-  min-width: 200px;
-}
-
 #message_container {
   position: fixed;
   right: -500px;

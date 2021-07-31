@@ -254,7 +254,6 @@ class Task(models.Model):
     due_date = models.DateTimeField(null=True, blank=True)
     completion_date = models.DateTimeField(null=True, blank=True)
     uploaded_file = models.FileField(null=True, blank=True, upload_to=get_upload_to)
-    #completion_user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     objects = TaskManager()
 

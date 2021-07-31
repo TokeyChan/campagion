@@ -1,0 +1,76 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load filename %}
+
+{% block title %}Kampagne bearbeiten{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'main/css/edit_campaign.css' %}">
+    <script src="{% static 'main/js/edit_campaign.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    <div id="main_container">
+        <div id="sidebar">
+            <div class="sidebar_menu noselect" onclick="change_view(this);" data-tag="grunddaten">
+                Grunddaten
+            </div>
+            <div class="sidebar_menu noselect" onclick="change_view(this);" data-tag="api">
+                API-Daten
+            </div>
+            <div class="sidebar_menu noselect selected" onclick="change_view(this);" data-tag="files">
+                Dateien und Dokumente
+            </div>
+        </div>
+        <div id="content_container">
+            <div id="grunddaten_container" class="view_container" style="display: none;">
+                <div class="title">Grunddaten</div>
+                <div class="form_container">
+                    <form action="{% url 'main:edit_campaign' campaign.id %}" method="POST" id="grunddaten_form">
+                        {{ form.render|safe }}
+                        {% csrf_token %}
+                    </form>
+                </div>
+                <div id="button_container">
+                    <div class="button" onclick="submit_grunddaten()">Speichern</div>
+                </div>
+            </div>
+            <div id="api_container" class="view_container" style="display: none;">
+                <div class="title">API-Daten</div>
+                <div class="form_container">
+                    {% if api_form %}
+                    <form>
+                        {{ api_form.render|safe }}
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+            <div id="files_container" class="view_container" style="display: grid;">
+                <div id="folder_sidemenu">
+                    {% for folder in folders.keys %}
+                        <div class="folder noselect" onclick="open_folder(this)" data-folder="{{ folder }}">
+                            {{ folder }}
+                        </div>
+                    {% endfor %}
+                </div>
+                <div id="files_sidemenu">
+
+                </div>
+                <div id="iframe_container">
+                    <iframe src="" frameborder="0" id="file_iframe">
+
+                    </iframe>
+                </div>
+            </div>
+        </div>
+        <div id="hidden_div" hidden>
+            {% for folder, files in folders.items %}
+                {% for file in files %}
+                    <div class="file noselect" data-folder="{{ folder }}" data-url="{{ file.url }}" onclick="show_file(this)">
+                        {{ file|filename }}
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

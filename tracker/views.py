@@ -14,7 +14,7 @@ import json
 def overview(request):
     if request.method == 'GET':
         context = {
-            'clients': Client.objects.all(), #oder filter alle, die noch nicht fertig sind? (falls das je geht),
+            #'clients': Client.objects.all(), #oder filter alle, die noch nicht fertig sind? (falls das je geht),
             'active_tasks': Task.objects.active_tasks(),
             'campaigns': Campaign.objects.all()
         }
@@ -24,7 +24,7 @@ def overview(request):
             destination = request.POST['destination']
             if destination == 'WORKFLOW':
                 return redirect('tracker:workflow', campaign_id=int(request.POST['campaign_id']))
-            elif destination == 'CAMPAIGN':
+            elif destination == 'EDIT_CAMPAIGN':
                 return redirect('main:edit_campaign', campaign_id=int(request.POST['campaign_id']))
             elif destination == 'NEW_CLIENT':
                 return redirect('main:new_client')

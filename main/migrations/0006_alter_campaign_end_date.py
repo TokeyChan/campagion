@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='campaign',
             name='end_date',
-            field=models.DateField(blank=True, default=main.models.default_end_date, null=True),
+            field=models.DateField(blank=True, null=True),
         ),
     ]

@@ -1,0 +1,99 @@
+#main_container {
+    display: grid;
+    grid-template-columns: 225px 1fr;
+    grid-template-areas: "sidebar content";
+    min-height: 75vh;
+    margin-top: 20px;
+    background-color: #d7f0f4;
+    border-radius: 15px;
+    overflow: hidden;
+}
+#sidebar {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    grid-area: sidebar;
+    background-color: rgba(26, 181, 224, 0.92);
+}
+.sidebar_menu, .folder, .file {
+    height: 50px;
+    text-align: center;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid black;
+}
+.sidebar_menu:first-child, .folder:first-child, .file:first-child {
+    border-top: 1px solid black;
+}
+.sidebar_menu:not(.selected):hover, .folder:not(.selected):hover, .file:not(.selected):hover {
+    cursor: pointer;
+    background-color: rgb(98, 198, 226);
+}
+.sidebar_menu.selected, .folder.selected, .file.selected {
+    background-color: rgb(114, 202, 226);
+}
+.sidebar_menu {
+    background-color: rgb(52, 189, 226);
+}
+
+/* GRUNDDATEN */
+.form_container {
+    margin-left: 20px;
+    margin-right: 20px;
+}
+.field_wrapper {
+    padding: 15px;
+    border-bottom: 1px solid #b9b9b9;
+    padding-left: 50px;
+}
+.field_wrapper label {
+    display: block;
+    float: left;
+    width: 250px;
+}
+.field_wrapper input {
+    width: 200px;
+}
+.field_wrapper select {
+    width: 200px;
+}
+
+#button_container {
+    margin-top: 10px;
+}
+
+
+/* FILES */
+#files_container {
+    display: grid;
+    grid-template-columns: 150px 150px 1fr;
+    grid-template-areas:
+    "folder_sidemenu files_sidemenu preview";
+    height: 100%;
+}
+#folder_sidemenu {
+    width: 150px;
+    background-color: rgb(44, 176, 212);
+    grid-area: folder_sidemenu;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-left: 1px solid black;
+}
+#files_sidemenu {
+    width: 150px;
+    background-color: rgb(42, 161, 194);
+    grid-area: files_sidemenu;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-left: 1px solid black;
+}
+.file {
+    background-color: rgb(54, 169, 201);
+}
+
+
+#file_iframe {
+    width: calc(100% - 30px);
+    height: calc(100% - 30px);
+    margin: 15px;
+    border: 1px solid black;
+}

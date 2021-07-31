@@ -19,16 +19,22 @@ function main()
   new_client = document.getElementById("new_icon");
   form = document.getElementById('form');
 
-  var client_campaign_containers = Array.from(document.getElementsByClassName('client_campaign'));
-  for (let container of client_campaign_containers) {
-    container.addEventListener('click', () => {
-      redirect_to("WORKFLOW", {'campaign_id': container.dataset.campaign_id});
+  var workflow_openers = Array.from(document.getElementsByClassName('workflow'));
+  for (let workflow of workflow_openers) {
+    workflow.addEventListener('click', () => {
+      redirect_to("WORKFLOW", {'campaign_id': workflow.parentNode.parentNode.dataset.campaign_id});
+    });
+  }
+  var data_openers = Array.from(document.getElementsByClassName('data'));
+  for (let data of data_openers) {
+    data.addEventListener('click', () => {
+      redirect_to("EDIT_CAMPAIGN", {'campaign_id': data.parentNode.parentNode.dataset.campaign_id});
     });
   }
   var campaign_containers = Array.from(document.getElementsByClassName('campaign_container'));
   for (let container of campaign_containers) {
     container.addEventListener('click', () => {
-      redirect_to("CAMPAIGN", {'campaign_id': container.dataset.campaign_id});
+      redirect_to("EDIT_CAMPAIGN", {'campaign_id': container.dataset.campaign_id});
     });
   }
   var task_containers = Array.from(document.getElementsByClassName('task_container'));

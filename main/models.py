@@ -1,6 +1,8 @@
 from django.db import models
+from django.db.models import Q
 from datetime import datetime, date, timedelta
 from django.contrib.auth.models import AbstractUser, UserManager
+from .api_models import *
 # Create your models here.
 
 class CustomUserManager(UserManager):
@@ -52,16 +54,26 @@ class Client(models.Model):
 def get_upload_to(campaign, filename):
     return f"contracts/{campaign.client.id}/{filename}"
 
-def default_end_date():
-    return datetime.now() + timedelta(days=21)
-
 class Campaign(models.Model):
+    class Status(models.IntegerChoices):
+        PRE_ACTIVE = 1
+        ACTIVE = 2
+        FINISHED = 3
+
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
-    desc = models.CharField(max_length=100)
-    contract = models.FileField(upload_to=get_upload_to, null=True, blank=True)
-    start_date = models.DateField(null=True, blank=True, default=datetime.now)
-    end_date = models.DateField(null=True, blank=True, default=default_end_date)
-    daily_budget = models.IntegerField()
+    name = models.CharField(max_length=100)
+    planned_start_date = models.DateField(null=True, blank=True, default=datetime.now)
+    start_date = models.DateField(null=True, blank=True)
+    end_date = models.DateField(null=True, blank=True)
+    budget = models.DecimalField(decimal_places=2, max_digits=10)
+    campagion_budget = models.DecimalField(decimal_places=2, max_digits=10)
+    days = models.IntegerField()
+    data = models.OneToOneField("CampaignData", on_delete=models.CASCADE, null=True, blank=True)
+    api_id = models.IntegerField(null=True, blank=True)
+    status = models.IntegerField(choices=Status.choices, default=Status.PRE_ACTIVE)
+
+    def __str__(self):
+        return self.name
 
     def runtime_string(self):
         if self.start_date == None or self.end_date == None:
@@ -72,20 +84,36 @@ class Campaign(models.Model):
         return (self.end_date > datetime.now().date()) if self.end_date != None else True
 
     def is_active(self):
-        return (self.start_date < datetime.now().date() and self.end_date > datetime.now().date()) if (self.end_date != None and self.start_date != None) else True
+        return self.status == Campaign.Status.ACTIVE
+    def is_pre_active(self):
+        return self.status == Campaign.Status.PRE_ACTIVE
+    def is_finished(self):
+        return self.status == Campaign.Status.FINISHED
 
-    def status(self, html=True):
-        wf = self.workflow
-        if not wf.is_started(): #wartet auf workflow
-            return "Workflow noch nicht gestartet"
-        elif wf.is_finished(): #alles abgeschlossen
-            if self.is_active():
-                return "Laufend - Nächstes Reporting in ###"
-            else:
-                return "Beginnt am " + self.start_date.strftime("%d.%m.%Y")
-        else: #workflow ist aktiv
-            newline = "<br>" if html else "\n"
-            return (newline + newline).join([task.milestone.name + newline + task.due_date_string() for task in self.workflow.active_tasks()])
+    def status_color(self):
+        if self.status == Campaign.Status.PRE_ACTIVE:
+            return "#ffa200"
+        elif self.status == Campaign.Status.ACTIVE:
+            return "#63de2f"
+        else:
+            return "#999999"
+
+    def date_string(self):
+        if self.status == Campaign.Status.PRE_ACTIVE:
+            return "Start geplant am " + self.planned_start_date.strftime("%d.%m.%Y")
+        elif self.status == Campaign.Status.ACTIVE:
+            return self.start_date.strftime("%d.%m.%Y") + " - " + (self.start_date + timedelta(days=self.days)).strftime("%d.%m.%Y")
+        else:
+            return "Geendet am " + self.end_date.strftime("%d.%m.%Y")
+
+    def budget_left(self):
+        if self.data is None:
+            return self.budget
+        return self.budget - (self.data.stats.revenue)
+
+    def get_files(self):
+        tasks_with_files = self.workflow.task_set.exclude(Q(uploaded_file='') | Q(uploaded_file=None))
+        return [task.uploaded_file for task in tasks_with_files]
 
 class Assignee(models.Model):
     campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE)

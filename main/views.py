@@ -3,12 +3,14 @@ from django.urls import reverse
 from django.contrib.auth import login as login_user
 from django.contrib.auth import logout
 from django.contrib import messages
+from django.conf import settings
+from django.views.decorators.clickjacking import xframe_options_sameorigin
 
 from .models import Campaign, Client, User
 from users.models import Department
 from main.contrib.utils import Module
 from tracker.models import Workflow
-from .forms import CampaignForm, LoginForm, ClientForm
+from .forms import CampaignForm, LoginForm, ClientForm, CampaignDataForm
 
 from datetime import datetime, timedelta
 # Create your views here.
@@ -57,17 +59,36 @@ def edit_campaign(request, campaign_id):
 
         if form.is_valid():
             form.save()
-            return redirect('tracker:overview')
+            return redirect('main:edit_campaign', campaign_id=campaign_id)
     else:
         form = CampaignForm(instance=campaign)
+    if campaign.data is not None and campaign.data.stats is not None:
+        api_form = CampaignDataForm(instance=campaign.data.stats)
+    else:
+        api_form = None
+
+    files = campaign.get_files()
+
+    def get_folder_name(path):
+        elements = path.split('/')
+        index = elements.index(settings.MEDIA_ROOT.replace('/', ''))
+        return elements[index + 1]
+
+    folders = {}
+    for file in files:
+        folder_name = get_folder_name(file.path)
+        if folder_name in folders:
+            folders[folder_name].append(file)
+        else:
+            folders[folder_name] = [file]
 
     context = {
-        'class_name': "Kampagne",
+        'campaign': campaign,
         'form': form,
-        'new': False,
-        'url': reverse('main:edit_campaign', kwargs={'campaign_id': campaign_id})
+        'api_form': api_form,
+        'folders': folders
     }
-    return render(request, 'main/simple_form.html', context)
+    return render(request, 'main/edit_campaign.html', context)
 
 def new_client(request):
     if request.method == 'POST':

@@ -30,56 +30,59 @@
     <div class="title" style="grid-area: campaign_title">
       Aktive Kampagnen
     </div>
-    <div id="campaign_container">
+    <div id="active_campaign_container">
       {% for campaign in campaigns %}
-        <div class="campaign_container" data-campaign_id="{{ campaign.id }}">
-          <div class="campaign_client">
-            {{ campaign.client.name }}
+        {% if campaign.is_active %}
+          <div class="active_campaign" data-campaign_id="{{ campaign.id }}">
+            <div class="campaign_client">
+              {{ campaign.client.name }}
+            </div>
+            <div class="campaign_name">
+              {{ campaign.name }}
+            </div>
+            <div class="campaign_runtime">
+              {{ campaign.runtime_string }}
+            </div>
+            <div class="campaign_budget">
+              € {{ campaign.daily_budget }}
+            </div>
           </div>
-          <div class="campaign_desc">
-            {{ campaign.desc }}
-          </div>
-          <div class="campaign_runtime">
-            {{ campaign.runtime_string }}
-          </div>
-          <div class="campaign_budget">
-            € {{ campaign.daily_budget }}
-          </div>
-        </div>
+        {% endif %}
       {% endfor %}
     </div>
     <div id="client_title">
       <div class="title" style="grid-column: 2">
-        Aufgaben nach Kunde
+        Kampagnen-Übersicht
       </div>
       <img src="{% static 'tracker/images/new_icon.png' %}" id="new_icon">
     </div>
     
     
-    <div id="client_container">
-      {% for client in clients %}
-        <div class="client_container" data-clientid="{{ client.id }}">
-          <div class="client_name">{{ client.name }}</div>
-          <div class="client_campaign_container">
-            {% for campaign in client.relevant_campaigns %}
-              <div class="client_campaign" data-campaign_id="{{ campaign.id }}">
-                <div class="client_campaign_text">
-                  {{ campaign.runtime_string }}  (€{{ campaign.daily_budget }})
-                </div>
-                <div class="client_campaign_text">
-                  {{ campaign.status|safe }}
-                </div>
-              </div>
-            {% empty %}
-             {# Gibt keine Tasks #}
-            {% endfor %}
+    <div id="campaign_container">
+      {% for campaign in campaigns %}
+        <div class="campaign" data-campaign_id="{{ campaign.id }}">
+          <div class="title">{{ campaign.name }}</div>
+          <div class="badge" style="background-color:{{ campaign.status_color }}"></div>
+          <div class="text small">{{ campaign.client.name }}</div>
+          <div class="hard_sep"></div>
+          <div class="text">{{ campaign.date_string }}</div>
+          {% if not campaign.is_active %}
+            <div class="text">Dauer: {{ campaign.days }} Tage</div>
+          {% endif %}
+          <div class="sep"></div>
+          <div class="text">Gesamtbudget: {{ campaign.budget }}€</div>
+          <div class="text">Restbudget: {{ campaign.budget_left|floatformat:2 }}€</div>
+          <div class="footer">
+            <div class="data footer_option">Daten</div>
+            <div class="workflow footer_option">Workflow</div>
           </div>
-          <div class="client_add_campaign" style="text-align: center;">
-            <button type="button" name="add_campaign" onclick="add_campaign({{ client.id }})">Neue Kampagne</button>
-          </div>
+          {% if not campaign.workflow.is_finalized %}
+            <div class="status">
+            </div>
+          {% endif %}
         </div>
       {% empty %}
-        Keine Clients gefunden
+        Keine Kampagnen gefunden
       {% endfor %}
     </div>
   </div>

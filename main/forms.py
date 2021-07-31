@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth import authenticate as dj_authenticate
 from django.core.exceptions import ValidationError
 from .models import Client, Campaign
+from .api_models import CampaignStats
 from users.models import Department
 from main.models import User, Assignee
 
@@ -52,12 +53,15 @@ class CampaignForm(forms.ModelForm):
 
     class Meta:
         model = Campaign
-        fields = ['desc', 'start_date', 'end_date', 'daily_budget']
+        fields = ['name', 'client', 'budget', 'campagion_budget', 'planned_start_date', 'days', 'api_id']
         labels = {
-            'desc': 'Beschreibung',
-            'start_date': 'Beginndatum',
-            'end_date': 'Enddatum',
-            'daily_budget': 'Tagesbudget'
+            'name': 'Name',
+            'client': 'Kunde',
+            'planned_start_date': 'Geplantes Startdatum',
+            'days': 'Dauer (in Tagen)',
+            'budget': 'Gesamtbudget',
+            'campagion_budget': 'Campagion-Budget',
+            'api_id': 'API-ID (optional)'
         }
     #Diese Render method wäre nice auf allen Forms zu haben :(
     def render(self):
@@ -65,7 +69,7 @@ class CampaignForm(forms.ModelForm):
         for field in self.fields.keys():
             html += f"""<div class="field_wrapper">
                         {self[field].errors}
-                        <label for="{self[field].id_for_label}">{self[field].label}:</label><br>
+                        <label for="{self[field].id_for_label}">{self[field].label}:</label>
                         {self[field]}
                     </div>"""
         return html
@@ -87,3 +91,30 @@ class LoginForm(forms.Form):
 
     def authenticate(self, request):
         return dj_authenticate(request, username=self.cleaned_data['username'], password=self.cleaned_data['password'])
+
+class CampaignDataForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(CampaignDataForm, self).__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.disabled = True
+
+    class Meta:
+        model = CampaignStats
+        fields = ['impressions', 'revenue', 'clicks', 'ctr', 'ecpm', 'ecpc']
+        labels = {
+            'revenue': 'Ausgaben (in €)',
+            'ctr': 'ctr',
+            'ecpm': 'ecpm',
+            'ecpc': 'ecpc'
+        }
+        widgets = {field:forms.TextInput() for field in fields}
+
+    def render(self):
+        html = ""
+        for field in self.fields.keys():
+            html += f"""<div class="field_wrapper">
+                        {self[field].errors}
+                        <label for="{self[field].id_for_label}">{self[field].label}:</label>
+                        {self[field]}
+                    </div>"""
+        return html

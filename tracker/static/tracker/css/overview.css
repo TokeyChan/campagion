@@ -18,7 +18,7 @@
   margin-right: 5px;
   background-color: #00b7e2;
 }
-#campaign_container {
+#active_campaign_container {
   flex-wrap: wrap;
   flex-direction: column;
   align-content: center;
@@ -28,14 +28,14 @@
   margin-left: 5px;
   background-color: #00b7e2;
 }
-#client_container {
+#campaign_container {
   border: 1px solid;
   grid-area: clients;
   background-image: linear-gradient(#00b7e2, #0b3a85);
   display: flex;
 }
-/* .client_container */
-.client_container {
+/* .campaign_container */
+.campaign {
   width: 250px;
   min-height: 250px;
   background-color: #78e5ff;
@@ -44,40 +44,86 @@
   border-radius: 10px;
   box-shadow: 3px 10px 12px #464444;
   transition: all 0.15s ease-in-out;
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: 30px 1fr 30px;
+  position: relative;
+  overflow: hidden;
 }
-.client_campaign:hover {
-  filter: brightness(90%);
-  cursor: pointer;
-}
-.client_name {
-  width: 100%;
+.campaign .title {
+  line-height: 25px;
   text-align: center;
-  margin-top: 5px;
   font-size: 20px;
+  margin-bottom: 0px;
+  height: 20px;
 }
-.client_campaign {
-  margin: 5%;
-  transition: all 0.15s ease-in-out;
-  min-height: 80px;
-  text-align: center;
-  font-size: 17px;
-  border-radius: 5px;
-  line-height: 18px;
-  transition: all 0.15s ease-in-out;
-  background-color: #4eddff;
-  border: 1px solid #505050;
-  padding: 5px;
-  padding-top: 10px;
+.campaign .badge {
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  height: 30px;
+  width: 30px;
 }
-.client_campaign_text {
+.campaign .text {
   text-align: center;
+  font-size: 18px;
   margin-top: 5px;
+}
+.campaign .text.small {
+  font-size: 14px;
+}
+.campaign .hard_sep {
+  height: 1px;
+  background-color: black;
+  width: 100%;
+}
+.campaign .sep {
+  height: 0.5px;
+  background-color: #535353;
+  width: 80%;
+  margin-left: 10%;
+  margin-right: 10%;
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+.campaign .footer {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  height: 35px;
+  background-color: #b8b8b8;
+  width: 100%;
+  border-top: 1px solid #696969;
+}
+.footer_option:hover {
+  cursor: pointer;
+  background-color: #a6a6a6;
+}
+.footer_option {
+  position: absolute;
+  width: 50%;
+  height: 100%;
+  border-right: 1px solid #696969;
+  text-align: center;
+  line-height: 35px;
+}
+.campaign .footer .data {
+  left: 0px;
+}
+.campaign .footer .workflow {
+  right: 0px;
+}
+.campaign .status {
+  background-color: #71d4ec;
+  width: 90%;
+  min-height: 60px;
+  border: 1px solid #6e6e6e;
+  margin-left: 5%;
+  margin-right: 5%;
+  margin-top: 5px;
+}
+.campaign .status .task {
+  height: 20px;
 }
 /* .task_container */
-.task_container, .campaign_container {
+.task_container, .active_campaign {
   height: 25px;
   line-height: 25px;
   background-color: #fff;
@@ -87,7 +133,7 @@
   display: grid;
   transition: all 0.15s ease-in-out;
 }
-.task_container:hover, .campaign_container:hover {
+.task_container:hover, .active_campaign:hover {
   filter: brightness(90%);
   cursor: pointer;
 }
@@ -110,10 +156,10 @@
 }
 
 /* .campaign_container */
-.campaign_container {
+.active_campaign {
   grid-template-columns: 30fr 20fr 30fr 20fr;
   grid-template-rows: 1fr;
-  grid-template-areas: "client desc runtime budget"
+  grid-template-areas: "client name runtime budget"
 }
 .campaign_client {
   grid-area: client;
@@ -127,9 +173,9 @@
   grid-area: budget;
   text-align: center;
 }
-.campaign_desc {
+.campaign_name {
   text-align: center;
-  grid-area: desc;
+  grid-area: name;
 }
 /* stuff */
 .title {
