@@ -100,6 +100,23 @@ def calc_dates(task): #auch recursive, geht nur, wenn der Workflow aktiv ist
     task.save()
     return task.due_date
 
+def find_path(start_task, destination_task):
+    if start_task == destination_task:
+        return [start_task]
+    results = []
+    for task in start_task.parent_tasks():
+        result = find_path(task, destination_task)
+        if result is not None:
+            results.append(result)
+    if len(results) == 0:
+        return None
+    elif len(results) == 1:
+        results[0].append(start_task)
+        return results[0]
+    else:
+        return [results, start_task]
+        
+
 class Workflow(models.Model):
     campaign = models.OneToOneField(Campaign, on_delete=models.CASCADE)
     start_date = models.DateTimeField(null=True, blank=True)
@@ -113,6 +130,23 @@ class Workflow(models.Model):
         self.start_date = datetime.now()
         self.save()
         send_task_mail(first_task)
+
+    def add_fallback_task(self, task):
+        fallback = task.fallback_task
+        if fallback is None:
+            raise TypeError("Given Task does not have a Fallback-Task")
+        paths = find_path(task, fallback)
+        
+        children = task.child_nodes()
+
+        
+        for i in range(len(paths)):
+            item = paths[i]
+            if isinstance(item, list):
+                pass
+            else:
+                pass
+
 
     def complete_task(self, request, task):
         task.completion_date = datetime.now()
@@ -209,7 +243,9 @@ class Workflow(models.Model):
             l = Line()
             l.from_node = nodes[line.from_node.id]
             l.to_node = nodes[line.to_node.id]
-            l.save()
+            l.save() 
+
+        
 
 class Template(models.Model):
     name = models.CharField(max_length=100)
@@ -339,6 +375,13 @@ class Task(models.Model):
 
     def assigned_user(self):
         return self.workflow.campaign.assignee_set.get(department=self.milestone.department).user
+
+    def copy(self):
+        t = Task(workflow=self.workflow, template=self.template, milestone=self.milestone, fallback_task=self.fallback_task)
+        t.save()
+        n = Node(task=t, left=0, top=0)
+        n.save()
+        return t
 
 class Node(models.Model):
     task = models.OneToOneField(Task, on_delete=models.CASCADE)

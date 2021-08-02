@@ -52,7 +52,8 @@ def workflow(request, campaign_id):
             task = Task.objects.get(id=int(request.POST['task_id']))
             if request.user != task.assigned_user():
                 return HttpResponseForbidden()
-            return None
+            campaign.workflow.add_fallback_task(task)
+            return redirect('tracker:workflow', campaign_id=campaign_id)
         elif request.POST['action'] == 'OPEN_DESIGN':
             return redirect('tracker:design_workflow', campaign_id=campaign_id)
         elif request.POST['action'] == 'CHOOSE_TEMPLATE':
