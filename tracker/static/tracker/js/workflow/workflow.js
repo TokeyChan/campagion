@@ -50,10 +50,14 @@ function populate_tasks(canvas) {
         if (task['due_date'] < new Date().getTime()) {
           millis = new Date().getTime() - task['start_date'];
         } else {
-          millis = task['due_date'] - task['start_date']
+          millis = task['due_date'] - task['start_date'];
         }
       } else {
-        millis = task['due_date'] - task['start_date'];
+        if (task['due_date'] < new Date().getTime()) {
+          millis = new Date().getTime() - task['start_date'];
+        } else {
+          millis = task['due_date'] - task['start_date'];
+        }
       }
     } else {
       millis = task['due_date'] - task['planned_start_date'];
@@ -78,7 +82,8 @@ function enable_active_task_buttons() {
     button.addEventListener("click", () => {
       if (button.classList.contains('disabled'))
         return;
-      document.getElementById("post_form_action").value = "FINISH_TASK";
+      
+      document.getElementById("post_form_action").value = button.dataset.action == 'finish' ? "FINISH_TASK" : "RESET_TASK";
       document.getElementById("post_form_task_id").value = button.dataset.task_id;
       document.getElementById("post_form").submit();
     });

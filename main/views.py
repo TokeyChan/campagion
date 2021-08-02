@@ -13,6 +13,7 @@ from main.contrib.utils import Module
 from tracker.models import Workflow
 from main.forms import ClientForm
 from .forms import CampaignForm, LoginForm, ClientForm, CampaignDataForm
+from django.contrib import messages
 
 from datetime import datetime, timedelta
 # Create your views here.
@@ -56,10 +57,24 @@ def new_campaign(request):
 def edit_campaign(request, campaign_id):
     campaign = Campaign.objects.get(id=campaign_id)
     if request.method == 'POST':
-        form = CampaignForm(request.POST, instance=campaign)
+        action = request.POST.get('action', None)
+        if action == 'SAVE_CAMPAIGN':
+            form = CampaignForm(request.POST, instance=campaign)
 
-        if form.is_valid():
-            form.save()
+            if form.is_valid():
+                form.save()
+                return redirect('main:edit_campaign', campaign_id=campaign_id)
+        elif action == 'START_CAMPAIGN':
+            campaign.start_date = datetime.now()
+            campaign.status = Campaign.Status.ACTIVE
+            campaign.save()
+            messages.success(request, "Die Kampagne wurde erfolgreich gestartet")
+            return redirect('main:edit_campaign', campaign_id=campaign_id)
+        elif action == 'END_CAMPAIGN':
+            campaign.end_date = datetime.now()
+            campaign.status = Campaign.Status.FINISHED
+            campaign.save()
+            messages.success(request, "Die Kampagne wurde erfolgreich beendet")
             return redirect('main:edit_campaign', campaign_id=campaign_id)
     else:
         form = CampaignForm(instance=campaign)

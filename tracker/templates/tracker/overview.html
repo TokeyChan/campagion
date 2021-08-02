@@ -16,7 +16,7 @@
       {% for task in active_tasks %}
         <div class="task_container" data-task_id="{{ task.id }}">
           <div class="task_client">
-            {{ task.client.name }}
+            {{ task.workflow.campaign.name }}
           </div>
           <div class="task_due_date">
             {{ task.due_date_string }}
@@ -41,10 +41,10 @@
               {{ campaign.name }}
             </div>
             <div class="campaign_runtime">
-              {{ campaign.runtime_string }}
+              {{ campaign.date_string }}
             </div>
             <div class="campaign_budget">
-              € {{ campaign.daily_budget }}
+              € {{ campaign.budget_left }}
             </div>
           </div>
         {% endif %}
@@ -76,8 +76,13 @@
             <div class="data footer_option">Daten</div>
             <div class="workflow footer_option">Workflow</div>
           </div>
-          {% if not campaign.workflow.is_finalized %}
+          {% if not campaign.workflow.is_finished %}
             <div class="status">
+              {% for task in campaign.workflow.active_tasks %}
+                <div class="status_text">
+                  {{ task.milestone.name }}{% if task.milestone.is_external %}(E){% endif %}
+                </div>
+              {% endfor %}
             </div>
           {% endif %}
         </div>

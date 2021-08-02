@@ -16,11 +16,10 @@ def overview(request):
         context = {
             #'clients': Client.objects.all(), #oder filter alle, die noch nicht fertig sind? (falls das je geht),
             'active_tasks': Task.objects.active_tasks(),
-            'campaigns': Campaign.objects.all()
+            'campaigns': Campaign.objects.all().order_by('status')
         }
         return render(request, 'tracker/overview.html', context)
     else:
-        print(request.POST)
         if request.POST['action'] == 'REDIRECT':
             destination = request.POST['destination']
             if destination == 'WORKFLOW':
@@ -49,6 +48,11 @@ def workflow(request, campaign_id):
             class_ = task.milestone.completer.handler_class()
             completer = class_(request, task, reverse('tracker:workflow', kwargs={'campaign_id': campaign_id}))
             return completer.handle()
+        elif request.POST['action'] == 'RESET_TASK':
+            task = Task.objects.get(id=int(request.POST['task_id']))
+            if request.user != task.assigned_user():
+                return HttpResponseForbidden()
+            return None
         elif request.POST['action'] == 'OPEN_DESIGN':
             return redirect('tracker:design_workflow', campaign_id=campaign_id)
         elif request.POST['action'] == 'CHOOSE_TEMPLATE':

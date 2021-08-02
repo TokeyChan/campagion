@@ -18,6 +18,13 @@
   "dates"
   "canvas";
 }
+#active_task_button_container {
+  display: flex;
+}
+.active_task_button {
+  margin-left: 5px;
+  margin-right: 5px;
+}
 #active_task_container {
   display: grid;
   max-width: 80%;

@@ -23,6 +23,9 @@
                     Dateien und Dokumente
                 </div>
             {% endif %}
+            <div class="sidebar_menu noselect" onclick="change_view(this);" data-tag="progress">
+                Fortschritt
+            </div>
         </div>
         <div id="content_container">
             <div id="grunddaten_container" class="view_container" style="display: block;">
@@ -30,6 +33,7 @@
                 <div class="form_container">
                     <form action="{% if not new %}{% url 'main:edit_campaign' campaign.id %}{% else %}{% url 'main:new_campaign' %}{% endif %}" method="POST" id="grunddaten_form">
                         {{ form.render|safe }}
+                        <input type="text" name="action" value="SAVE_CAMPAIGN" hidden>
                         {% csrf_token %}
                     </form>
                 </div>
@@ -44,6 +48,8 @@
                     <form>
                         {{ api_form.render|safe }}
                     </form>
+                    {% else %}
+                        <p>Zu dieser Kampagne wurden noch keine API-Daten gefunden</p>
                     {% endif %}
                 </div>
             </div>
@@ -64,6 +70,27 @@
                     </iframe>
                 </div>
             </div>
+            <div id="progress_container" class="view_container" style="display: none;">
+                <div class="title">Fortschritt</div>
+                <div class="progress" style="{% if campaign.id is not None %}background-color: #32cf4e{% endif %}">Kampagne erstellt</div>
+                <div class="progress" style="{% if campaign.workflow.is_started %}background-color: #32cf4e{% endif %}">Workflow gestartet</div>
+                <div class="progress" style="{% if campaign.workflow.is_finished %}background-color: #32cf4e{% endif %}">Workflow abgeschlossen</div>
+                <div class="progress" style="{% if campaign.is_started %}background-color: #32cf4e{% endif %}">Kampagne gestartet</div>
+                <div class="progress" style="{% if campaign.has_ended %}background-color: #32cf4e{% endif %}">Kampagne beendet</div>
+                <div id="button_container">
+                    {% if campaign.workflow.is_finished %}
+                        {% if not campaign.is_started %}
+                            <div class="button" onclick="post('START_CAMPAIGN');">
+                                Kampagne starten
+                            </div>
+                        {% elif not campaign.has_ended %}
+                            <div class="button" onclick="post('END_CAMPAIGN');">
+                                Kampagne beenden
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
         </div>
         <div id="hidden_div" hidden>
             {% for folder, files in folders.items %}
@@ -75,6 +102,15 @@
             {% endfor %}
         </div>
     </div>
+{% endblock %}
+
+{% block forms %}
+    {% if not new %}
+        <form action="{% url 'main:edit_campaign' campaign.id %}" method="POST" id="button_form">
+            {% csrf_token %}
+            <input type="text" name="action" id="input_action">
+        </form>
+    {% endif %}
 {% endblock %}
 
 {% block popup_title %}Kunde erstellen{% endblock %}

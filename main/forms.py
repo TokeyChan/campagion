@@ -11,7 +11,10 @@ from main.models import User, Assignee
 class CampaignForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(CampaignForm, self).__init__(*args, **kwargs)
-        self.addons = {'client': f"<div class='form_addon'><img src='{staticfiles_storage.url('main/images/plus.png')}' id='add_client'></img></div>"}
+        self.addons = {
+            'client': f"<div class='form_addon'><img src='{staticfiles_storage.url('main/images/plus.png')}' id='add_client'></img></div>",
+            'planned_start_date': "<div class='form_addon'>(YYYY-MM-DD)</div>"
+            }
 
         for department in Department.objects.all():
 

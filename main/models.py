@@ -54,6 +54,9 @@ class Client(models.Model):
 def get_upload_to(campaign, filename):
     return f"contracts/{campaign.client.id}/{filename}"
 
+def get_planned_start_date():
+    return datetime.now() + timedelta(days=21)
+
 class Campaign(models.Model):
     class Status(models.IntegerChoices):
         PRE_ACTIVE = 1
@@ -62,7 +65,7 @@ class Campaign(models.Model):
 
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
-    planned_start_date = models.DateField(null=True, blank=True, default=datetime.now)
+    planned_start_date = models.DateField(null=True, blank=True, default=get_planned_start_date)
     start_date = models.DateField(null=True, blank=True)
     end_date = models.DateField(null=True, blank=True)
     budget = models.DecimalField(decimal_places=2, max_digits=10)
@@ -74,6 +77,12 @@ class Campaign(models.Model):
 
     def __str__(self):
         return self.name
+
+    def is_started(self):
+        return self.start_date is not None
+
+    def has_ended(self):
+        return self.end_date is not None
 
     def runtime_string(self):
         if self.start_date == None or self.end_date == None:
@@ -96,7 +105,7 @@ class Campaign(models.Model):
         elif self.status == Campaign.Status.ACTIVE:
             return "#63de2f"
         else:
-            return "#999999"
+            return "#a8a8a8"
 
     def date_string(self):
         if self.status == Campaign.Status.PRE_ACTIVE:

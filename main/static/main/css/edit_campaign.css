@@ -2,7 +2,7 @@
     display: grid;
     grid-template-columns: 225px 1fr;
     grid-template-areas: "sidebar content";
-    min-height: 75vh;
+    min-height: 645px;
     margin-top: 20px;
     background-color: #d7f0f4;
     border-radius: 15px;
@@ -59,7 +59,6 @@
 }
 .form_addon {
     display: inline;
-    width: 20px;
     height: 20px;
 }
 .form_addon img {
@@ -68,7 +67,7 @@
 }
 .widget_wrapper {
     display: inline-grid;
-    grid-template-columns: 1fr 10px 20px;
+    grid-template-columns: 1fr 10px 1fr;
 }
 
 #button_container {
@@ -120,4 +119,17 @@
     height: calc(100% - 30px);
     margin: 15px;
     border: 1px solid black;
+}
+
+/* Progress */
+
+.progress {
+    height: 50px;
+    margin: 10px;
+    margin-left: 30px;
+    margin-right: 30px;
+    background-color: lightgray;
+    text-align: center;
+    font-size: 25px;
+    line-height: 50px;
 }

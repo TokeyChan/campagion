@@ -64,6 +64,7 @@ class Milestone(models.Model):
                 </div>
                 <span class='dot left'></span>
                 <span class='dot right'></span>
+                <span class='dot bottom'></span>
             </div>
             """
 
@@ -131,6 +132,7 @@ class Workflow(models.Model):
                 if request.user != child.assigned_user:
                     send_task_mail(child)
         
+        
 
     def calculate_tasks(self):
         started = self.is_started()
@@ -151,6 +153,9 @@ class Workflow(models.Model):
 
     def is_finished(self):
         return all(task.is_finished() for task in self.task_set.all()) and self.is_started()
+    
+    def is_started(self):
+        return self.start_date is not None
 
     def active_tasks(self):
         return [task for task in self.task_set.all() if task.is_active()]
@@ -162,7 +167,7 @@ class Workflow(models.Model):
                 continue #Das geht in Zukunft gar nicht
             obj['tasks'].append(task.to_json(with_node=True))
             for line in task.node.outgoing_lines.all():
-                obj['lines'].append({'id': line.id, 'from': line.from_node.task.id, 'to': line.to_node.task.id})
+                obj['lines'].append({'id': line.id, 'from': line.from_node.task.id, 'to': line.to_node.task.id, 'is_fallback': line.is_fallback})
         return json.dumps(obj)
 
     def get_lines(self):
@@ -254,6 +259,7 @@ class Task(models.Model):
     due_date = models.DateTimeField(null=True, blank=True)
     completion_date = models.DateTimeField(null=True, blank=True)
     uploaded_file = models.FileField(null=True, blank=True, upload_to=get_upload_to)
+    fallback_task = models.ForeignKey("Task", on_delete=models.SET_NULL, null=True, blank=True)
 
     objects = TaskManager()
 
@@ -329,7 +335,7 @@ class Task(models.Model):
         return [node.task for node in self.child_nodes()]
 
     def parent_tasks(self):
-        return [line.from_node.task for line in self.node.incoming_lines.all()]
+        return [line.from_node.task for line in self.node.incoming_lines.filter(is_fallback=False)]
 
     def assigned_user(self):
         return self.workflow.campaign.assignee_set.get(department=self.milestone.department).user
@@ -342,6 +348,7 @@ class Node(models.Model):
 class Line(models.Model):
     from_node = models.ForeignKey(Node, on_delete=models.CASCADE, related_name="outgoing_lines")
     to_node = models.ForeignKey(Node, on_delete=models.CASCADE, related_name="incoming_lines")
+    is_fallback = models.BooleanField(default=False)
 
 #class ControlPoint(models.Model):
 #   line = models.ForeignKey(Line, on_delete=models.CASCADE)

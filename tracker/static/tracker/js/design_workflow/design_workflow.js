@@ -104,9 +104,10 @@ function create_bezier_line(line) {
 
   let bezier = new Bezier({
     'svg': document.getElementById("svg"),
-    'start_element': from.dot_right,
+    'start_element': line.is_fallback ? from.dot_bottom : from.dot_right,
     'end_element': to.dot_left,
-    'id': line.id
+    'id': line.id,
+    'fallback': line.is_fallback
   });
   beziers.push(bezier);
 }
@@ -132,6 +133,7 @@ function save_nodes() {
       'id': line.id,
       'from': from,
       'to': to,
+      'fallback': line.fallback
       //Hier Control Points hinzufügen
     });
   }

@@ -22,6 +22,7 @@ function change_view(sender) {
 
     let visible_container = Array.from(document.getElementsByClassName('view_container')).filter(t => t.style.display != "none")[0];
     visible_container.style.display = "none";
+
     switch (sender.dataset.tag) {
         case "grunddaten":
             document.getElementById('grunddaten_container').style.display = "block";
@@ -31,6 +32,9 @@ function change_view(sender) {
             break;
         case "files":
             document.getElementById('files_container').style.display = "grid";
+            break;
+        case "progress":
+            document.getElementById('progress_container').style.display = "block";
             break;
     }
 }
@@ -97,4 +101,9 @@ function on_post_response(response_text) {
         select.selectedIndex = option_count - 1;
         hide_popup();
     }
+}
+
+function post(action) {
+    document.getElementById('input_action').value = action;
+    document.getElementById('button_form').submit();
 }

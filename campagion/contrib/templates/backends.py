@@ -1,7 +1,21 @@
 from django.template.backends.django import DjangoTemplates, Template, reraise, TemplateDoesNotExist
+from django.template.engine import Engine
 from django.template.context import make_context
 from django.template.engine import Engine
 from django.template.loader_tags import ExtendsNode
+
+class CustomEngine(Engine):
+    def find_template(self, name, dirs=None, skip=None):
+        tried = []
+        print(name)
+        for loader in self.template_loaders:
+            try:
+                template = loader.get_template(name, skip=skip)
+                return template, template.origin
+            except TemplateDoesNotExist as e:
+                tried.extend(e.tried)
+        raise TemplateDoesNotExist(name, tried=tried)
+
 
 class CustomBackend(DjangoTemplates):
     def from_string(self, template_code):

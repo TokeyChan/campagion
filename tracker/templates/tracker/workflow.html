@@ -60,7 +60,12 @@
         <div class="active_task_text" style="grid-area: date">
           {{ task.date_string }}
         </div>
-        <div class="button active_task_button noselect{% if task.assigned_user != user %} disabled{% endif %}" style="grid-area: button" data-task_id="{{ task.id }}">Abschließen</div>
+        <div id="active_task_button_container">
+          {% if task.fallback_task is not None %}
+            <div class="button active_task_button noselect{% if task.assigned_user != user %} disabled{% endif %}" data-task_id="{{ task.id }}" data-action="reset">Zurücksetzen</div>
+          {% endif %}
+          <div class="button active_task_button noselect{% if task.assigned_user != user %} disabled{% endif %}" data-task_id="{{ task.id }}" data-action="finish">Abschließen</div>
+        </div>
       </div>
       {% endfor %}
     </div>

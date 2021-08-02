@@ -13,6 +13,7 @@ class Milestone
 
     this.dot_left = Array.from(this.element.getElementsByClassName("left"))[0];
     this.dot_right = Array.from(this.element.getElementsByClassName("right"))[0];
+    this.dot_bottom = Array.from(this.element.getElementsByClassName("bottom"))[0];
 
     this.in_the_air = false;
     this.mouse_is_down = false;
@@ -45,8 +46,9 @@ class Milestone
   add_event_listeners() {
     this.element.addEventListener('mousedown', (e) => {
       select_milestone(this);
-      if (e.pageX < (this.element.offsetLeft + 10) || e.pageX > (this.element.offsetLeft + this.element.offsetWidth - 10))
+      if (e.pageX < (this.element.offsetLeft + 10) || e.pageX > (this.element.offsetLeft + this.element.offsetWidth - 10) || e.pageY > (this.element.offsetTop + this.element.offsetHeight - 10))
         return;
+      console.log(e.pageY < (this.element.offsetTop + this.element.offsetHeight - 10));
       this.mouse_is_down = true;
       active_milestone = this;
       if (this.is_linked) {
@@ -73,6 +75,18 @@ class Milestone
         'start_element': this.dot_right,
         'endx': e.clientX,
         'endY': e.clientY
+      });
+      document.addEventListener('mousemove', draw_bezier);
+      document.addEventListener('mouseup', stop_draw_bezier);
+    });
+    this.dot_bottom.addEventListener('mousedown', (e) => {
+      active_milestone = this;
+      active_bezier = new Bezier({
+        'svg': document.getElementById('svg'),
+        'start_element': this.dot_bottom,
+        'endx': e.clientX,
+        'endY': e.clientY,
+        'fallback': true
       });
       document.addEventListener('mousemove', draw_bezier);
       document.addEventListener('mouseup', stop_draw_bezier);

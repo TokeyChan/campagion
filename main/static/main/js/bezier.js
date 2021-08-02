@@ -2,11 +2,12 @@ var selected_bezier;
 class Bezier {
   constructor(args) {
     //Notwendige Args: svg
-    //Mögliche args: startx, starty, endx, endy, start_element, end_element, id
+    //Mögliche args: startx, starty, endx, endy, start_element, end_element, id, fallback (bool)
     // drawing
     this.path = null;
     this.id = args.id || null;
     this.svg = args.svg;
+    this.fallback = args.fallback || false;
     if (args.start_element == null) {
       this.startx = args.startx;
       this.starty = args.starty;
@@ -95,7 +96,7 @@ class Bezier {
   create() {
     this.path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     this.path.setAttribute("d", this.creation_string);
-    this.path.setAttribute("stroke", "green");
+    this.path.setAttribute("stroke", this.fallback ? "gray" : "green");
     this.path.setAttribute("stroke-width", "2");
     this.path.setAttribute("fill", "none");
     this.svg.appendChild(this.path);

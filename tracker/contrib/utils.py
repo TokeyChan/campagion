@@ -50,9 +50,14 @@ def handle_node_data(data, owner):
                 line = Line()
         else:
             line = Line()
+        line.is_fallback = obj['fallback']
         line.from_node = nodes[obj['from']]
         line.to_node = nodes[obj['to']]
         line.save()
+
+        if line.is_fallback:
+            line.from_node.task.fallback_task = line.to_node.task
+            line.from_node.task.save()
 
     for task in present_tasks.items():
         task[1].delete()
