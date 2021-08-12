@@ -1,0 +1,14 @@
+#main_container {
+    display: grid;
+    grid-template-rows: 40px 1fr;
+    grid-template-columns: 1fr;
+    grid-template-areas: "title content";
+}
+#client_container {
+    grid-area: content;
+    background-color: #d7f0f4;
+    min-height: 500px;
+}
+.client {
+
+}

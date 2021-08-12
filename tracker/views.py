@@ -53,6 +53,7 @@ def workflow(request, campaign_id):
             if request.user != task.assigned_user():
                 return HttpResponseForbidden()
             campaign.workflow.add_fallback_task(task)
+            return
             return redirect('tracker:workflow', campaign_id=campaign_id)
         elif request.POST['action'] == 'OPEN_DESIGN':
             return redirect('tracker:design_workflow', campaign_id=campaign_id)
@@ -113,7 +114,7 @@ def choose_template(request, campaign_id):
         t.delete()
         return redirect('tracker:choose_template', campaign_id=campaign_id)
     elif request.POST['action'] == 'NEW_TEMPLATE':
-        return redirect('tracker:new_template')
+        return redirect('tracker:new_template', campaign_id=campaign_id)
     elif request.POST['action'] == 'ABORT':
         return redirect('tracker:workflow', campaign_id=campaign_id)
 
@@ -133,20 +134,20 @@ def edit_template(request, template_id, campaign_id):
 
     return redirect('tracker:choose_template', campaign_id=campaign_id) # Hier irgendwie zum Choose Template zurück
 
-def new_template(request):
+def new_template(request, campaign_id):
     if request.method == 'POST':
         form = TemplateForm(request.POST)
 
         if form.is_valid():
             form.save()
-            return redirect('tracker:edit_template', template_id=form.instance.id)
+            return redirect('tracker:edit_template', template_id=form.instance.id, campaign_id=campaign_id)
     else:
         form = TemplateForm()
     context = {
         'class_name': 'Vorlage',
         'form': form,
         'new': True,
-        'url': reverse('tracker:new_template')
+        'url': reverse('tracker:new_template', kwargs={'campaign_id': campaign_id})
     }
     return render(request, 'main/simple_form.html', context)
 # END TEMPLATES

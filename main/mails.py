@@ -22,13 +22,16 @@ class Mail:
         
 
     def send(self):
-        send_mail(
-            self.subject,
-            self.text,
-            self.sender,
-            self.recipients,
-            fail_silently=False,
-            html_message=self.html
-        )
+        try:
+            send_mail(
+                self.subject,
+                self.text,
+                self.sender,
+                self.recipients,
+                fail_silently=False,
+                html_message=self.html
+            )
+        except:
+            pass
 
 

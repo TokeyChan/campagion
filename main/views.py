@@ -24,7 +24,8 @@ def index(request):
         context = {
             'modules': [
                 Module('tracker'),
-                Module('users')
+                Module('users'),
+                Module('main')
             ]
         }
         return render(request, 'main/index.html', context)
@@ -106,6 +107,12 @@ def edit_campaign(request, campaign_id):
         'client_form': ClientForm()
     }
     return render(request, 'main/edit_campaign.html', context)
+
+def clients(request):
+    context = {
+        'clients': Client.objects.all()
+    }
+    return render(request, 'main/clients.html', context)
 
 def new_client(request):
     if request.method == 'POST':

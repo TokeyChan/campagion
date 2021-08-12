@@ -100,22 +100,33 @@ def calc_dates(task): #auch recursive, geht nur, wenn der Workflow aktiv ist
     task.save()
     return task.due_date
 
-def find_path(start_task, destination_task):
-    if start_task == destination_task:
-        return [start_task]
-    results = []
-    for task in start_task.parent_tasks():
-        result = find_path(task, destination_task)
-        if result is not None:
-            results.append(result)
-    if len(results) == 0:
-        return None
-    elif len(results) == 1:
-        results[0].append(start_task)
-        return results[0]
-    else:
-        return [results, start_task]
+def find_paths(start_task, destination_task):
+    if destination_task == start_task:
+        return destination_task
+
+    results = {}
+
+    for task in start_task.child_tasks():
+        result = find_paths(task, destination_task)
         
+        if result == {}: #Kein Ergebnis
+            continue
+
+        if start_task in results:
+            results[start_task].append(result)
+        else:
+            results[start_task] = [result]
+
+    return results
+
+def create_tasks(workflow, paths):
+    if isinstance(paths, dict):
+        for key in paths.keys():
+            create_tasks(workflow, paths[key])
+    else:
+        for path in paths:
+            if path is not None:
+                create_tasks(workflow, path)
 
 class Workflow(models.Model):
     campaign = models.OneToOneField(Campaign, on_delete=models.CASCADE)
@@ -135,17 +146,10 @@ class Workflow(models.Model):
         fallback = task.fallback_task
         if fallback is None:
             raise TypeError("Given Task does not have a Fallback-Task")
-        paths = find_path(task, fallback)
-        
-        children = task.child_nodes()
+        paths = find_paths(fallback, task)
+        print(paths)
+        create_tasks(self, paths)
 
-        
-        for i in range(len(paths)):
-            item = paths[i]
-            if isinstance(item, list):
-                pass
-            else:
-                pass
 
 
     def complete_task(self, request, task):

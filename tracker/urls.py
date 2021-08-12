@@ -13,7 +13,7 @@ urlpatterns = [
     path('<int:campaign_id>/design/', views.design_workflow, name="design_workflow"),
     path('templates/<int:template_id>/<int:campaign_id>/', views.edit_template, name="edit_template"),
     path('templates/choose/<int:campaign_id>/', views.choose_template, name="choose_template"),
-    path('templates/new/', views.new_template, name="new_template"),
+    path('templates/new/<int:campaign_id>/', views.new_template, name="new_template"),
     path('uploads/new/<int:task_id>/', views.upload_file, name="upload_file"),
 
 

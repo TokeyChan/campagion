@@ -33,7 +33,8 @@ class Command(BaseCommand):
             self.create_milestones()
         elif options['only_departments']:
             self.create_departments()
-        else:        
+        else:
+            self.create_departments()
             self.create_completers()
             self.create_groups()
             self.create_milestones()
@@ -42,11 +43,13 @@ class Command(BaseCommand):
         completers = [
             Completer(
                 name = 'ClickCompleter',
-                handler = 'tracker.contrib.completers.ClickCompleter'
+                handler = 'tracker.contrib.completers.ClickCompleter',
+                explanation = 'Abschluss mit Klick'
             ),
             Completer(
                 name = 'UploadCompleter',
-                handler = 'tracker.contrib.completers.UploadCompleter'
+                handler = 'tracker.contrib.completers.UploadCompleter',
+                explanation = 'Abschluss mit Upload'
             )
         ]
 

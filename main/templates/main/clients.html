@@ -1,0 +1,23 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Kundenzone{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'main/css/clients.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div id="main_container">
+        <div class="title" style="grid-area: title;">
+            Kundenzone
+        </div>
+        <div id="client_container">
+            {% for client in clients %}
+                <div class="client">
+
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

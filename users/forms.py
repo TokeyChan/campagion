@@ -51,12 +51,16 @@ class DepartmentForm(forms.ModelForm):
         model = Department
         fields = ['name']
 
+def group_choices():
+    try:
+        return [(group.id, group.name) for group in PermissionGroup.objects.all()]
+    except: return []
 
 class InvitationForm(forms.Form):
     email = forms.EmailField(label="Bitte hier die E-Mail Adresse der einzuladenden Person eingeben")
     group = forms.IntegerField(
         label="Welcher Benutzergruppe soll dieser User angehören?",
-        widget=forms.Select(choices=[(group.id, group.name) for group in PermissionGroup.objects.all()]),
+        widget=forms.Select(choices=group_choices()),
     )
 
     def clean(self):
