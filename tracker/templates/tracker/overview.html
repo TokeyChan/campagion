@@ -14,17 +14,19 @@
     </div>
     <div id="task_container">
       {% for task in active_tasks %}
-        <div class="task_container" data-task_id="{{ task.id }}">
-          <div class="task_client">
-            {{ task.workflow.campaign.name }}
+        <a href="{% url 'tracker:workflow' task.workflow.campaign.id %}">
+          <div class="task_container" data-task_id="{{ task.id }}">
+            <div class="task_client">
+              {{ task.workflow.campaign.name }}
+            </div>
+            <div class="task_due_date">
+              {{ task.due_date_string }}
+            </div>
+            <div class="task_name">
+              {{ task.milestone.name }}
+            </div>
           </div>
-          <div class="task_due_date">
-            {{ task.due_date_string }}
-          </div>
-          <div class="task_name">
-            {{ task.milestone.name }}
-          </div>
-        </div>
+        </a>
       {% endfor %}
     </div>
     <div class="title" style="grid-area: campaign_title">

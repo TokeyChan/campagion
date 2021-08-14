@@ -287,6 +287,9 @@ class Task(models.Model):
         delta = self.due_date - datetime.now()
         days = delta.days
         hours = delta.seconds // 3600
+
+        if delta <= timedelta(0):
+            return f"Überfällig seit {abs(hours + days * 24)} Stunden"
         return f"{days} Tage und {hours} Stunden"
 
     def client(self):

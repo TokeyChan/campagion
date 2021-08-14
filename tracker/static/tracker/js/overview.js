@@ -37,6 +37,7 @@ function main()
       redirect_to("EDIT_CAMPAIGN", {'campaign_id': container.dataset.campaign_id});
     });
   }
+  /*
   var task_containers = Array.from(document.getElementsByClassName('task_container'));
   for (let task of task_containers) {
     task.addEventListener('click', () => {
@@ -45,6 +46,7 @@ function main()
       }
     });
   }
+  */
   new_campaign.addEventListener('click', () => {
     redirect_to("NEW_CAMPAIGN", {});
   });

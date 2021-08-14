@@ -18,6 +18,10 @@
   margin-right: 5px;
   background-color: #00b7e2;
 }
+#task_container a {
+  width: 100%;
+  
+}
 #active_campaign_container {
   flex-wrap: wrap;
   flex-direction: column;
@@ -140,7 +144,9 @@
 .task_container {
   grid-template-columns: 20fr 40fr 40fr;
   grid-template-rows: 1fr;
-  grid-template-areas: "client due_date task"
+  grid-template-areas: "client due_date task";
+  margin-left: 2.5%;
+  margin-right: 2.5%;
 }
 .task_client {
   grid-area: client;

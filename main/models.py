@@ -86,9 +86,18 @@ class Campaign(models.Model):
         return self.end_date is not None
 
     def runtime_string(self):
-        if self.start_date == None or self.end_date == None:
+        start, end, is_plan = None, None, True
+
+        if self.start_date == None and self.planned_start_date == None:
             return "Zeitraum noch unklar"
-        return self.start_date.strftime("%d.%m.%Y") + " - " + self.end_date.strftime("%d.%m.%Y")
+        elif self.start_date == None: #wenn es noch nicht gestartet ist, aber es einen planmäßigen Start gibt
+            start, end = self.planned_start_date, (self.planned_start_date + timedelta(days=self.days))
+        else:
+            start = self.start_date
+            end = self.end_date if self.end_date is not None else (self.start_date + timedelta(days=self.days))
+            is_plan = False
+
+        return start.strftime("%d.%m.%Y") + " - " + end.strftime("%d.%m.%Y")
 
     def is_relevant(self):
         return self.status == Campaign.Status.ACTIVE or self.status == Campaign.Status.PRE_ACTIVE

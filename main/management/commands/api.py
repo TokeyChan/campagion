@@ -33,7 +33,10 @@ class Command(BaseCommand):
         member = Member(settings.API_KEY)
 
         for campaign in campaigns:
-            c = member.get_campaign(campaign.name)
+            c = member.get_campaign(id=campaign.api_id) if campaign.api_id is not None else member.get_campaign(name=campaign.name)
+            if c is None:
+                continue
+
             if campaign.data is None:
                 data = CampaignData()
                 data.create(c.data)

@@ -6,7 +6,7 @@ class MainConfig(AppConfig):
     name = 'main'
 
 def img_path():
-    return ""
+    return "/main/images/clients.png"
 
 title = "Kundenzone"
 home_view = "main:clients"
