@@ -137,9 +137,9 @@ def edit_client(request, client_id):
         form = ClientForm(request.POST, instance=client)
         if form.is_valid():
             form.save()
-            return redirect('tracker:overview')
+            return redirect('main:clients')
     else:
-        form = ClientForm()
+        form = ClientForm(instance=client)
     
     context = {
         'class_name': 'Kunde',
@@ -147,6 +147,7 @@ def edit_client(request, client_id):
         'new': False,
         'url': reverse('main:edit_client', kwargs={'client_id': client_id})
     }
+    return render(request, 'main/simple_form.html', context)
 
 def post_handler(request):
     if request.method == 'GET':

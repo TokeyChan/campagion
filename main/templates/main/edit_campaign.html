@@ -88,6 +88,12 @@
                                 Kampagne beenden
                             </div>
                         {% endif %}
+                    {% elif campaign.workflow.is_active %}
+                        <a href="{% url 'tracker:workflow' campaign.id %}">
+                            <div class="button">
+                                Workflow öffnen
+                            </div>
+                        </a>
                     {% endif %}
                 </div>
             </div>

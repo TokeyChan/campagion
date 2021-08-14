@@ -100,34 +100,6 @@ def calc_dates(task): #auch recursive, geht nur, wenn der Workflow aktiv ist
     task.save()
     return task.due_date
 
-def find_paths(start_task, destination_task):
-    if destination_task == start_task:
-        return destination_task
-
-    results = {}
-
-    for task in start_task.child_tasks():
-        result = find_paths(task, destination_task)
-        
-        if result == {}: #Kein Ergebnis
-            continue
-
-        if start_task in results:
-            results[start_task].append(result)
-        else:
-            results[start_task] = [result]
-
-    return results
-
-def create_tasks(workflow, paths):
-    if isinstance(paths, dict):
-        for key in paths.keys():
-            create_tasks(workflow, paths[key])
-    else:
-        for path in paths:
-            if path is not None:
-                create_tasks(workflow, path)
-
 class Workflow(models.Model):
     campaign = models.OneToOneField(Campaign, on_delete=models.CASCADE)
     start_date = models.DateTimeField(null=True, blank=True)
@@ -141,16 +113,6 @@ class Workflow(models.Model):
         self.start_date = datetime.now()
         self.save()
         send_task_mail(first_task)
-
-    def add_fallback_task(self, task):
-        fallback = task.fallback_task
-        if fallback is None:
-            raise TypeError("Given Task does not have a Fallback-Task")
-        paths = find_paths(fallback, task)
-        print(paths)
-        create_tasks(self, paths)
-
-
 
     def complete_task(self, request, task):
         task.completion_date = datetime.now()
@@ -216,6 +178,9 @@ class Workflow(models.Model):
 
     def is_started(self):
         return self.start_date != None
+
+    def is_active(self):
+        return self.is_started() and not self.is_finished()
 
     def last_relevant_date(self):
         try:

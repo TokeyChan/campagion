@@ -164,3 +164,7 @@ path.selected {
 .message.warning {
   background-color: #ecf23f;
 }
+a {
+  color: black;
+  text-decoration: none;
+}

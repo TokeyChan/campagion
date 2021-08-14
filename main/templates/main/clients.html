@@ -15,7 +15,23 @@
         <div id="client_container">
             {% for client in clients %}
                 <div class="client">
-
+                    <div class="name">{{ client.name }}</div>
+                    <div class="data">{{ client.contact_name|default:"" }}</div>
+                    <div class="data">{{ client.phone|default:"" }}</div>
+                    <div class="data">{{ client.email|default:"" }}</div>
+                    {% if client.relevant_campaigns|length != 0 %}
+                        <div class="subtitle">Kampagnen</div>
+                        <div class="sep"></div>
+                    {% endif %}
+                    
+                    {% for campaign in client.relevant_campaigns %}
+                    <a href="{% url 'main:edit_campaign' campaign.id %}"><div class="campaign">{{ campaign.name }}</div></a>
+                    {% endfor %}
+                    <div class="edit">
+                        <a href="{% url 'main:edit_client' client.id %}">
+                            <img src="{% static 'tracker/images/settings_icon.png' %}" width="35px" height="35px">
+                        </a>
+                    </div>
                 </div>
             {% endfor %}
         </div>

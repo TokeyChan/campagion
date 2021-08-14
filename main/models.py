@@ -91,7 +91,7 @@ class Campaign(models.Model):
         return self.start_date.strftime("%d.%m.%Y") + " - " + self.end_date.strftime("%d.%m.%Y")
 
     def is_relevant(self):
-        return (self.end_date > datetime.now().date()) if self.end_date != None else True
+        return self.status == Campaign.Status.ACTIVE or self.status == Campaign.Status.PRE_ACTIVE
 
     def is_active(self):
         return self.status == Campaign.Status.ACTIVE
