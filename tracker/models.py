@@ -5,6 +5,7 @@ import json
 from datetime import datetime, timedelta
 from importlib import import_module
 from tracker.mails import send_task_mail
+from tracker.contrib.fallback_creator import FallbackCreator
 # Create your models here.
 
 class Completer(models.Model):
@@ -131,7 +132,10 @@ class Workflow(models.Model):
                 child.start()
                 if request.user != child.assigned_user:
                     send_task_mail(child)
-        
+    
+    def add_fallback_task(self, task):
+        fb = FallbackCreator(self, task)
+        fb.create()
         
 
     def calculate_tasks(self):
@@ -349,11 +353,15 @@ class Task(models.Model):
         return self.workflow.campaign.assignee_set.get(department=self.milestone.department).user
 
     def copy(self):
-        t = Task(workflow=self.workflow, template=self.template, milestone=self.milestone, fallback_task=self.fallback_task)
+        t = Task(workflow=self.workflow, template=self.template, milestone=self.milestone, fallback_task=self.fallback_task, planned_start_date=datetime.now())
         t.save()
         n = Node(task=t, left=0, top=0)
         n.save()
         return t
+
+    def connect_to(self, task):
+        l = Line(from_node=self.node, to_node=task.node)
+        l.save()
 
 class Node(models.Model):
     task = models.OneToOneField(Task, on_delete=models.CASCADE)

@@ -72,7 +72,7 @@ class Campaign(models.Model):
     budget = models.DecimalField(decimal_places=2, max_digits=10)
     campagion_budget = models.DecimalField(decimal_places=2, max_digits=10)
     days = models.IntegerField()
-    data = models.OneToOneField("CampaignData", on_delete=models.CASCADE, null=True, blank=True)
+    data = models.OneToOneField("CampaignData", on_delete=models.SET_NULL, null=True, blank=True)
     api_id = models.IntegerField(null=True, blank=True)
     status = models.IntegerField(choices=Status.choices, default=Status.PRE_ACTIVE)
 
