@@ -115,7 +115,7 @@ class Campaign(models.Model):
         elif self.status == Campaign.Status.ACTIVE:
             return "#63de2f"
         else:
-            return "#a8a8a8"
+            return "#bababa"
 
     def date_string(self):
         if self.status == Campaign.Status.PRE_ACTIVE:

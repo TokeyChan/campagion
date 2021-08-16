@@ -9,7 +9,7 @@ class Completer:
         self.request = request
 
     def complete(self):
-        self.task.workflow.complete_task(self.request, self.task)
+        self.task.workflow.complete_task(self.task)
     
 class ClickCompleter(Completer):
     def handle(self):

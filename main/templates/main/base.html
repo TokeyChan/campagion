@@ -14,9 +14,9 @@
   <body>
     <div id="base_header">
       {% if ACTIVE_MODULE is not None %}
-        <img src="{% static 'main/images/house.png' %}" id="house">
+        <a href="{% url ACTIVE_MODULE.home_view %}"><img src="{% static 'main/images/house.png' %}" id="house"></a>
       {% endif %}
-      <img src="{% static 'main/images/campagion_logo.png'%}" id="logo">
+      <a href="{% url 'main:index' %}"><img src="{% static 'main/images/campagion_logo.png'%}" id="logo"></a>
       <img src="{% static 'main/images/exit_icon.png' %}" id="exit">
     </div>
     <div id="base_main_container">

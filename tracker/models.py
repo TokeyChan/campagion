@@ -115,7 +115,7 @@ class Workflow(models.Model):
         self.save()
         send_task_mail(first_task)
 
-    def complete_task(self, request, task):
+    def complete_task(self, task):
         task.completion_date = datetime.now()
         task.save()
 
@@ -130,12 +130,13 @@ class Workflow(models.Model):
                     break
             if start_possible:
                 child.start()
-                if request.user != child.assigned_user:
+                if task.assigned_user != child.assigned_user:
                     send_task_mail(child)
     
     def add_fallback_task(self, task):
         fb = FallbackCreator(self, task)
         fb.create()
+        self.complete_task(task)
         
 
     def calculate_tasks(self):
@@ -294,6 +295,8 @@ class Task(models.Model):
 
         if delta <= timedelta(0):
             return f"Überfällig seit {abs(hours + days * 24)} Stunden"
+        if days == 0:
+            return f"{hours} Stunden"
         return f"{days} Tage und {hours} Stunden"
 
     def client(self):
@@ -355,7 +358,7 @@ class Task(models.Model):
     def copy(self):
         t = Task(workflow=self.workflow, template=self.template, milestone=self.milestone, fallback_task=self.fallback_task, planned_start_date=datetime.now())
         t.save()
-        n = Node(task=t, left=0, top=0)
+        n = Node(task=t, left=self.node.left + 10, top=self.node.top + 10)
         n.save()
         return t
 

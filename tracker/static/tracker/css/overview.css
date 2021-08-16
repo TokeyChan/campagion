@@ -37,6 +37,8 @@
   grid-area: clients;
   background-image: linear-gradient(#00b7e2, #0b3a85);
   display: flex;
+  flex-wrap: wrap;
+  max-width: 100%;
 }
 /* .campaign_container */
 .campaign {
