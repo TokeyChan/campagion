@@ -144,7 +144,7 @@
   cursor: pointer;
 }
 .task_container {
-  grid-template-columns: 20fr 40fr 40fr;
+  grid-template-columns: 30fr 30fr 40fr;
   grid-template-rows: 1fr;
   grid-template-areas: "client due_date task";
   margin-left: 2.5%;

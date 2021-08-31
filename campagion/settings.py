@@ -31,6 +31,7 @@ API_KEY = config('API_KEY')
 DEBUG = True
 
 ALLOWED_HOSTS = ["localhost", "185.164.7.182"]
+
 HOST_NAME = "http://localhost:8000" if DEBUG else "https://dashboard.campagion.com"
 
 # Application definition
@@ -44,7 +45,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'main.apps.MainConfig',
     'tracker.apps.TrackerConfig',
-    'users.apps.UsersConfig'
+    'users.apps.UsersConfig',
+    #'administration.apps.AdministrationConfig'
 ]
 
 MIDDLEWARE = [

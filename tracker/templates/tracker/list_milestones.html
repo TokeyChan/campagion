@@ -1,0 +1,23 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Meilensteine{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'tracker/css/list_milestones.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="title">Meilensteine</div>
+    <div id="milestone_container">
+        {% for milestone in milestones %}
+            <div class="milestone">
+                <a href="{% url 'tracker:edit_milestone' milestone.id %}">
+                    <div class="milestone_title">{{ milestone.name }}</div>
+                    <div class="milestone_data">{% if milestone.is_external %}Extern{% else %}{{ milestone.hours }}h{% endif %}</div>
+                    <div class="milestone_data">{{ milestone.department }}</div>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

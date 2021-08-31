@@ -8,11 +8,11 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 
 class LoginForm(forms.Form):
-    email = forms.CharField(max_length=50)
+    username = forms.CharField(max_length=50, label="E-Mail")
     password = forms.CharField(max_length=100, widget=forms.PasswordInput)
 
     def authenticate(self, request):
-        return dj_authenticate(request, username=self.cleaned_data['email'], password=self.cleaned_data['password'])
+        return dj_authenticate(request, username=self.cleaned_data['username'], password=self.cleaned_data['password'])
 
 class RegistrationForm(forms.Form):
     first_name = forms.CharField(label="Vorname:", max_length=70)

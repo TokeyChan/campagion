@@ -37,4 +37,10 @@ table th {
 #button_container {
   margin-top: 50px;
   grid-area: buttons;
+  display: flex;
+  justify-content: center;
+}
+.button {
+  margin-left: 10px;
+  margin-right: 10px;
 }

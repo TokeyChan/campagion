@@ -7,7 +7,14 @@
   <link rel="stylesheet" href="{% static 'main/css/simple_form.css' %}">
   <script>
     function submit_form() {
+      document.getElementById('input_action').value = "SUBMIT";
       document.getElementById('simple_form').submit();
+    }
+    function submit_delete() {
+      if (confirm("Soll dieses Element wirklich gelöscht werden?")) {
+        document.getElementById('input_action').value = "DELETE";
+        document.getElementById('simple_form').submit();
+      }
     }
   </script>
 {% endblock %}
@@ -26,11 +33,15 @@
       {% block additional_form %}
 
       {% endblock %}
+      <input type="hidden" name="action" id="input_action">
     </form>
   </div>
 
   <div id="button_container">
     <div class="button noselect" onclick="submit_form()">Absenden</div>
+    {% if deletable %}
+      <div class="button noselect" onclick="submit_delete()">Löschen</div>
+    {% endif %}
   </div>
   {% if 'left' in FILLED_BLOCKS %}
     <div id="left">

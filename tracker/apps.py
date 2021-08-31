@@ -1,12 +1,15 @@
 from django.apps import AppConfig
-
+from main.contrib.utils import Module
 
 class TrackerConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'tracker'
 
-def img_path():
-    return 'tracker/images/tracker.png'
-
-title = "Dashboard"
-home_view = "tracker:overview"
+    modules = [
+        Module(
+            name = 'dashboard',
+            title = 'Dashboard',
+            img_path = "tracker/images/tracker.png",
+            home_view = "tracker:overview"
+        )
+    ]

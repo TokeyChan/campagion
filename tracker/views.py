@@ -13,11 +13,16 @@ import json
 
 def overview(request):
     if request.method == 'GET':
-        context = {
-            #'clients': Client.objects.all(), #oder filter alle, die noch nicht fertig sind? (falls das je geht),
-            'active_tasks': Task.objects.active_tasks(),
-            'campaigns': Campaign.objects.all().order_by('status')
-        }
+        if request.user.is_admin:
+            context = {
+                'active_tasks': Task.objects.active_tasks(),
+                'campaigns': Campaign.objects.all().order_by('status')
+            }
+        else:
+            context = {
+                'active_tasks': Task.objects.get_from_user(request.user),
+                'campaigns': [a.campaign for a in request.user.assignee_set.all()]
+            }
         return render(request, 'tracker/overview.html', context)
     else:
         if request.POST['action'] == 'REDIRECT':
@@ -82,7 +87,7 @@ def design_workflow(request, campaign_id):
     if request.method == 'GET':
         context = {
             'campaign': campaign,
-            'milestones': Milestone.objects.filter(Q(campaign__isnull=True) | Q(campaign=campaign)),
+            'milestones': Milestone.objects.filter(Q(campaign__isnull=True) | Q(campaign=campaign), is_visible=True),
             'workflow': workflow,
             'form': MilestoneForm(),
             'completers': Completer.objects.all()
@@ -152,11 +157,32 @@ def new_template(request, campaign_id):
 # END TEMPLATES
 
 def list_milestones(request):
-    return HttpResponse("Milestones")
+    context = {
+        'milestones': Milestone.objects.filter(campaign__isnull=True, is_visible=True)
+    }
+    return render(request, 'tracker/list_milestones.html', context)
 
-def edit_milestone(request, milestone_pk):
-    milestone = Milestone.objects.get(pk=milestone_pk)
-    return HttpResponse("Edit Milestone")
+def edit_milestone(request, milestone_id):
+    milestone = Milestone.objects.get(id=milestone_id)
+    if request.method == 'POST':
+        if request.POST['action'] == 'DELETE':
+            milestone.is_visible = False
+            milestone.save()
+            return redirect('tracker:list_milestones')
+        form = MilestoneForm(False, request.POST, instance=milestone)
+        if form.is_valid():
+            form.save(None)
+            return redirect('tracker:list_milestones')
+    else:
+        form = MilestoneForm(instance=milestone, global_=True)
+    context = {
+        'form': form,
+        'new': False,
+        'class_name': 'Meilenstein',
+        'url': reverse('tracker:edit_milestone', kwargs={'milestone_id': milestone_id}),
+        'deletable': True
+    }
+    return render(request, 'main/simple_form.html', context)
 
 def upload_file(request, task_id):
     task = Task.objects.get(id=task_id)

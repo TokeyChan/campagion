@@ -40,6 +40,7 @@ class Milestone(models.Model):
     upload_dir = models.CharField(max_length=25, null=True, blank=True, unique=True) # nur notwendig, wenn der UploadCompleter gewählt wurde
     upload_name = models.CharField(max_length=50, null=True, blank=True)
     campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE, null=True)
+    is_visible = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name
@@ -81,6 +82,10 @@ def calc_planned_dates(task): #recursive!!!
         parent_end_dates.append(start_date + parent.milestone.duration)
     task.planned_start_date = max(parent_end_dates)
     task.due_date = task.planned_start_date + task.milestone.duration
+
+    weekday = task.due_date.weekday()
+    if weekday in [5, 6]:
+        task.due_date += timedelta(days=2)
     task.save()
     return task.planned_start_date
 
@@ -98,6 +103,11 @@ def calc_dates(task): #auch recursive, geht nur, wenn der Workflow aktiv ist
         parent_end_dates.append(end_date)
     task.planned_start_date = max(parent_end_dates)
     task.due_date = task.planned_start_date + task.milestone.duration
+
+    weekday = task.due_date.weekday()
+    if weekday in [5, 6]: #if weekend
+        task.due_date += timedelta(days=2)
+
     task.save()
     return task.due_date
 
@@ -243,12 +253,15 @@ class Template(models.Model):
 class TaskManager(models.Manager):
     def active_tasks(self):
         return self.filter(
-            due_date__lte=(datetime.now() + timedelta(days=2)),
+            #due_date__lte=(datetime.now() + timedelta(days=2)),
             completion_date__isnull=True,
             workflow__start_date__isnull=False,
             start_date__isnull=False,
             milestone__is_external=False
         ).order_by("due_date")
+    
+    def get_from_user(self, user):
+        return [task for task in self.active_tasks() if task.assigned_user() == user]
 
 def get_upload_to(instance, filename):
     now = datetime.now()

@@ -1,0 +1,40 @@
+#milestone_container {
+    background-color: #d7f0f4;
+    min-height: 400px;
+    border-radius: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    align-content: flex-start;
+}
+
+.milestone {
+    width: 200px;
+    min-height: 80px;
+    background-color: #4eddff;
+    border-radius: 15px;
+    box-shadow: 0px 1px 5px black;
+    transition: 0.1s all ease-in-out;
+    margin: 15px;
+    padding-bottom: 10px;
+    position: relative;
+}
+
+.milestone_title {
+    text-align: center;
+    font-size: 17px;
+    margin-top: 6px;
+    margin-bottom: 4px;
+}
+.milestone_data {
+    font-size: 17px;
+    height: 30px;
+    line-height: 30px;
+    text-align: left;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+.milestone:hover {
+    cursor: pointer;
+    background-color: #38c8ec;
+}

@@ -8,6 +8,7 @@ function main() {
     input_module = document.getElementById('input_module');
     input_action = document.getElementById('input_action');
 
+    return;
     var modules = document.getElementsByClassName('module');
     for (let module of modules) {
         module.addEventListener('click', () => {

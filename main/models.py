@@ -3,6 +3,7 @@ from django.db.models import Q
 from datetime import datetime, date, timedelta
 from django.contrib.auth.models import AbstractUser, UserManager
 from .api_models import *
+from functools import cached_property
 # Create your models here.
 
 class CustomUserManager(UserManager):
@@ -30,6 +31,11 @@ class User(AbstractUser):
 
     def name(self):
         return self.first_name + " " + self.last_name
+
+    @cached_property
+    def is_admin(self):
+        return self.group.codename == "ADMIN"
+    
 
 class Client(models.Model):
     name = models.CharField(max_length=90)

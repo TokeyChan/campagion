@@ -41,15 +41,23 @@
       Aktiver Workflow
     </div>
     <img src="{% static 'tracker/images/settings_icon.png' %}" id="settings" onclick="open_design()">
-    <img src="{% static 'tracker/images/open_folder.png' %}" id="open_folder" onclick="open_template()">
+    {% if not workflow.is_started %}
+      <img src="{% static 'tracker/images/open_folder.png' %}" id="open_folder" onclick="open_template()">
+    {% endif %}
     <div id="workflow_container">
       <canvas id="workflow_date_canvas" class="date_canvas" width="800px" height="50px"></canvas>
       <canvas id="workflow_canvas" class="timeline_canvas" height="360px"></canvas>
     </div>
-
     {% if workflow.is_started %}
       <div class="workflow_title" style="grid-area: task_title">
       Aktive Aufgabe
+    </div>
+    <div class="button_container" style="grid-area: btn_edit_milestone">
+      <a href="{% url 'tracker:list_milestones' %}">
+        <div class="button" id="btn_edit_milestones">
+          Meilensteine bearbeiten
+        </div>
+      </a>
     </div>
     <div id="active_task_container">
       {% for task in active_tasks %}
@@ -58,7 +66,7 @@
           {{ task.milestone.name }}
         </div>
         <div class="active_task_text" style="grid-area: date">
-          {{ task.date_string }}
+          {{ task.due_date_string }}
         </div>
         <div id="active_task_button_container">
           {% if task.fallback_task is not None %}

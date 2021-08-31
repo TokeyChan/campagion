@@ -9,7 +9,7 @@ from django.views.decorators.clickjacking import xframe_options_sameorigin
 
 from .models import Campaign, Client, User
 from users.models import Department
-from main.contrib.utils import Module
+from main.contrib.utils import ModuleManager
 from tracker.models import Workflow
 from main.forms import ClientForm
 from .forms import CampaignForm, LoginForm, ClientForm, CampaignDataForm
@@ -21,12 +21,13 @@ from datetime import datetime, timedelta
 def index(request):
     if request.method == 'GET':
         request.session['active_module'] = None
+        module_manager = ModuleManager()
         context = {
-            'modules': [
-                Module('tracker'),
-                Module('users'),
-                Module('main')
-            ]
+            'modules': module_manager.get_modules([
+                'dashboard',
+                'clients',
+                'users'
+            ])
         }
         return render(request, 'main/index.html', context)
     else:

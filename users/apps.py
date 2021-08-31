@@ -1,12 +1,15 @@
 from django.apps import AppConfig
-
+from main.contrib.utils import Module
 
 class UsersConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'users'
 
-def img_path():
-    return "users/images/users.png"
-
-title = "User-Management"
-home_view = 'users:overview'
+    modules = [
+        Module(
+            name = "users",
+            title = "User-Management",
+            img_path = "users/images/users.png",
+            home_view = "users:overview"
+        )
+    ]

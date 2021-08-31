@@ -176,5 +176,4 @@ function on_post_response(response_text) {
   }
 }
 
-
 window.addEventListener('load', () => { main() });

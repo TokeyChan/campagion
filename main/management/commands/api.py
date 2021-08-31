@@ -25,6 +25,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         campaign_ids = options['campaign_ids']
+        
         if options['all']:
             campaigns = Campaign.objects.all()
         else:

@@ -114,12 +114,12 @@ class CampaignDataForm(forms.ModelForm):
 
     class Meta:
         model = CampaignStats
-        fields = ['impressions', 'revenue', 'clicks', 'ctr', 'ecpm', 'ecpc']
+        fields = ['impressions', 'revenue', 'clicks', 'ctr', 'ecpm', 'ecpc', 'conversions']
         labels = {
             'revenue': 'Ausgaben (in €)',
-            'ctr': 'ctr',
-            'ecpm': 'ecpm',
-            'ecpc': 'ecpc'
+            'ctr': 'CTR',
+            'ecpm': 'eCPM',
+            'ecpc': 'eCPC'
         }
         widgets = {field:forms.TextInput() for field in fields}
 

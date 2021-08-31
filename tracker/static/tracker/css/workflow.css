@@ -6,7 +6,7 @@
   "client client client client"
   ". workflow_title template design"
   "workflow workflow workflow workflow"
-  "task_title task_title task_title task_title"
+  ". task_title task_title btn_edit_milestone"
   "active_task active_task active_task active_task";
 }
 #workflow_container {
@@ -24,6 +24,13 @@
 .active_task_button {
   margin-left: 5px;
   margin-right: 5px;
+}
+#btn_edit_milestones {
+  line-height: 20px;
+  padding-top: 5px;
+  position: relative;
+  left: -100px;
+  top: 10px;
 }
 #active_task_container {
   display: grid;
