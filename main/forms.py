@@ -110,7 +110,7 @@ class CampaignDataForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(CampaignDataForm, self).__init__(*args, **kwargs)
         for field in self.fields.values():
-            field.disabled = True
+            field.readonly = True
 
     class Meta:
         model = CampaignStats
@@ -121,7 +121,10 @@ class CampaignDataForm(forms.ModelForm):
             'ecpm': 'eCPM',
             'ecpc': 'eCPC'
         }
-        widgets = {field:forms.TextInput() for field in fields}
+        widgets = {}
+        for field in fields:
+            widgets[field] = forms.TextInput()
+            widgets[field].attrs['readonly'] = True
 
     def render(self):
         html = ""

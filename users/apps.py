@@ -1,5 +1,5 @@
 from django.apps import AppConfig
-from main.contrib.utils import Module
+from campagion.contrib.utils import Module
 
 class UsersConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'

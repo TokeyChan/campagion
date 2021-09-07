@@ -1,0 +1,62 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Provisionen{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'administration/css/commissions.css' %}">
+    <script src="{% static 'administration/js/commissions.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="title" style="grid-area: title;">Provisionen ({{ year }})</div>
+    <div id="content_container">
+        <table id="commission_table">
+            <colgroup>
+                <col width="250px">
+                {% for month in months %}
+                    <col>
+                {% endfor %}
+                <col width="100px">
+            </colgroup>
+            <tr>
+                <th>Name</th>
+                {% for month in months %}
+                    <th data-month="{{ month.month }}">{{ month.short_name }}</th>
+                {% endfor %}
+                <th>Gesamt</th>
+            </tr>
+            {% for employee, data in employees.items %}
+                <tr>
+                    <td>{{ employee.name }}</td>
+                    {% for m, c in data.items %}
+                        {% if forloop.last %}
+                            <td>€{{ c }}</td>
+                        {% else %}
+                            <td class="commission_td{% if c is None %} empty{% endif %}" data-month="{{ m }}" data-commission_id="{{ c.id }}">{{ c.amount|default:"" }}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div id="commission_insight">
+        <div class="title" id="insight_title"></div>
+        <table id="insight_table" style="display: none;">
+            <colgroup>
+                <col style="width: 25%;">
+                <col style="width: 25%;">
+                <col style="width: 16.6%;">
+                <col style="width: 16.6%;">
+                <col style="width: 16.6%;">
+            </colgroup>
+            <tr>
+                <th>Kunde</th>
+                <th>Kampagne</th>
+                <th>Budget</th>
+                <th>Campagion-Budget</th>
+                <th>Provisionsanteil</th>
+            </tr>
+        </table>
+    </div>
+{% endblock %}

@@ -4,6 +4,7 @@ from datetime import datetime, date, timedelta
 from django.contrib.auth.models import AbstractUser, UserManager
 from .api_models import *
 from functools import cached_property
+from decimal import Decimal
 # Create your models here.
 
 class CustomUserManager(UserManager):
@@ -81,6 +82,7 @@ class Campaign(models.Model):
     data = models.OneToOneField("CampaignData", on_delete=models.SET_NULL, null=True, blank=True)
     api_id = models.IntegerField(null=True, blank=True)
     status = models.IntegerField(choices=Status.choices, default=Status.PRE_ACTIVE)
+    commission = models.ForeignKey("administration.Commission", on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -139,6 +141,9 @@ class Campaign(models.Model):
     def get_files(self):
         tasks_with_files = self.workflow.task_set.exclude(Q(uploaded_file='') | Q(uploaded_file=None))
         return [task.uploaded_file for task in tasks_with_files]
+
+    def commission_amount(self):
+        return round((Decimal(0.035) * self.budget) + (Decimal(0.1) * self.campagion_budget), 2)
 
 class Assignee(models.Model):
     campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE)

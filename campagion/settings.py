@@ -43,10 +43,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'month',
     'main.apps.MainConfig',
     'tracker.apps.TrackerConfig',
     'users.apps.UsersConfig',
-    #'administration.apps.AdministrationConfig'
+    'administration.apps.AdministrationConfig'
 ]
 
 MIDDLEWARE = [
@@ -72,8 +73,7 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-                'main.contrib.context_processors.active_module'
+                'django.contrib.messages.context_processors.messages'
             ],
         },
     },
@@ -148,3 +148,6 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = config('EMAIL_PORT', cast=int)
 
 X_FRAME_OPTIONS = 'SAMEORIGIN'
+
+
+COMMISSION_MILESTONE_NAME = "Bezahlt"
