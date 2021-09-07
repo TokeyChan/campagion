@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='node',
             name='task',
-            field=models.OneToOneField(default=0, on_delete=django.db.models.deletion.CASCADE, to='tracker.task'),
+            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='tracker.task'),
             preserve_default=False,
         ),
     ]
