@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='milestone',
             name='department',
-            field=models.ForeignKey(default=0, on_delete=django.db.models.deletion.CASCADE, to='main.department'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main.department'),
             preserve_default=False,
         ),
     ]
