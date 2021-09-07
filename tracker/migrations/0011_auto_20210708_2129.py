@@ -32,10 +32,5 @@ class Migration(migrations.Migration):
                 ('from_node', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='outgoing_lines', to='tracker.node')),
                 ('to_node', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='incoming_lines', to='tracker.node')),
             ],
-        ),
-        migrations.AddField(
-            model_name='task',
-            name='node',
-            field=models.OneToOneField(null=True, on_delete=django.db.models.deletion.CASCADE, to='tracker.node'),
-        ),
+        )
     ]

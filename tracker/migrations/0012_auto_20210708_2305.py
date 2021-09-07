@@ -11,10 +11,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='task',
-            name='node',
-        ),
         migrations.AddField(
             model_name='node',
             name='task',
