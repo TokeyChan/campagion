@@ -9,10 +9,11 @@ from month import Month
 
 def commissions(request, year):
     months = Month(year, 1).range(Month(year, 12))
-    users = User.objects.filter(is_active=True)
+    users = User.objects.filter(is_active=True) if request.user.is_admin else [request.user]
 
     employees = {user:Commission.objects.get_from_user_and_months(user, months) for user in users}
-    employees = {user:data for user, data in employees.items() if len([d for d in data.values() if d is not None]) != 0} #1 Weil Gesamt immer 0 ist
+    if request.user.is_admin:
+        employees = {user:data for user, data in employees.items() if len([d for d in data.values() if d is not None]) != 0} #1 Weil Gesamt immer 0 ist
 
     for name in employees.keys():
         e = employees[name]

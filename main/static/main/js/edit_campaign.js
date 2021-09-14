@@ -6,10 +6,44 @@ function main() {
     document.getElementById('add_client').addEventListener('click', () => {
         show_popup();
     });
+    document.getElementById('new_minicampaign').addEventListener('click', () => {
+        new_minicampaign();
+    });
+    const api_manager = new ApiManager(CAMPAIGN_ID);
 }
 
 function submit_grunddaten() {
     document.getElementById('grunddaten_form').submit();
+}
+
+function delete_row(img) {
+    if (confirm('Soll dieser Eintrag wirklich gelöscht werden?')) {
+        const table = document.getElementById('children_table');
+        const row = img.parentNode.parentNode;
+        row.parentNode.removeChild(row);
+    }
+}
+
+function new_minicampaign() {
+    const table = document.getElementById('children_table');
+    const row = document.createElement('tr');
+    for (let i = 0; i < 3; i++) {
+        const td = document.createElement('td');
+        if (i != 2) {
+            const input = document.createElement('input');
+            input.type = 'text';
+            td.appendChild(input);
+        } else {
+            const img = document.createElement('img');
+            img.src = DELETE_ICON_PATH;
+            img.addEventListener('click', () => {
+                delete_row(img);
+            });
+            td.appendChild(img);
+        }
+        row.appendChild(td);
+    }
+    table.appendChild(row);
 }
 
 function change_view(sender) {
@@ -26,6 +60,9 @@ function change_view(sender) {
     switch (sender.dataset.tag) {
         case "grunddaten":
             document.getElementById('grunddaten_container').style.display = "block";
+            break;
+        case "children":
+            document.getElementById('children_container').style.display = "grid";
             break;
         case "api":
             document.getElementById('api_container').style.display = "block";
@@ -84,6 +121,7 @@ function submit_client_form()
     let form_data = new FormData(form);
     send_request(form.action, form.method, form_data, on_post_response, form_data.get("csrfmiddlewaretoken"));
 }
+
 function on_post_response(response_text) {
     console.log(response_text);
     let table = document.getElementById('new_client_table');
@@ -106,4 +144,21 @@ function on_post_response(response_text) {
 function post(action) {
     document.getElementById('input_action').value = action;
     document.getElementById('button_form').submit();
+}
+
+function save_children() {
+    const table = document.getElementById('children_table');
+    var rows = Array.from(table.rows);
+    rows.shift();
+    var obj = {'rows': []};
+    for (const row of rows) {
+        obj['rows'].push({
+            'id': parseInt(row.dataset.child_id) || null,
+            'name': row.cells[0].getElementsByTagName('input')[0].value,
+            'api_id': parseInt(row.cells[1].getElementsByTagName('input')[0].value)
+        });
+    }
+    const input = document.getElementById('id_children_json');
+    input.value = JSON.stringify(obj);
+    document.getElementById('grunddaten_form').submit();
 }

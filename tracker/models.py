@@ -215,6 +215,7 @@ class Workflow(models.Model):
             t.workflow = self
             t.milestone = task.milestone
             t.planned_start_date = datetime.now()
+            t.fallback_task = task.fallback_task
             t.save()
             n = Node()
             n.task = t
@@ -227,6 +228,7 @@ class Workflow(models.Model):
             l = Line()
             l.from_node = nodes[line.from_node.id]
             l.to_node = nodes[line.to_node.id]
+            l.is_fallback = line.is_fallback
             l.save() 
 
         
@@ -241,7 +243,7 @@ class Template(models.Model):
                 continue #Das geht in Zukunft gar nicht
             obj['tasks'].append(task.to_json(with_node=True))
             for line in task.node.outgoing_lines.all():
-                obj['lines'].append({'id': line.id, 'from': line.from_node.task.id, 'to': line.to_node.task.id})
+                obj['lines'].append({'id': line.id, 'from': line.from_node.task.id, 'to': line.to_node.task.id, 'is_fallback': line.is_fallback})
         return json.dumps(obj)
 
     def get_lines(self):

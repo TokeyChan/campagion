@@ -1,11 +1,11 @@
-from main.models import Campaign
-from main.api_models import CampaignData, CampaignStats
+from main.models import Campaign, MiniCampaign
+from main.api_models import CampaignStats
 from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings
-from datetime import datetime
+from datetime import datetime, date
 
 try:
-    from traffic_junky import Member
+    from traffic_junky.helpers import get_campaign_stats
 except ImportError:
     raise ImportError("You need to install the traffic_junky package or put it on your PYTHONPATH")
 
@@ -27,33 +27,25 @@ class Command(BaseCommand):
         campaign_ids = options['campaign_ids']
         
         if options['all']:
-            campaigns = Campaign.objects.all()
+            campaigns = Campaign.objects.exclude(status=Campaign.Status.PRE_ACTIVE)
         else:
             campaigns = Campaign.objects.filter(id__in=campaign_ids)
-        
-        member = Member(settings.API_KEY)
 
         for campaign in campaigns:
-            c = member.get_campaign(id=campaign.api_id) if campaign.api_id is not None else member.get_campaign(name=campaign.name)
-            if c is None:
-                continue
+            start = campaign.start_date
+            end = datetime.now().date() if campaign.end_date is None else campaign.end_date
 
-            if campaign.data is None:
-                data = CampaignData()
-                data.create(c.data)
-                data.save()
-                campaign.data = data
-                campaign.save()
-            else:
-                data = campaign.data
+            ids = [child.api_id for child in campaign.children_set.all()]
+            stats = get_campaign_stats(settings.API_KEY, ids, start, end)
+            for data in stats:
+                #hier filtern, ob es überhaupt ein Ergebnis gibt
+                minicampaign = MiniCampaign.objects.get(api_id=data['id'])
+                try:
+                    stats = minicampaign.stats_set.get(date=data['date'])
+                except CampaignStats.DoesNotExist:
+                    stats = CampaignStats(minicampaign=minicampaign, date=data['date'])
+                
+                stats.update(data['data'])
+                stats.save()
 
-            stats = c.stats(end_date=datetime.now())
-            if data.stats is None:
-                new_stats = CampaignStats()
-                new_stats.update(stats)
-                new_stats.save()
-                data.stats = new_stats
-                data.save()
-            else:
-                data.stats.update(stats)
-                data.stats.save()
+            

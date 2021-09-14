@@ -11,6 +11,7 @@
 #module_container {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
 }
 .module {
     width: 300px;

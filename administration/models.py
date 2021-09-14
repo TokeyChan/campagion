@@ -27,7 +27,6 @@ class Commission(models.Model):
     user = models.ForeignKey("main.User", on_delete=models.CASCADE)
     month = MonthField()
     amount = models.DecimalField(max_digits=7, decimal_places=2)
-    is_paid = models.BooleanField(default=False)
 
     objects = CommissionManager()
 
@@ -36,7 +35,6 @@ class Commission(models.Model):
             'year': self.month.year,
             'month': self.month.month,
             'amount': float(round(self.amount, 2)),
-            'is_paid': self.is_paid,
             'campaigns': []
         }
         for campaign in self.campaign_set.all():

@@ -1,11 +1,25 @@
 #main_container {
     display: grid;
-    grid-template-rows: 40px 1fr;
-    grid-template-columns: 1fr;
+    grid-template-rows: 40px 40px 1fr;
+    grid-template-columns: 40px 1fr 40px;
     grid-template-areas: 
-    "title"
-    "content";
+    ". title add"
+    "search search search"
+    "content content content";
 }
+#search_bar {
+    grid-area: search;
+}
+#search_wrapper{
+    float: right;
+}
+#search_bar input {
+    width: 300px;
+    font-size: 12px;
+    margin-right: 5px;
+    padding: 2px 4px;
+}
+
 #client_container {
     grid-area: content;
     background-color: #d7f0f4;
@@ -72,5 +86,12 @@
     margin-top: 3px;
 }
 .client .edit:hover {
+    cursor: pointer;
+}
+#add_client {
+    grid-area: add;
+    margin: 5px;
+}
+#add_client:hover {
     cursor: pointer;
 }

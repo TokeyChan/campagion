@@ -9,6 +9,7 @@ urlpatterns = [
     path('', views.overview, name="overview"),
     path('<int:campaign_id>/', views.workflow, name="workflow"),
     path('milestones/', views.list_milestones, name="list_milestones"),
+    path('milestones/new/', views.new_milestone, name="new_milestone"),
     path('milestones/<int:milestone_id>/', views.edit_milestone, name="edit_milestone"),
     path('<int:campaign_id>/design/', views.design_workflow, name="design_workflow"),
     path('templates/<int:template_id>/<int:campaign_id>/', views.edit_template, name="edit_template"),

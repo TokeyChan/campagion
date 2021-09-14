@@ -31,7 +31,7 @@
     background-color: #34e271;
 }
 /* */
-.commission_td.present {
+.commission_td.present:not(.empty) {
     background-color: #3bff7f;
 }
 .commission_td.past {
@@ -54,6 +54,7 @@
     margin-left: 15%;
     margin-right: 15%;
     padding-top: 5px;
+    display: none;
 }
 #insight_table {
     margin: 10px;

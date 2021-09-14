@@ -21,7 +21,7 @@ def overview(request):
         else:
             context = {
                 'active_tasks': Task.objects.get_from_user(request.user),
-                'campaigns': [a.campaign for a in request.user.assignee_set.all()]
+                'campaigns': sorted(set([a.campaign for a in request.user.assignee_set.all()]), key=lambda x: x.status)
             }
         return render(request, 'tracker/overview.html', context)
     else:
@@ -161,6 +161,22 @@ def list_milestones(request):
         'milestones': Milestone.objects.filter(campaign__isnull=True, is_visible=True)
     }
     return render(request, 'tracker/list_milestones.html', context)
+
+def new_milestone(request):
+    if request.method == 'POST':
+        form = MilestoneForm(False, request.POST)
+        if form.is_valid():
+            form.save(None)
+            return redirect('tracker:list_milestones')
+    else:
+        form = MilestoneForm()
+    context = {
+        'form': form,
+        'new': True,
+        'class_name': 'Meilenstein',
+        'url': reverse('tracker:new_milestone')
+    }
+    return render(request, 'main/simple_form.html', context)
 
 def edit_milestone(request, milestone_id):
     milestone = Milestone.objects.get(id=milestone_id)

@@ -5,6 +5,23 @@
 
 {% block head %}
     <link rel="stylesheet" href="{% static 'main/css/clients.css' %}">
+    <script>
+        function new_client() {
+            document.getElementById('new_client_form').submit();
+        }
+        function perform_search(value) {
+            const clients = document.getElementsByClassName('client');
+
+            for (let client of clients) {
+                const name = client.dataset.name.toLowerCase();
+                if (name.includes(value.toLowerCase())) {
+                    client.style.display = "";
+                } else {
+                    client.style.display = "none";
+                }
+            }
+        }
+    </script>
 {% endblock %}
 
 {% block content %}
@@ -12,9 +29,16 @@
         <div class="title" style="grid-area: title;">
             Kundenzone
         </div>
+        <div id="search_bar">
+            <div id="search_wrapper">
+                <label for="search_input">Suche:</label>
+                <input type="text" id="search_input" onkeyup="perform_search(this.value)">
+            </div>
+        </div>
+        <img src="{% static 'tracker/images/new_icon.png' %}" id="add_client" onclick="new_client()" width="32px">
         <div id="client_container">
             {% for client in clients %}
-                <div class="client">
+                <div class="client" data-name="{{ client.name }}">
                     <div class="name">{{ client.name }}</div>
                     <div class="data">{{ client.contact_name|default:"" }}</div>
                     <div class="data">{{ client.phone|default:"" }}</div>
@@ -36,4 +60,8 @@
             {% endfor %}
         </div>
     </div>
+{% endblock %}
+
+{% block forms %}
+    <form action="{% url 'main:new_client' %}" id="new_client_form"></form>
 {% endblock %}

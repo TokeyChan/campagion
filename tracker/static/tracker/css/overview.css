@@ -139,6 +139,9 @@
   display: grid;
   transition: all 0.15s ease-in-out;
 }
+.task_container:not(.own) {
+  background-color: rgb(233, 233, 233);
+}
 .task_container:hover, .active_campaign:hover {
   filter: brightness(90%);
   cursor: pointer;

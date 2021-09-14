@@ -11,6 +11,6 @@ class AdministrationConfig(AppConfig):
             title = "Provisionen", 
             img_path = "administration/images/commissions.png",
             home_view = "administration:commissions",
-            only_admin=True
+            only_admin=False
         )
     ]

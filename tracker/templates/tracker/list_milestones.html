@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block content %}
-    <div class="title">Meilensteine</div>
+    <div class="title">Meilensteine<a href="{% url 'tracker:new_milestone' %}"><img src="{% static 'tracker/images/new_icon.png' %}" id="new_milestone"></a></div>
     <div id="milestone_container">
         {% for milestone in milestones %}
             <div class="milestone">

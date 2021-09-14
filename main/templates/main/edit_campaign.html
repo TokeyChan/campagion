@@ -6,17 +6,34 @@
 
 {% block head %}
     <link rel="stylesheet" href="{% static 'main/css/edit_campaign.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js"></script>
+    <script>
+        const DELETE_ICON_PATH = "{% static 'tracker/images/delete_icon.png' %}";
+        const API_URLS = {
+            'sum': "{% url 'main:api_sum' %}",
+            'sum_minicampaign': "{% url 'main:api_sum_mini' %}",
+            'stats': "{% url 'main:api_data' %}",
+            'stats_minicampaign': "{% url 'main:api_data_mini' %}",
+            'minicampaigns': "{% url 'main:api_get_minicampaigns' %}"
+        };
+        const CAMPAIGN_ID = {{ campaign.id }};
+    </script>
+    <script src="{% static 'main/js/api_manager.js' %}"></script>
     <script src="{% static 'main/js/edit_campaign.js' %}"></script>
+    <script src="{% static 'main/js/calendar.js' %}"></script>
 {% endblock %}
 
 {% block content %}
     <div id="main_container">
         <div id="sidebar">
-            <div class="sidebar_menu noselect selected" onclick="change_view(this);" data-tag="grunddaten">
+            <div class="sidebar_menu noselect" onclick="change_view(this);" data-tag="grunddaten">
                 Grunddaten
             </div>
+            <div class="sidebar_menu noselect" onclick="change_view(this);" data-tag="children">
+                Werbelinien
+            </div>
             {% if not new %}
-                <div class="sidebar_menu noselect" onclick="change_view(this);" data-tag="api">
+                <div class="sidebar_menu noselect selected" onclick="change_view(this);" data-tag="api">
                     API-Daten
                 </div>
                 <div class="sidebar_menu noselect" onclick="change_view(this);" data-tag="files">
@@ -28,7 +45,7 @@
             </div>
         </div>
         <div id="content_container">
-            <div id="grunddaten_container" class="view_container" style="display: block;">
+            <div id="grunddaten_container" class="view_container" style="display: none;">
                 <div class="title">Grunddaten</div>
                 <div class="form_container">
                     <form action="{% if not new %}{% url 'main:edit_campaign' campaign.id %}{% else %}{% url 'main:new_campaign' %}{% endif %}" method="POST" id="grunddaten_form">
@@ -41,13 +58,62 @@
                     <div class="button" onclick="submit_grunddaten()">Speichern</div>
                 </div>
             </div>
-            <div id="api_container" class="view_container" style="display: none;">
+            <div id="children_container" class="view_container" style="display: none;">
+                <div class="title">
+                    Werbelinien
+                </div>
+                <img id="new_minicampaign" src="{% static 'tracker/images/new_icon.png' %}">
+                <div id="children_table_container">
+                    <table id="children_table">
+                        <colgroup>
+                            <col style="width: 46%;">
+                            <col style="width: 46%;">
+                            <col style="width: 8%;">
+                        </colgroup>
+                        <tr>
+                            <th>Name</th>
+                            <th>API-ID</th>
+                            <th></th>
+                        </tr>
+                        {% for child in campaign.children_set.all %}
+                            <tr data-child_id="{{ child.id }}">
+                                <td><input type="text" value="{{ child.name }}"></td>
+                                <td><input type="text" value="{{ child.api_id }}"></td>
+                                <td><img src="{% static 'tracker/images/delete_icon.png' %}" onclick="delete_row(this);"></td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                <div class="button" id="save_children_button" onclick="save_children()">
+                    Speichern
+                </div>
+            </div>
+            <div id="api_container" class="view_container" style="display: block;">
                 <div class="title">API-Daten</div>
-                <div class="form_container">
-                    {% if api_form %}
-                    <form>
-                        {{ api_form.render|safe }}
-                    </form>
+                <div class="form_container" id="api_form_container">
+                    {% if not campaign.is_pre_active %}
+                        <div id="minicampaign_changer">
+                            <img src="{% static 'main/images/arrow.png' %}" style="grid-column: 1; transform: rotate(180deg); display: none;" id="left_arrow">
+                            <div class="minicampaign_name" id="minicampaign_left_name" style="grid-column: 2; display: none;">Name links</div>
+                            <div id="minicampaign_title" style="grid-column: 3;">
+                                Gesamt
+                            </div>
+                            <div class="minicampaign_name" id="minicampaign_right_name" style="grid-column: 4; text-align: right; display: none;" id="right_arrow_div">Name rechts</div>
+                            <img src="{% static 'main/images/arrow.png' %}" style="grid-column: 5; display: none;" id="right_arrow">
+                        </div>
+                        <table id="api_table">
+                        </table>
+                        <div style="text-align: center;">
+                            <span>Startdatum:</span>
+                            <carbox-picker id="startdate_picker" value="{{ campaign.start_date|date:"j/n/Y" }}"></carbox-picker>
+                        </div>
+                        <div style="text-align: center;">
+                            <span>Enddatum:</span>
+                            <carbox-picker id="enddate_picker" value="{% if campaign.end_date is None %}{% now "j/n/Y" %}{% else %}{{ campaign.end_date|date:"j/n/Y" }}{% endif %}"></carbox-picker>
+                        </div>
+                        <div id="graph_container">
+                            <canvas id="api_graph"></canvas>
+                        </div>
                     {% else %}
                         <p>Zu dieser Kampagne wurden noch keine API-Daten gefunden</p>
                     {% endif %}

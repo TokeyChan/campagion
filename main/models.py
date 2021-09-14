@@ -1,8 +1,7 @@
 from django.db import models
-from django.db.models import Q
+from django.db.models import Q, Sum
 from datetime import datetime, date, timedelta
 from django.contrib.auth.models import AbstractUser, UserManager
-from .api_models import *
 from functools import cached_property
 from decimal import Decimal
 # Create your models here.
@@ -43,6 +42,7 @@ class Client(models.Model):
     contact_name = models.CharField(max_length=90, null=True, blank=True)
     phone = models.CharField(max_length=40, null=True, blank=True)
     email = models.CharField(max_length=100, null=True, blank=True)
+    #is_visible = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name
@@ -67,8 +67,8 @@ def get_planned_start_date():
 
 class Campaign(models.Model):
     class Status(models.IntegerChoices):
-        PRE_ACTIVE = 1
-        ACTIVE = 2
+        ACTIVE = 1
+        PRE_ACTIVE = 2
         FINISHED = 3
 
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
@@ -79,10 +79,9 @@ class Campaign(models.Model):
     budget = models.DecimalField(decimal_places=2, max_digits=10)
     campagion_budget = models.DecimalField(decimal_places=2, max_digits=10)
     days = models.IntegerField()
-    data = models.OneToOneField("CampaignData", on_delete=models.SET_NULL, null=True, blank=True)
-    api_id = models.IntegerField(null=True, blank=True)
     status = models.IntegerField(choices=Status.choices, default=Status.PRE_ACTIVE)
     commission = models.ForeignKey("administration.Commission", on_delete=models.SET_NULL, null=True, blank=True)
+    fee_percentage = models.IntegerField(default=15)
 
     def __str__(self):
         return self.name
@@ -133,10 +132,15 @@ class Campaign(models.Model):
         else:
             return "Geendet am " + self.end_date.strftime("%d.%m.%Y")
 
+    def expenses(self):
+        expenses = Decimal(0)
+        for child in self.children_set.all():
+            expenses += child.stats_set.all().aggregate(Sum('revenue'))['revenue__sum']
+        return expenses
+
+
     def budget_left(self):
-        if self.data is None:
-            return self.budget
-        return self.budget - (self.data.stats.revenue)
+        return self.budget - self.expenses()
 
     def get_files(self):
         tasks_with_files = self.workflow.task_set.exclude(Q(uploaded_file='') | Q(uploaded_file=None))
@@ -144,6 +148,24 @@ class Campaign(models.Model):
 
     def commission_amount(self):
         return round((Decimal(0.035) * self.budget) + (Decimal(0.1) * self.campagion_budget), 2)
+
+    def planned_end_date(self):
+        if self.start_date is None:
+            return None
+        return self.start_date + timedelta(days=self.days)
+
+class MiniCampaign(models.Model):
+    campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE, related_name='children_set')
+    name = models.CharField(max_length=50)
+    api_id = models.IntegerField(null=True, blank=True)
+
+    def get_stats(self):
+        return self.stats_set.all().aggregate(
+                    impressions=Sum('impressions'), 
+                    revenue=Sum('revenue'), 
+                    clicks=Sum('clicks'),
+                    conversions=Sum('conversions')
+                )
 
 class Assignee(models.Model):
     campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE)

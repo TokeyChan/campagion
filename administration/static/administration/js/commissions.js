@@ -25,11 +25,12 @@ function get_commission_data(raw_data) {
     var data = JSON.parse(raw_data);
     document.getElementById('insight_title').textContent = "Provision " + data['month'] + "/" + data['year'];
 
+    const container = document.getElementById('commission_insight');
     const table = document.getElementById('insight_table');
     var rows = table.rows;
-
-    for (let i = 1; i < rows.length; i++) {
-        table.deleteRow(i);
+    const length = rows.length;
+    for (let i = 1; i < length; i++) {
+        table.deleteRow(1);
     }
 
     for (const campaign of data['campaigns']) {
@@ -49,4 +50,6 @@ function get_commission_data(raw_data) {
         table.appendChild(row);
     }
     table.style.display = "";
+    container.style.display = "block";
+    console.log(container.style.display);
 }

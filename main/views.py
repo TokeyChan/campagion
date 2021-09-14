@@ -15,7 +15,7 @@ from main.forms import ClientForm
 from .forms import CampaignForm, LoginForm, ClientForm, CampaignDataForm
 from django.contrib import messages
 
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 # Create your views here.
 
 def index(request):
@@ -57,6 +57,11 @@ def new_campaign(request):
     }
     return render(request, 'main/edit_campaign.html', context)
 
+def get_folder_name(path):
+    elements = path.split('/')
+    index = elements.index(settings.MEDIA_ROOT.replace('/', ''))
+    return elements[index + 1]
+    
 def edit_campaign(request, campaign_id):
     campaign = Campaign.objects.get(id=campaign_id)
     if request.method == 'POST':
@@ -81,17 +86,8 @@ def edit_campaign(request, campaign_id):
             return redirect('main:edit_campaign', campaign_id=campaign_id)
     else:
         form = CampaignForm(instance=campaign)
-    if campaign.data is not None and campaign.data.stats is not None:
-        api_form = CampaignDataForm(instance=campaign.data.stats)
-    else:
-        api_form = None
 
     files = campaign.get_files()
-
-    def get_folder_name(path):
-        elements = path.split('/')
-        index = elements.index(settings.MEDIA_ROOT.replace('/', ''))
-        return elements[index + 1]
 
     folders = {}
     for file in files:
@@ -104,15 +100,25 @@ def edit_campaign(request, campaign_id):
     context = {
         'campaign': campaign,
         'form': form,
-        'api_form': api_form,
         'folders': folders,
         'client_form': ClientForm()
     }
     return render(request, 'main/edit_campaign.html', context)
 
 def clients(request):
+    clients = Client.objects.all()
+    clients_with_campaigns = []
+    clients_without_campaigns = []
+    
+    for client in clients:
+        if len(client.relevant_campaigns()) != 0:
+            clients_with_campaigns.append(client)
+        else:
+            clients_without_campaigns.append(client)
+    
+
     context = {
-        'clients': Client.objects.all()
+        'clients': sorted(clients_with_campaigns, key=lambda x: x.name) + sorted(clients_without_campaigns, key=lambda x: x.name)
     }
     return render(request, 'main/clients.html', context)
 
@@ -121,7 +127,7 @@ def new_client(request):
         form = ClientForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('tracker:overview')
+            return redirect('main:clients')
     else:
         form = ClientForm()
 

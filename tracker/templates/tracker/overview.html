@@ -15,7 +15,7 @@
     <div id="task_container">
       {% for task in active_tasks %}
         <a href="{% url 'tracker:workflow' task.workflow.campaign.id %}">
-          <div class="task_container" data-task_id="{{ task.id }}">
+          <div class="task_container{% if task.assigned_user == user %} own{% endif %}" data-task_id="{{ task.id }}">
             <div class="task_client">
               {{ task.workflow.campaign.name }}
             </div>
@@ -46,7 +46,7 @@
               {{ campaign.date_string }}
             </div>
             <div class="campaign_budget">
-              € {{ campaign.budget_left }}
+              € {{ campaign.budget_left|floatformat:2 }}
             </div>
           </div>
         {% endif %}
@@ -75,8 +75,8 @@
           <div class="text">Gesamtbudget: {{ campaign.budget }}€</div>
           <div class="text">Restbudget: {{ campaign.budget_left|floatformat:2 }}€</div>
           <div class="footer">
-            <div class="data footer_option">Daten</div>
-            <div class="workflow footer_option">Workflow</div>
+            <a href="{% url 'main:edit_campaign' campaign.id %}"><div class="data footer_option">Daten</div></a>
+            <a href="{% url 'tracker:workflow' campaign.id %}"><div class="workflow footer_option">Workflow</div></a>
           </div>
           {% if not campaign.workflow.is_finished %}
             <div class="status">

@@ -38,3 +38,8 @@
     cursor: pointer;
     background-color: #38c8ec;
 }
+#new_milestone {
+    float: right;
+    height: 40px;
+    width: 40px;
+}

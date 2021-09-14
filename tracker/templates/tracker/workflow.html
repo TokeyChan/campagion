@@ -63,16 +63,16 @@
       {% for task in active_tasks %}
       <div class="active_task_container">
         <div class="active_task_text" style="grid-area: name;">
-          {{ task.milestone.name }}
+          {{ task.milestone.name }} ({{ task.assigned_user }})
         </div>
         <div class="active_task_text" style="grid-area: date">
           {{ task.due_date_string }}
         </div>
         <div id="active_task_button_container">
           {% if task.fallback_task is not None %}
-            <div class="button active_task_button noselect{% if task.assigned_user != user %} disabled{% endif %}" data-task_id="{{ task.id }}" data-action="reset">Zurücksetzen</div>
+            <div class="button active_task_button noselect{% if task.assigned_user != user and not user.is_admin %} disabled{% endif %}" data-task_id="{{ task.id }}" data-action="reset">Zurücksetzen</div>
           {% endif %}
-          <div class="button active_task_button noselect{% if task.assigned_user != user %} disabled{% endif %}" data-task_id="{{ task.id }}" data-action="finish">Abschließen</div>
+          <div class="button active_task_button noselect{% if task.assigned_user != user and not user.is_admin %} disabled{% endif %}" data-task_id="{{ task.id }}" data-action="finish">Abschließen</div>
         </div>
       </div>
       {% endfor %}

@@ -1,5 +1,6 @@
 var active_milestone;
 var active_bezier;
+
 class Milestone
 {
   constructor(args) {
@@ -131,8 +132,10 @@ class Milestone
 
     let left_rect = this.dot_left.getBoundingClientRect();
     let right_rect = this.dot_right.getBoundingClientRect();
+    let bottom_rect = this.dot_bottom.getBoundingClientRect();
     this.dot_left.dispatchEvent(new CustomEvent('move', { detail: {'x': left_rect.x + (left_rect.width / 2), 'y': left_rect.y + (left_rect.height / 2)}}));
     this.dot_right.dispatchEvent(new CustomEvent('move', { detail: {'x': right_rect.x + (right_rect.width / 2), 'y': right_rect.y + (right_rect.height / 2)}}));
+    this.dot_bottom.dispatchEvent(new CustomEvent('move', { detail: {'x': bottom_rect.x + (bottom_rect.width / 2), 'y': bottom_rect.y + (bottom_rect.height / 2)}}));
   }
   delete() {
     this.element.parentNode.removeChild(this.element);
