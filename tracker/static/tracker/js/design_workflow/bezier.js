@@ -128,12 +128,16 @@ class Bezier {
     this.setEndElement(left_dot);
   }
   delete() {
+    if (this.end_element.parentNode.classList.contains('disabled')) {
+      return false;
+    }
     this.svg.removeChild(this.path);
     if (this.control_points != null) {
       for (let point of this.control_points) {
         point.delete();
       }
     }
+    return true;
   }
 }
 

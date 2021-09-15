@@ -101,7 +101,10 @@ def calc_dates(task): #auch recursive, geht nur, wenn der Workflow aktiv ist
     for parent in task.parent_tasks():
         end_date = calc_dates(parent)
         parent_end_dates.append(end_date)
-    task.planned_start_date = max(parent_end_dates)
+    if len(parent_end_dates) == 0:
+        task.planned_start_date = datetime.now()
+    else:
+        task.planned_start_date = max(parent_end_dates)
     task.due_date = task.planned_start_date + task.milestone.duration
 
     weekday = task.due_date.weekday()

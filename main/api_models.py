@@ -33,10 +33,12 @@ class CampaignStats(models.Model):
             'clicks': 0,
             'conversions': 0
         }
-
         for key, value in data.items():
+            keys = sum_.keys()
             if key == 'message': continue
             for k,v in value.items():
+                if k not in keys:
+                    continue
                 if isinstance(sum_[k], Decimal):
                     sum_[k] += Decimal(v)
                 else:

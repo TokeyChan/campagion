@@ -11,6 +11,9 @@ class Milestone
     this.id = args.task != null ? args.task.id : null;
     this.task = args.task || null;
     this.milestone_id = args.task != null ? args.task.milestone.id : args.element.dataset.milestone_id;
+    this.enabled = args.task != null ? args.enabled : true;
+
+    console.log(this.enabled);
 
     this.dot_left = Array.from(this.element.getElementsByClassName("left"))[0];
     this.dot_right = Array.from(this.element.getElementsByClassName("right"))[0];
@@ -42,6 +45,18 @@ class Milestone
     if (element == null)
       return null;
     return milestone_from_nr(element.dataset.nr);
+  }
+  _enabled = null;
+  get enabled() {
+    return this._enabled;
+  }
+  set enabled(value) {
+    this._enabled = value;
+    if (value) {
+      this.element.classList.remove('disabled');
+    } else {
+      this.element.classList.add('disabled');
+    }
   }
 
   add_event_listeners() {
@@ -138,6 +153,9 @@ class Milestone
     this.dot_bottom.dispatchEvent(new CustomEvent('move', { detail: {'x': bottom_rect.x + (bottom_rect.width / 2), 'y': bottom_rect.y + (bottom_rect.height / 2)}}));
   }
   delete() {
+    if (!this.enabled) {
+      return;
+    }
     this.element.parentNode.removeChild(this.element);
     let incoming_lines = beziers_from_element(this.dot_left);
     let outgoing_lines = beziers_from_element(this.dot_right);

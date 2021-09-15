@@ -99,7 +99,6 @@ def api_stats_campaign(request):
         }
     }
     while start_date <= end_date:
-        print(start_date)
         stats = qs.filter(date=start_date).aggregate(
             impressions = Sum('impressions'),
             revenue = Sum('revenue'),

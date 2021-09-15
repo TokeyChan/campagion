@@ -44,8 +44,9 @@ class Command(BaseCommand):
                     stats = minicampaign.stats_set.get(date=data['date'])
                 except CampaignStats.DoesNotExist:
                     stats = CampaignStats(minicampaign=minicampaign, date=data['date'])
-                
+
                 stats.update(data['data'])
+                
                 stats.save()
 
             

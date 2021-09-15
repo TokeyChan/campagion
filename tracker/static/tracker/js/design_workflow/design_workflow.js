@@ -31,9 +31,10 @@ function main() {
       }
       let bezier = Bezier.selected_bezier;
       if (bezier != null) {
-        let index = beziers.indexOf(bezier);
-        beziers.splice(index, 1);
-        bezier.delete();
+        if (bezier.delete()) {
+          let index = beziers.indexOf(bezier);
+          beziers.splice(index, 1);
+        }
       }
     }
   });
@@ -94,7 +95,8 @@ function create_milestone_element(task) {
   milestones.push(new Milestone({
     'element': element,
     'nr': milestone_nr,
-    'task': task
+    'task': task,
+    'enabled': task['completion_date'] == null
   }));
   milestone_nr += 1;
 }

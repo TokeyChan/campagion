@@ -72,6 +72,9 @@
 .milestone:hover {
   cursor: grab;
 }
+.milestone.disabled {
+  background-color: #cbdef0;
+}
 .milestone_name {
   text-align: center;
   grid-area: name;
