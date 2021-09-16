@@ -34,19 +34,27 @@ class ApiManager {
         this.title = document.getElementById('minicampaign_title');
         this.right_arrow = document.getElementById('right_arrow');
         this.right_arrow_div = document.getElementById('minicampaign_right_name');
+        this.reset_days = document.getElementById('reset_days');
 
         this.create_graph(this.startdate_picker.value, this.enddate_picker.value);
         this.startdate_picker.addEventListener('change', () => {
             this.update_graph(this.startdate_picker.value, this.enddate_picker.value);
+            this.reload_sum();
         });
         this.enddate_picker.addEventListener('change', () => {
             this.update_graph(this.startdate_picker.value, this.enddate_picker.value);
+            this.reload_sum();
         });
         this.update_graph(this.startdate_picker.value, this.enddate_picker.value);
         this.left_arrow.addEventListener('click', () => { this.switch_left() });
         this.left_arrow_div.addEventListener('click', () => { this.switch_left() });
         this.right_arrow.addEventListener('click', () => { this.switch_right() });
         this.right_arrow_div.addEventListener('click', () => { this.switch_right() });
+        this.reset_days.addEventListener('click', () => {
+            console.log("hey");
+            this.startdate_picker.value = this.reset_days.dataset.start_date;
+            this.enddate_picker.value = this.reset_days.dataset.end_date;
+        });
     }
     switch_view() {
         this._name_logic();
@@ -176,12 +184,18 @@ class ApiManager {
     }
     get_sum(minicampaign_id) {
         const request = new HttpRequest();
+        let date_query = "&start_date=" + this.startdate_picker.value.toString() + "&end_date=" + this.enddate_picker.value.toString()
         if (minicampaign_id == -1) { //GESAMT
-            request.open('GET', API_URLS['sum'] + "?campaign_id=" + this.campaign_id);
+            request.open('GET', API_URLS['sum'] + "?campaign_id=" + this.campaign_id + date_query);
         } else {
-            request.open('GET', API_URLS['sum_minicampaign'] + "?minicampaign_id=" + minicampaign_id);
+            request.open('GET', API_URLS['sum_minicampaign'] + "?minicampaign_id=" + minicampaign_id + date_query);
         }
         return request.send()
+    }
+    reload_sum() {
+        this.get_sum(this.current_mc_index == -1 ? -1 : this.minicampaigns[this.current_mc_index]['id']).then((result) => {
+            this.table_manager.render(result);
+        });
     }
     get_api_stats(start_date, end_date, minicampaign_id) {
         const request = new HttpRequest();
@@ -220,7 +234,7 @@ class TableManager {
             var input = document.createElement('input');
             input.type = 'text';
             input.readOnly = true;
-            input.value = data[row[0]];
+            input.value = data[row[0]] == null ? 0 : data[row[0]];
             td.appendChild(input);
 
             th.textContent = row[1];

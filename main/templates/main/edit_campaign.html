@@ -26,14 +26,14 @@
 {% block content %}
     <div id="main_container">
         <div id="sidebar">
-            <div class="sidebar_menu noselect" onclick="change_view(this);" data-tag="grunddaten">
+            <div class="sidebar_menu noselect selected" onclick="change_view(this);" data-tag="grunddaten">
                 Grunddaten
             </div>
             <div class="sidebar_menu noselect" onclick="change_view(this);" data-tag="children">
                 Werbelinien
             </div>
             {% if not new %}
-                <div class="sidebar_menu noselect selected" onclick="change_view(this);" data-tag="api">
+                <div class="sidebar_menu noselect" onclick="change_view(this);" data-tag="api">
                     API-Daten
                 </div>
                 <div class="sidebar_menu noselect" onclick="change_view(this);" data-tag="files">
@@ -45,7 +45,7 @@
             </div>
         </div>
         <div id="content_container">
-            <div id="grunddaten_container" class="view_container" style="display: none;">
+            <div id="grunddaten_container" class="view_container" style="display: block;">
                 <div class="title">Grunddaten</div>
                 <div class="form_container">
                     <form action="{% if not new %}{% url 'main:edit_campaign' campaign.id %}{% else %}{% url 'main:new_campaign' %}{% endif %}" method="POST" id="grunddaten_form">
@@ -88,7 +88,7 @@
                     Speichern
                 </div>
             </div>
-            <div id="api_container" class="view_container" style="display: block;">
+            <div id="api_container" class="view_container" style="display: none;">
                 <div class="title">API-Daten</div>
                 <div class="form_container" id="api_form_container">
                     {% if not campaign.is_pre_active %}
@@ -113,6 +113,9 @@
                         </div>
                         <div id="graph_container">
                             <canvas id="api_graph"></canvas>
+                        </div>
+                        <div id="reset_days" data-start_date="{{ campaign.start_date|date:"j/n/Y" }}" data-end_date="{% if campaign.end_date is None %}{% now "j/n/Y" %}{% else %}{{ campaign.end_date|date:"j/n/Y" }}{% endif %}">
+                            Zeitraum zurücksetzen
                         </div>
                     {% else %}
                         <p>Zu dieser Kampagne wurden noch keine API-Daten gefunden</p>

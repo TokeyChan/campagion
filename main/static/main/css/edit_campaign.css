@@ -90,11 +90,12 @@
     display: grid;
     height: 575px;
     grid-template-columns: 1fr 1.2fr 1.2fr;
-    grid-template-rows: 50px 40px 1fr;
+    grid-template-rows: 50px 40px 1fr 40px;
     grid-template-areas: 
     "header header header"
     "table start_date end_date"
-    "table graph graph";
+    "table graph graph"
+    "reset_days reset_days reset_days";
 }
 #minicampaign_changer {
     grid-area: header;
@@ -133,6 +134,18 @@
 #graph_container {
     grid-area: graph;
 }
+#reset_days {
+    grid-area: reset_days;
+    text-align: center;
+    color: rgb(28, 117, 190);
+    transition: 0.35s all ease-in-out;
+    margin-left: 40%;
+    margin-right: 40%;
+}
+#reset_days:hover {
+    color: rgb(36, 171, 212);
+    cursor: pointer;
+}
 /* FILES */
 #files_container {
     display: grid;
@@ -159,6 +172,9 @@
 }
 .file {
     background-color: rgb(54, 169, 201);
+    word-wrap: break-word;
+    line-height: 15px;
+    padding-top: 10px;
 }
 
 

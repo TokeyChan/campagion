@@ -159,8 +159,10 @@ class MiniCampaign(models.Model):
     name = models.CharField(max_length=50)
     api_id = models.IntegerField(null=True, blank=True)
 
-    def get_stats(self):
-        return self.stats_set.all().aggregate(
+    def get_stats(self, stats = None):
+        if stats is None:
+            stats = self.stats_set.all()
+        return stats.aggregate(
                     impressions=Sum('impressions'), 
                     revenue=Sum('revenue'), 
                     clicks=Sum('clicks'),

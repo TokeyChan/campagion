@@ -16,21 +16,24 @@ def api_minicampaigns(request):
 
 def api_sum_campaign(request):
     campaign_id = request.GET.get('campaign_id')
+    start_date = datetime.strptime(request.GET.get('start_date'), "%d/%m/%Y")
+    end_date = datetime.strptime(request.GET.get('end_date'), "%d/%m/%Y")
     campaign = Campaign.objects.get(id=campaign_id)
     minicampaigns = campaign.children_set.all()
     data = {}
 
     for minicampaign in minicampaigns:
-        result = minicampaign.get_stats()
+        result = minicampaign.get_stats(minicampaign.stats_set.filter(date__gte=start_date, date__lte=end_date))
 
         if len(data.keys()) == 0:
             data = result
         else:
             for k, v in result.items():
-                data[k] += v
+                if v is not None:
+                    data[k] += v
     
     data = calc_statistics(data)
-    data['revenue'] = float(round(data['revenue'], 2))
+    data['revenue'] = float(round(data['revenue'], 2)) if data['revenue'] is not None else None
     return JsonResponse(data)
 
 def api_sum_minicampaign(request):
@@ -68,36 +71,17 @@ def api_stats_campaign(request):
     for i in range(1, len(results)):
         qs = qs | results[i]
 
-    datasets = {
-        'impressions': {
-            'label': 'Impressions',
-            'data': []
-        },
-        'revenue': {
-            'label': 'Ausgaben',
-            'data': []
-        },
-        'clicks': {
-            'label': 'Clicks',
-            'data': []
-        },
-        'ctr': {
-            'label': 'CTR',
-            'data': []
-        },
-        'ecpm': {
-            'label': 'eCPM',
-            'data': []
-        },
-        'ecpc': {
-            'label': 'eCPC',
-            'data': []
-        },
-        'conversions': {
-            'label': 'Conversions',
-            'data': []
-        }
+    labels = {
+        'impressions': 'Impressions',
+        'revenue': 'Ausgaben',
+        'clicks': 'Clicks',
+        'ctr': 'CTR',
+        'ecpm': 'eCPM',
+        'ecpc': 'eCPC',
+        'conversions': 'Conversions',
     }
+    datasets = {k:{'label': v, 'data': []} for k, v in labels.items()}
+
     while start_date <= end_date:
         stats = qs.filter(date=start_date).aggregate(
             impressions = Sum('impressions'),
@@ -120,5 +104,51 @@ def api_stats_campaign(request):
         'datasets': [value for value in datasets.values()]
     })
 
-def api_stats_minicampaign(request, minicampaign_id):
-    pass
+def api_stats_minicampaign(request):
+    if request.method == 'POST':
+        raise ValueError("This view should never be accessed via POST")
+
+    minicampaign_id = request.GET.get('minicampaign_id')
+    minicampaign = MiniCampaign.objects.get(id=minicampaign_id)
+
+    get_start_date = request.GET.get('start_date')
+    get_end_date = request.GET.get('end_date')
+    if get_start_date is None or get_end_date is None:
+        return JsonResponse({'error': 'neither start_date or end_date may be ommitted'})
+        
+    start_date = datetime.strptime(get_start_date, "%d/%m/%Y").date()
+    end_date = datetime.strptime(get_end_date, "%d/%m/%Y").date()
+
+    qs = minicampaign.stats_set.filter(date__gte=start_date, date__lte=end_date)
+    labels = {
+        'impressions': 'Impressions',
+        'revenue': 'Ausgaben',
+        'clicks': 'Clicks',
+        'ctr': 'CTR',
+        'ecpm': 'eCPM',
+        'ecpc': 'eCPC',
+        'conversions': 'Conversions',
+    }
+    datasets = {k:{'label': v, 'data': []} for k, v in labels.items()}
+    
+    while start_date <= end_date:
+        stats = qs.filter(date=start_date).aggregate(
+            impressions = Sum('impressions'),
+            revenue = Sum('revenue'),
+            clicks = Sum('clicks'),
+            conversions = Sum('conversions')
+        )
+        stats = calc_statistics(stats)
+        for key in stats.keys():
+            if stats[key] is not None:
+                datasets[key]['data'].append({'x': start_date.strftime('%d.%m'), 'y': round(stats[key], 4)})
+            else:
+                datasets[key]['data'].append({'x': start_date.strftime('%d.%m'), 'y': None})
+
+        start_date += timedelta(days=1)
+
+    return JsonResponse({
+        'campaign_id': minicampaign.campaign_id,
+        'minicampaign': minicampaign_id,
+        'datasets': [value for value in datasets.values()]
+    })

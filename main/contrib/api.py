@@ -1,3 +1,4 @@
+from decimal import InvalidOperation
 
 def calc_statistics(dict_):
     ecpm = calc_ecpm(dict_)
@@ -23,5 +24,5 @@ def calc_ctr(dict_):
 def calc_ecpc(dict_):
     try:
         return dict_['revenue'] / dict_['clicks']
-    except TypeError:
+    except:
         return None
